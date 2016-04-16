@@ -1,7 +1,7 @@
 {
   "name": "Crypter",
   "productName": "Crypter",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "A cross-platform end-to-end encryption cloud sync client",
   "license": "MIT",
   "repository": "https://github.com/HR/Crypter",
