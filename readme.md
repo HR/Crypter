@@ -1,4 +1,4 @@
-# Crypt [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+# Crypter [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 Crypt is a simple, convenient and secure encryption client.  
 Simplifies password generation by deriving it using your MasterPassKey
