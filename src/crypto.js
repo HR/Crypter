@@ -28,13 +28,6 @@ let defaults = {
   th: 2
 }
 
-/*	Crypto
- *
- *	TODO:
- *	- Implement bitcoin blockchain as source of randomness (in iv generation)
- *  - rewrite as promises
- */
-
 exports.encrypt = function (origpath, destpath, mpkey) {
   // decrypts any arbitrary data passed with the pass
   return new Promise(function (resolve, reject) {

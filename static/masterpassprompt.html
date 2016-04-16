@@ -24,7 +24,7 @@
             <label for="checkMasterPassInput" id="checkMasterPassLabel"></label>
           </div>
           <div class="submit">
-            <input type="submit" value="Unlock" id="checkMasterPass" />
+            <input type="submit" value="Verify" id="checkMasterPass" />
           </div>
         </form>
       </div>
@@ -95,11 +95,11 @@
         ipcRenderer.send(field, masterpass)
       } else if (!masterpass) {
         errLabel.text(responses.empty)
-        errLabel.show()
+          .show()
         MPel.val('')
       } else {
         errLabel.text(responses.invalid)
-        errLabel.show()
+          .show()
         MPel.val('')
       }
     }

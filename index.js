@@ -34,7 +34,7 @@ global.paths = {
 global.views = {
   masterpassprompt: `file://${__dirname}/static/masterpassprompt.html`,
   setup: `file://${__dirname}/static/setup.html`,
-  crypt: `file://${__dirname}/static/crypt.html`
+  crypter: `file://${__dirname}/static/crypter.html`
 }
 
 // prevent the following from being garbage collected
@@ -158,7 +158,7 @@ function CryptWindow (callback) {
   let webContents = win.webContents
 
   // loads crypt.html view into the BrowserWindow
-  win.loadURL(global.views.crypt)
+  win.loadURL(global.views.crypter)
   // win.openDevTools()
   let crypt = function (origpath) {
     return new Promise(function(resolve, reject) {

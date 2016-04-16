@@ -8,7 +8,6 @@ git:
 branches:
   only:
     - master
-    - csca
 
 # env:
 #   - NODE_VERSION='5.8.0'
@@ -19,10 +18,6 @@ matrix:
       env:
         - NODE_VERSION=5.8.0
         - BUILD_OS_NAME=darwin
-    # - os: linux
-    #   env:
-    #     - NODE_VERSION=5.8.0
-    #     - BUILD_OS_NAME=linux
 
 before_script:
  - chmod +x ./script/travis-build.sh
@@ -31,8 +26,6 @@ before_script:
 
 script:
   - ./script/travis-build.sh
-  # - npm install --no-optional
-  # - npm test
 
 after_success:
   - npm run coveralls

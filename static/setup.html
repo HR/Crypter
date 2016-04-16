@@ -67,8 +67,8 @@
             </header>
             <form onsubmit="return false;">
               <div class="masterpass">
-                <input type="password" name="name" id="name" class="" placeholder="********"/>
-                <label for="password"></label>
+                <input type="password" id="setMasterPassInput" class="" placeholder="********"/>
+                <label for="password" id="setMasterPassLabel"></label>
               </div>
 
             </form>
@@ -105,34 +105,47 @@
       var logger = require('../script/logger.js')
       var errLabel
 
+      var responses = {
+        invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
+        correct: 'CORRECT MASTERPASS',
+        setSuccess: 'MASTERPASS SUCCESSFULLY SET',
+        empty: 'PLEASE ENTER A MASTERPASS',
+      }
+      var colors = {
+        bad: '#9F3A38',
+        good: '#2ECC71',
+      }
+
       /* Encryption animation */
       $(window).load(function() {
         /* Variable assignments */
         errLabel = $('label[for="password"]').first()
         /* Navigation */
-        errLabel.hide()
+        errLabel.hide().css('color', colors.bad)
         $('.navigationLink').each(function(index) {
           $(this).click(function() {
             navigate(this.getAttribute('data-target'))
           })
         })
-
         navigate('welcome')
 
         /* setMasterPass */
         $('#setMasterPass').click(function() {
           console.log('setMasterPass button clicked')
           var MPregex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g,
-            MasterPass = $('input#name').val()
+            MasterPass = $('input#setMasterPassInput').val()
           if (MPregex.test(MasterPass)) {
-            errLabel.hide()
+            errLabel.text(responses.setSuccess)
+              .css('color', colors.good)
+              .show()
             ipcRenderer.send('setMasterPass', MasterPass)
           } else if (!MasterPass) {
-            errLabel.text('please enter a masterpass'.toLocaleUpperCase())
-            errLabel.show()
+            errLabel.text(responses.empty)
+              .show()
           } else {
-            errLabel.text('must contain at least 1 Alphabet, 1 number and 1 special character'.toLocaleUpperCase())
-            errLabel.show()
+            console.log('invalid')
+            errLabel.text(responses.invalid)
+              .show()
           }
         })
         $('#done').click(function() {
