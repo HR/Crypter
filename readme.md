@@ -1,5 +1,4 @@
-# Crypt
-# [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+# Crypt [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 Crypt is a simple, convenient and secure encryption client.  
 Simplifies password generation by deriving it using your MasterPassKey
@@ -16,10 +15,20 @@ All of the UI and functionality has been implemented but tests are still being.
 Crypt uses a MasterPass (obtained at setup) to derive a MasterPassKey using the
 PBKDF2 key derivation algorithm from the MasterPass (see below for spec). It
 then derives unique encryption keys for every file to be encrypted from the
-MasterPassKey. This method allows for the generation of very secure encryption keys than can be derived again using the 
+MasterPassKey. This method allows for the generation of very secure encryption
+keys than can be derived again using the
 
 ```
-
+// Crypto defaults
+let defaults = {
+  iterations: 50000, // file encryption key derivation iterations
+  keyLength: 32, // encryption key length
+  ivLength: 12, // initialisation vector length
+  algorithm: 'aes-256-gcm', // encryption algorithm
+  digest: 'sha256', // PBKDF2 hash function
+  hash_alg: 'sha256', // default hashing function
+  mpk_iterations: 100000 // MasterPassKey derivation iterations
+}
 ```
 
 ## Dev
