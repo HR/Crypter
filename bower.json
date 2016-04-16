@@ -1,0 +1,29 @@
+{
+  "name": "Crypter",
+  "version": "0.0.1",
+  "homepage": "https://github.com/HR/Crypter",
+  "authors": [
+    "Habib Rehman <Habib.R@outlook.com>"
+  ],
+  "description": "End-to-end encryption cloud sync client",
+  "keywords": [
+    "cloud",
+    "encryption",
+    "crypto",
+    "client",
+    "drive",
+    "dropbox"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "normalize-css": "normalize.css#~3.0.3",
+    "jquery": "~2.1.4"
+  }
+}

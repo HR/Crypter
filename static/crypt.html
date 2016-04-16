@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Unlock the Vault</title>
+    <link rel="stylesheet" href="style/crypt.css" charset="utf-8">
+  </head>
+
+  <body>
+    <section id="crypt">
+      <div class="panel-container">
+        <div id="panel-crypt" class="current">
+          <header>
+            <img src="images/icons/crypt.svg" alt="some" class="crypto"/>
+            <h1>Crypter</h1>
+            <p>Encrypt any file</p>
+            <p class="intrfo">Crypt derives the encryption keys used to encrypt your data from your MasterPass.</p>
+          </header>
+          <div id="holder" class="fancy">
+            <p id="holderText">
+              Click here to select a file to crypt
+            </p>
+          </div>
+          <p id="errLabel"></p>
+        </div>
+        <div id="panel-crypted">
+          <header>
+            <img src="images/icons/crypted.svg" alt="some" class="crypto"/>
+          </header>
+          <div id="finfo"></div>
+          <p class="intrfo">
+            Note these details down! They may be erased when you navigate back
+          </p>
+          <footer>
+            <a href="#" class="back navigationLink" data-target="crypt">
+              <img src="images/icons/back.svg" alt=""/>
+            </a>
+          </footer>
+        </div>
+      </div>
+    </section>
+
+    <script id="crypted-template" type="text/x-handlebars-template">
+      <h3>Encrypted {{name}}</h3>
+      <table>
+        <tr>
+          <td>Path</td>
+          <td>{{path}}</td>
+        </tr>
+        <tr>
+          <td>Crypted to</td>
+          <td>{{cryptPath}}</td>
+        </tr>
+        <tr>
+          <td>Initialisation Vector</td>
+          <td>
+            <input type="text" value="{{iv}}"/>
+          </td>
+        </tr>
+        <tr>
+          <td>Authentication Tag</td>
+          <td>
+            <input type="text" value="{{authTag}}"/>
+          </td>
+        </tr>
+        <tr>
+          <td>Salt (for key derivation)</td>
+          <td>
+            <input type="text" value="{{salt}}"/>
+          </td>
+        </tr>
+        <tr>
+          <td>Encryption Key</td>
+          <td>
+            <input type="text" value="{{key}}"/>
+          </td>
+        </tr>
+        <!-- <tr id="shares"></tr>
+        <tr>
+          <td class="bttline">Encryption key</td>
+          <td>
+            <button class="default">Reconstruct</button>
+          </td>
+        </tr> -->
+      </table>
+    </script>
+
+    <script type="text/javascript">
+      var ipcRenderer = require('electron').ipcRenderer
+      var dialog = require('electron').remote.dialog
+      var logger = require('../script/logger.js')
+      var Handlebars = require('handlebars')
+      var path = require('path')
+      window.$ = window.jQuery = require('jquery')
+      var errLabel = $('#errLabel')
+      var holder = $('#holder')
+      var holderText = holder.find('#holderText').text()
+      var crypted_template = Handlebars.compile($('#crypted-template').html())
+
+      var responses = {
+        invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS'
+      }
+
+      function handler() {
+        dialog.showOpenDialog({
+          title: 'Choose a file to Crypt',
+          defaultPath: '~',
+          properties: ['openFile']
+        }, function(filePath) {
+          // returns undefined if file not selected by user
+          if (filePath && filePath.length === 1) {
+            var file = filePath[0]
+            holder.off('click',handler)
+            $('#holderText').text(`Encrypting ${path.basename(file)}...`)
+            ipcRenderer.send('cryptFile', file)
+            logger.info(require('util').inspect(filePath, {depth: null}))
+          }
+        })
+        return false
+      }
+
+      $(window).load(function() {
+        holder.on('click', handler)
+        $('.navigationLink').each(function (index) {
+          $(this).click(function () {
+            navigate(this.getAttribute('data-target'))
+          })
+        })
+        // var file = {
+        //   name: 'lol.txt',
+        //   path: '/etc/l.txt',
+        //   iv: 'd2hh2984d3ee',
+        //   authTag: 'ddh9832h9d3',
+        //   key: 'd987231b3dy7'
+        // }
+      })
+
+      /* Event listeners */
+      ipcRenderer.on('cryptedFile', function(event, file) {
+        logger.verbose(`IPCRENDER cryptedFile emitted`)
+        var fileHTML = crypted_template(file)
+        $('#finfo').html(fileHTML)
+        $('#holderText').text(holderText)
+        navigate('crypted')
+        holder.on('click',handler)
+      })
+      ipcRenderer.on('cryptErr', function(event, err) {
+        logger.verbose(`IPCRENDER cryptErr emitted`)
+        errLabel.text(`ERROR: ${err}`).show()
+        return
+      })
+
+      /* Helper functions */
+      function navigate(panelID) {
+        var oldSel = $('.panel-container > div.current')
+        var sel = $(`#panel-${panelID}`)
+        if (oldSel)
+          oldSel.removeClass('current')
+        sel.addClass('current')
+      }
+    </script>
+  </body>
+
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Unlock the Vault</title>
+  <link rel="stylesheet" href="style/masterpassprompt.css" charset="utf-8">
+</head>
+
+<body>
+  <section id="masterpassprompt">
+    <img src="images/icons/masterpass.svg" alt="some" id="vault" />
+    <div class="panel-container">
+      <div id="panel-default" class="current">
+        <header>
+          <h1>Verify the MasterPass</h1>
+          <p>Please enter your Master Password
+          </p>
+          <img class="info" src="images/icons/info.svg" alt="" />
+          <p class="info">A MasterPassKey will be derived from it. This will be used to derive the keys used to encrypt your data.</p>
+        </header>
+        <form onsubmit="return false;">
+          <div class="masterpass">
+            <input type="password" name="masterpass" id="checkMasterPassInput" placeholder="********" />
+            <label for="checkMasterPassInput" id="checkMasterPassLabel"></label>
+          </div>
+          <div class="submit">
+            <input type="submit" value="Unlock" id="checkMasterPass" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script type="text/javascript">
+    var ipcRenderer = require('electron').ipcRenderer
+    var logger = require('../script/logger.js')
+    var getParam = require('../src/util').getParam
+    var nav_to = getParam('nav_to', window.document.URL)
+    window.$ = window.jQuery = require('jquery')
+    var responses = {
+      invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
+      incorrect: 'INCORRECT MASTERPASS',
+      correct: 'CORRECT MASTERPASS',
+      setSuccess: 'MASTERPASS SUCCESSFULLY SET',
+      empty: 'PLEASE ENTER A MASTERPASS',
+    }
+    var colors = {
+      bad: '#9F3A38',
+      good: '#2ECC71',
+    }
+
+    $(window).load(function () {
+      errLabelCheckMP = $('label[for="checkMasterPassInput"]')
+      errLabelSetMP = $('label[for="setMasterPassInput"]')
+      errLabelCheckMP.hide()
+      errLabelSetMP.hide()
+
+      $('#checkMasterPass').click(function () {
+        console.log('checkMasterPass button clicked')
+        validateField('checkMasterPass', errLabelCheckMP)
+      })
+      $('#setMasterPass').click(function () {
+        console.log('setMasterPass button clicked')
+        validateField('setMasterPass', errLabelSetMP)
+      })
+    })
+
+    /* Event listeners */
+    ipcRenderer.on('checkMasterPassResult', function (event, result) {
+      logger.verbose(`IPCRENDER checkMasterPassResult emitted`)
+      if (result.err) {
+        errLabelCheckMP.text(`ERROR: ${err}`)
+        .show()
+        return
+      }
+
+      if (result.match) {
+        errLabelCheckMP.text(responses.correct)
+        .css('color', colors.good)
+        .show()
+        return
+      } else {
+        errLabelCheckMP.text(responses.incorrect)
+        .show()
+        return
+      }
+    })
+
+    /* Helper functions */
+    function validateField (field, errLabel) {
+      var MPregex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g,
+        MPel = $(`input#${field + 'Input'}`)
+      const masterpass = MPel.val()
+      if (MPregex.test(masterpass)) {
+        errLabel.hide()
+        MPel.val('')
+        ipcRenderer.send(field, masterpass)
+      } else if (!masterpass) {
+        errLabel.text(responses.empty)
+        errLabel.show()
+        MPel.val('')
+      } else {
+        errLabel.text(responses.invalid)
+        errLabel.show()
+        MPel.val('')
+      }
+    }
+
+  </script>
+</body>
+
+</html>

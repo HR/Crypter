@@ -1,0 +1,460 @@
+// out: ./setup.css, compress: true
+/* Setup styles
+	 ==========================================================================
+*/
+@import (less) "mixins.less";
+/* Variable declarations*/
+@border-width: 2px;
+@side-margin: 0.8rem;
+@section-width: 60%;
+@name-fsize: 1rem;
+@header-fsize: 1rem;
+@spacing04: 0.4rem;
+@spacing-ic-txt: @side-margin - 0.4rem;
+@lastMod-fsize: 0.8rem;
+@ic-size: 1.4rem;
+@win-height: 100vh;
+/* TODO: ADD MARGIN RELATIVELY/CONTEXTUALLY TO CORE ELEMENTS I.E. for a button, use panel-container > button*/
+/* Animations */
+@keyframes colorTrans {
+  from {
+    background-color: @white;
+  }
+  to {
+    background-color: @light;
+  }
+}
+@-webkit-keyframes OrangeAnimGrad {
+  0% {
+    background-position: 0 51%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 51%;
+  }
+}
+@keyframes OrangeAnimGrad {
+  0% {
+    background-position: 0 51%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 51%;
+  }
+}
+/* General styles */
+#setup {
+  height    : 100%;
+  width     : 100%;
+  text-align: center;
+  overflow  : hidden;
+}
+form {
+  margin: 0;
+}
+header {
+  margin: 0;
+  p {
+    color: @blacker;
+  }
+  .minimal {
+    h1 {
+      margin-top : 1rem;
+      font-weight: 300;
+    }
+  }
+}
+h1 {
+  font-size    : 1.4rem;
+  margin-bottom: 0.4rem;
+  font-weight  : 400;
+}
+p {
+  margin: 0;
+  color : @dark;
+}
+h1 + p {
+  margin: 0 2rem;
+}
+.panel-container {
+  position: relative;
+  & > div {
+    position  : absolute;
+    text-align: center;
+    transform : translateX(-110%);
+    transition: transform 0.5s;
+    & > button {
+      margin-top: 1rem;
+    }
+  }
+  & > div.current {
+		width : 100%;
+		height: 100vh;
+    overflow : hidden;
+    transform: none;
+    position : relative;
+  }
+  & > div.current ~ div {
+    transform: translateX(110%);
+  }
+  header {
+    margin-top: 2rem;
+  }
+}
+
+// .panel-container > div {
+// 	position: absolute;
+// 	text-align: center;
+// 	transform: translateX(-110%);
+// 	transition: transform 0.5s;
+// }
+// .panel-container > div > footer {
+// 	transform: translateX(-110%);
+// }
+//
+// .panel-container > div.current > footer {
+// 	transform: translateX(100%);
+// }
+/* TODO DISABLE ANIMATION ON FIRST PANE */
+// #panel-welcome ~ div {
+// 	transform: none;
+// }
+// #panel-welcome > div {
+// 	transform: none;
+// 	transition: none;
+// }
+.right {
+  margin-left: auto !important;
+}
+img.icon {
+  width : @ic-size;
+  height: @ic-size;
+}
+h3 {
+  margin     : 0.5rem 0;
+  font-weight: normal;
+}
+a {
+
+  // cursor: hand;
+  font-size      : 0.8rem;
+  color          : @blacker;
+  text-decoration: none;
+  outline        : none;
+}
+a.csp {
+  padding: 0.6rem 0 !important;
+  img {
+    height: 1.6rem;
+    widht : auto;
+  }
+}
+footer.credit {
+  text-align     : center;
+  display        : flex;
+  align-items    : center;
+  font-size      : 0.8rem;
+  justify-content: center;
+  img {
+    height: 1rem !important;
+  }
+}
+footer {
+  display         : flex;
+  clear           : both;
+  position        : absolute;
+  border-top      : 1px solid @light;
+  width           : 100%;
+  padding-bottom  : 0;
+  background-color: @white;
+  bottom          : 0;
+  left            : 0;
+}
+footer > a {
+  float  : right;
+  padding: 0.2rem;
+}
+a.back {
+  float: left;
+}
+a.back >img {
+  height: 1rem;
+  width : auto;
+}
+.himg {
+  width  : 9rem;
+  height : auto;
+  z-index: 1000;
+}
+p.intrfo {
+  color: @dark;
+  font-size: 0.8rem;
+  margin: 0.4rem;
+}
+div.list {
+  width   : 100%;
+  overflow: auto;
+}
+div.item > a {
+  display      : flex;
+  align-items  : center;
+  border-bottom: 1px solid @light;
+  padding      : @spacing04 0;
+  text-align   : left;
+}
+div.name {
+  font-size  : 1.2rem;
+  margin-left: @spacing-ic-txt;
+  font-weight: 300;
+}
+p.info {
+  display         : block;
+  width           : 100%;
+  box-sizing      : border-box;
+  max-height      : 0;
+  overflow        : hidden;
+  padding         : 0 0.5rem;
+  transition      : max-height 0.3s, padding 0.3s;
+  background-color: #efefef;
+  font-size       : 0.8rem;
+}
+img.info {
+  float : right;
+  height: 0.9rem;
+}
+img.info:hover + p.info {
+  max-height    : 10rem;
+  padding-top   : 0.5rem;
+  padding-bottom: 0.5rem;
+}
+input {
+  width: 98%;
+}
+input[type=password] {
+  margin-top   : 1rem;
+  border       : none;
+  border-bottom: 1px solid @light;
+  outline      : none;
+  &:focus {
+    border-bottom: 1px solid @black;
+  }
+}
+input[type=submit] {
+  margin-top      : 1rem;
+  height          : 2rem;
+  font-weight     : normal;
+  background-color: @light;
+  border          : 1px solid @light;
+  width           : 100%;
+  outline         : none;
+  &:focus {
+    border: 1px solid @black;
+  }
+}
+div.submit {
+  text-align      : right;
+  background-color: @white;
+  width           : 100%;
+}
+.none {
+  display: none;
+}
+
+/* Welcome Panel styles
+* =================
+*/
+.banner {
+  margin         : 1rem auto 0;
+  position       : relative;
+  align-items    : center;
+  justify-content: center;
+  width          : 100%;
+}
+div#panel-welcome > header {
+  .banner {
+    margin  : 2rem auto 0;
+    position: relative;
+    display : inline-block;
+    width   : 50%;
+    z-index : -1;
+    color   : @light;
+  }
+  .banner + .himg {
+
+  }
+  .himg {
+    margin-top: -8.5rem !important;
+    z-index: 1000;
+  }
+}
+.banner-left {
+  margin-left: -3rem;
+  float      : left;
+}
+.banner-right {
+  margin-right: -3rem;
+  float       : right;
+}
+.marquee {
+  overflow: hidden;
+  position: absolute;
+}
+.marquee-1 {
+  visibility: hidden;
+}
+.marquee-2 {
+  visibility: hidden;
+}
+.marquee.visible {
+  visibility: visible;
+}
+div.item.err > div {
+  display         : none;
+  margin-top      : 0.5rem;
+  margin-left     : 0;
+  width           : 100%;
+  font-size       : 0.8rem;
+  padding         : 0.4rem 0;
+  background-color: @invalid-color;
+  color           : @white;
+}
+
+/* Accounts Panel styles
+* =================
+*/
+section.accounts {
+
+}
+section.accounts {
+  width : @section-width;
+  margin: auto;
+}
+section.accounts > header {
+  border-bottom: 1px solid @light;
+}
+
+/* Auth Panel styles
+* =================
+*/
+.spinner {
+  -webkit-animation: rotator 1.4s linear infinite;
+  animation        : rotator 1.4s linear infinite;
+}
+@-webkit-keyframes rotator {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform        : rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(270deg);
+    transform        : rotate(270deg);
+  }
+}
+@keyframes rotator {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform        : rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(270deg);
+    transform        : rotate(270deg);
+  }
+}
+.path {
+  stroke-dasharray        : 187;
+  stroke-dashoffset       : 0;
+  -webkit-transform-origin: center;
+  transform-origin        : center;
+  -webkit-animation       : dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+  animation               : dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+}
+@-webkit-keyframes colors {
+  0% {
+    stroke: @orange;
+  }
+  50% {
+    stroke: @orange_d;
+  }
+  100% {
+    stroke: @orange;
+  }
+}
+@keyframes colors {
+  0% {
+    stroke: @orange;
+  }
+  50% {
+    stroke: @orange_d;
+  }
+  100% {
+    stroke: @orange;
+  }
+}
+@-webkit-keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  }
+  50% {
+    stroke-dashoffset: 46.75;
+    -webkit-transform: rotate(135deg);
+    transform        : rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    -webkit-transform: rotate(450deg);
+    transform        : rotate(450deg);
+  }
+}
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  }
+  50% {
+    stroke-dashoffset: 46.75;
+    -webkit-transform: rotate(135deg);
+    transform        : rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    -webkit-transform: rotate(450deg);
+    transform        : rotate(450deg);
+  }
+}
+
+/* MasterPass Panel styles
+* =================
+*/
+#masterpassprompt {
+  height    : 100%;
+  min-height: 20rem;
+  width     : @section-width;
+  margin    : auto;
+}
+#masterpassprompt > button {
+  margin     : 0.5rem 0;
+  font-weight: normal;
+  width      : 100%;
+}
+#masterpassprompt p.note {
+  margin   : none;
+  font-size: 0.8rem;
+}
+div.forgotMP {
+  padding   : 0.2rem 0.2rem 0 0;
+  text-align: right;
+}
+
+/* INVALID STYLING */
+div.masterpass > label {
+  display  : inline-block;
+  font-size: 0.8rem;
+  margin   : 0.2rem 0;
+  color    : @invalid-color;
+}
+.invalid {
+  border-color: @invalid-color !important;
+}

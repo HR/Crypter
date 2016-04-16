@@ -1,0 +1,57 @@
+language: node_js
+node_js:
+  - '5.8.0'
+
+git:
+  depth: 3
+
+branches:
+  only:
+    - master
+    - csca
+
+# env:
+#   - NODE_VERSION='5.8.0'
+
+matrix:
+  include:
+    - os: osx
+      env:
+        - NODE_VERSION=5.8.0
+        - BUILD_OS_NAME=darwin
+    # - os: linux
+    #   env:
+    #     - NODE_VERSION=5.8.0
+    #     - BUILD_OS_NAME=linux
+
+before_script:
+ - chmod +x ./script/travis-build.sh
+ - export NODE_VERSION=5.8.0
+ - export TEST_RUN=true
+
+script:
+  - ./script/travis-build.sh
+  # - npm install --no-optional
+  # - npm test
+
+after_success:
+  - npm run coveralls
+  - npm run codeclimate
+
+cache:
+  apt: true
+  directories:
+    - node_modules
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+      - xvfb

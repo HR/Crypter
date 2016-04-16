@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Crypter Setup</title>
+    <link rel="stylesheet" href="style/setup.css" charset="utf-8">
+  </head>
+
+  <body>
+    <section id="setup">
+      <div class="panel-container">
+        <div id="panel-welcome">
+          <header>
+            <div class="banner banner-left">
+              <div class="marquee marquee-1">
+                Information is the resolution of uncertainty.&nbsp;
+              </div>
+              <div class="marquee marquee-1">
+                Rather be without a state than without a voice.&nbsp;
+              </div>
+              <div class="marquee marquee-1">
+                Freedom is never voluntarily given by oppressors.&nbsp;
+              </div>
+              <div class="marquee marquee-1">
+                Everyone has secrets to conceal; Privacy to protect.&nbsp;
+              </div>
+              <div class="marquee marquee-1">
+                Crypto is the ultimate form of non-violent direct action.&nbsp;
+              </div>
+            </div>
+            <div class="banner banner-right">
+              <div class="marquee marquee-2">
+                aNdtYE1jkAF8i8e6LgqAHNvS5J3Jc9H6XcUlM6YUIDi8rj3a0DLl
+              </div>
+              <div class="marquee marquee-2">
+                zLAgN6Umn61buZC8I6D6+mjZQW2Ap0eXJYDmAi/uGKUQ5ezHI0GI
+              </div>
+              <div class="marquee marquee-2">
+                3j6Nh1XO7WTRFa+1F3i38+TKvdhLt8kS8NAJkS5U670gElWDSffT
+              </div>
+              <div class="marquee marquee-2">
+                yUuJBEfzkIv6t4dcGXSoX4nOh4KFjhrdIymLpnpOlw+7VGLxqWHl
+              </div>
+              <div class="marquee marquee-2">
+                fG2w7C7LKU9eoB4hKjvWJ7EhXPBbzY/+/14VqjCG/O4Kqqr2sWGb
+              </div>
+            </div>
+            <img src="images/icons/Crypter.svg" alt="Crypter Logo" class="himg"/>
+            <h1>Welcome to Crypter</h1>
+            <p>Crypter is a simple, convenient and secure encryption client.
+            </p>
+            <p class="intrfo">This setup will walk you through setting up Crypter. Press the button below to get started.</p>
+          </header>
+          <button class="fancy navigationLink" data-target="masterpass" id="getstarted">GET STARTED</button>
+        </div>
+
+        <div id="panel-masterpass">
+          <section id="masterpassprompt">
+            <header>
+              <div class="banner">
+                <img class="himg" src="images/icons/masterpass.svg" alt=""/>
+              </div>
+              <h1>Set a MasterPass for encryption</h1>
+              <img class="info" src="images/icons/info.svg" alt=""/>
+              <p class="info">A MasterPassKey will be derived from it. This will be used to derive the keys used to encrypt your data.</p>
+            </header>
+            <form onsubmit="return false;">
+              <div class="masterpass">
+                <input type="password" name="name" id="name" class="" placeholder="********"/>
+                <label for="password"></label>
+              </div>
+
+            </form>
+            <button class="fancy" id="setMasterPass">SET</button>
+            <p class="note">
+              NOTE: If lost, all previously synced data will be unrecoverable! So, please store it safely.
+            </p>
+          </section>
+        </div>
+        <div id="panel-done">
+          <header>
+            <div class="banner">
+              <img src="images/icons/done.svg" class="himg"/>
+            </div>
+            <h1>All done!</h1>
+            <p>You have successfully setup Crypter. Please click finish and open the app again so that it can start doing its magic and protecting your privacy.</p>
+          </header>
+          <button class="fancy done navigationLink" id="done">FINISH</button>
+          <footer class="credit">
+            <img src="images/icons/code.svg" alt="" class="icon"/>
+            with
+            <img src="images/icons/heart.svg" alt="" class="icon"/>
+            by
+            <a onclick="event.preventDefault();require('shell').openExternal('https://git.io/HR');">Habib Rehman</a>
+          </footer>
+        </div>
+      </div>
+    </section>
+    <script type="text/javascript">
+      window.$ = window.jQuery = require('jquery')
+      var remote = require('electron').remote
+      var ipcRenderer = require('electron').ipcRenderer
+      var webContents = remote.getCurrentWebContents()
+      var logger = require('../script/logger.js')
+      var errLabel
+
+      /* Encryption animation */
+      $(window).load(function() {
+        /* Variable assignments */
+        errLabel = $('label[for="password"]').first()
+        /* Navigation */
+        errLabel.hide()
+        $('.navigationLink').each(function(index) {
+          $(this).click(function() {
+            navigate(this.getAttribute('data-target'))
+          })
+        })
+
+        navigate('welcome')
+
+        /* setMasterPass */
+        $('#setMasterPass').click(function() {
+          console.log('setMasterPass button clicked')
+          var MPregex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g,
+            MasterPass = $('input#name').val()
+          if (MPregex.test(MasterPass)) {
+            errLabel.hide()
+            ipcRenderer.send('setMasterPass', MasterPass)
+          } else if (!MasterPass) {
+            errLabel.text('please enter a masterpass'.toLocaleUpperCase())
+            errLabel.show()
+          } else {
+            errLabel.text('must contain at least 1 Alphabet, 1 number and 1 special character'.toLocaleUpperCase())
+            errLabel.show()
+          }
+        })
+        $('#done').click(function() {
+          ipcRenderer.send('done')
+        })
+
+        /* Encryption animation */
+
+        var speed = 4500
+        var offseted = speed * 0.6
+        $('.marquee-1').marquee({direction: 'right', gap: 0, duplicated: true, duration: speed}).addClass('visible')
+
+        $('.marquee-2').marquee({direction: 'right', gap: 0, duplicated: true, duration: speed, delayBeforeStart: offseted})
+
+        setTimeout(function() {
+          $('.marquee-2').addClass('visible')
+        }, offseted)
+        $('.marquee').css('position', 'relative')
+        $('.banner + .himg').css('margin-top', '-7.5rem')
+      })
+
+      /* Helper functions */
+      function navigate(panelID) {
+        var oldSel = $('.panel-container > div.current')
+        var sel = $(`#panel-${panelID}`)
+        // TODO: find cleaner fix for unexpected button styling on panel transform
+        $('.current button').hide()
+        if (oldSel)
+          oldSel.removeClass('current')
+        sel.addClass('current')
+        $('.current button').show()
+      }
+
+      ipcRenderer.on('setMasterPassResult', function(event, err) {
+        logger.verbose('IPCRENDER: setMasterPassResult emitted')
+        if (err) {
+          errLabel.text(`ERROR: ${err}`.toUpperCase())
+          errLabel.show()
+        } else {
+          navigate('done')
+        }
+      })
+    </script>
+    <script src="js/jquery.marquee.min.js" type="text/javascript"></script>
+  </body>
+
+</html>
