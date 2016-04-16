@@ -29,35 +29,20 @@
     "testbuild": "electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage)' --asar=false --platform=$BUILD_OS_NAME --arch=x64 --version=$(npm run electronVersion) --icon=res/app-icons/Crypter256 --app-copyright=HR --overwrite",
     "build": "electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage)' --prune --asar --all --version=$(npm run electronVersion)"
   },
-  "xo": {
-    "esnext": true
-  },
   "keywords": [
-    "cloud",
-    "sync",
     "encryption",
     "crypto",
     "end-to-end",
     "client",
-    "drive",
-    "dropbox"
+    "electron"
   ],
   "dependencies": {
     "async": "*",
     "babel-core": "*",
-    "base64-stream": "*",
-    "buffer": "^4.5.1",
-    "chokidar": "*",
-    "coveralls": "^2.11.9",
-    "dotenv": "^2.0.0",
     "electron-debug": "*",
-    "electron-positioner": "*",
     "electron-prebuilt": "^0.37.5",
     "estraverse": "^4.2.0",
     "fs-extra": "*",
-    "fstream": "*",
-    "google-auth-library": "*",
-    "googleapis": "*",
     "handlebars": "*",
     "jquery": "*",
     "level-js": "*",
@@ -65,13 +50,11 @@
     "levelup": "*",
     "lodash": "*",
     "mocha": "^2.4.5",
-    "moment": "*",
     "secrets.js": "*",
-    "tar": "*",
-    "urlsafe-base64": "^1.0.0",
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "coveralls": "^2.11.9",
     "babel-cli": "^6.6.5",
     "babel-eslint": "*",
     "babel-preset-es2015": "*",
@@ -83,13 +66,12 @@
     "eslint": "*",
     "eslint-plugin-html": "*",
     "gulp": "*",
+    "moment": "*",
     "gulp-shell": "*",
     "isparta": "^4.0.0",
     "jshint": "*",
     "mocha-lcov-reporter": "^1.2.0",
     "spectron": "^1.37.0",
-    "standard": "^6.0.8",
-    "wdio-mocha-framework": "^0.2.12",
-    "xo": "*"
+    "standard": "^6.0.8"
   }
 }

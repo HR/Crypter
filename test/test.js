@@ -14,10 +14,6 @@ const _ = require('lodash')
 const fs = require('fs-extra')
 const exec = require('child_process').exec
 
-if (!process.env.TRAVIS) {
-  require('dotenv')
-    .config()
-}
 console.log(`cwd: ${process.cwd()}`)
 console.log(`__dirname: ${__dirname}`)
 

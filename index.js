@@ -3,7 +3,6 @@ const electron = require('electron')
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 const ipc = electron.ipcMain
-const Tray = electron.Tray
 const shell = electron.shell
 const dialog = electron.dialog
 const util = require('./src/util')
@@ -13,7 +12,6 @@ const MasterPass = require('./src/MasterPass')
 const MasterPassKey = require('./src/_MasterPassKey')
 const init = require('./init')
 const path = require('path')
-const Positioner = require('electron-positioner')
 const _ = require('lodash')
 const logger = require('./script/logger')
 // change exec path

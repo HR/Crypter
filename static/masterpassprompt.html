@@ -34,8 +34,6 @@
   <script type="text/javascript">
     var ipcRenderer = require('electron').ipcRenderer
     var logger = require('../script/logger.js')
-    var getParam = require('../src/util').getParam
-    var nav_to = getParam('nav_to', window.document.URL)
     window.$ = window.jQuery = require('jquery')
     var responses = {
       invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
