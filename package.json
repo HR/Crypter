@@ -19,15 +19,15 @@
     "electronVersion": "node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron -v | sed s/\\v//g",
     "test": "TEST_RUN=true mocha --compilers js:babel-core/register test/test.js",
     "xtest": "unset TEST_RUN && npm run xbuild && mocha --compilers js:babel-core/register ./test/ui/*.js",
-    "xlt": "unset TEST_RUN && rm -rf ~/Library/Application\\ Support/CrypterTest && mocha --compilers js:babel-core/register ./test/ui/*.js",
-    "xbuild": "npm_package_productName=CrypterTest && electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage|backups)' --asar=false --platform=darwin --arch=x64 --version=$(npm run electronVersion) --icon=res/app-icons/Crypter256.icns --app-copyright=HR --overwrite && npm run productNameChange",
+    "xltest": "unset TEST_RUN && rm -rf ~/Library/Application\\ Support/CrypterTest && mocha --compilers js:babel-core/register ./test/ui/*.js",
+    "xbuild": "npm_package_productName=CrypterTest && electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage|backups)' --asar=false --platform=darwin --arch=x64 --version=$(npm run electronVersion) --icon=res/app-icons/Crypter.icns --app-copyright=HR --overwrite && npm run productNameChange",
+    "xfbuild": "electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage|backups)' --asar=false --platform=darwin --arch=x64 --version=$(npm run electronVersion) --icon=res/app-icons/Crypter.icns --app-copyright=HR --overwrite",
     "coverage": "TEST_RUN=true ./node_modules/.bin/babel-node ./node_modules/.bin/isparta cover --root src/ ./node_modules/.bin/_mocha -- test/test.js --reporter mocha-lcov-reporter",
     "precoveralls": "TEST_RUN=true npm run coverage",
     "coveralls": "node ./node_modules/.bin/coveralls < coverage/lcov.info",
     "codeclimate": "node ./node_modules/.bin/codeclimate-test-reporter < coverage/lcov.info",
     "productNameChange": "perl -pi -e 's/\"Crypter\"/\"CrypterTest\"/g' ./dest/CrypterTest-darwin-x64/CrypterTest.app/Contents/Resources/app/package.json && perl -pi -e 's/Crypter/CrypterTest/g' ./dest/CrypterTest-darwin-x64/CrypterTest.app/Contents/Resources/app/index.js",
     "start": "./node_modules/gulp/bin/gulp.js",
-    "testbuild": "electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage)' --asar=false --platform=$BUILD_OS_NAME --arch=x64 --version=$(npm run electronVersion) --icon=res/app-icons/Crypter256 --app-copyright=HR --overwrite",
     "build": "electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage)' --prune --asar --all --version=$(npm run electronVersion)"
   },
   "keywords": [

@@ -30,9 +30,13 @@
   </section>
 
   <script type="text/javascript">
+    'use strict'
     var ipcRenderer = require('electron').ipcRenderer
     var logger = require('../script/logger.js')
     window.$ = window.jQuery = require('jquery')
+    const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g
+    var errLabelCheckMP = $('label[for="checkMasterPassInput"]')
+    var errLabelSetMP = $('label[for="setMasterPassInput"]')
     var responses = {
       invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
       incorrect: 'INCORRECT MASTERPASS',
@@ -46,8 +50,6 @@
     }
 
     $(window).load(function () {
-      errLabelCheckMP = $('label[for="checkMasterPassInput"]')
-      errLabelSetMP = $('label[for="setMasterPassInput"]')
       errLabelCheckMP.hide()
       errLabelSetMP.hide()
 
@@ -80,10 +82,9 @@
 
     /* Helper functions */
     function validateMasterPass (field, errLabel) {
-      var MPregex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g,
-        MPel = $(`input#${field + 'Input'}`)
+      var MPel = $(`input#${field + 'Input'}`)
       const masterpass = MPel.val()
-      if (MPregex.test(masterpass)) {
+      if (MP_REGEX.test(masterpass)) {
         errLabel.hide()
         MPel.val('')
         ipcRenderer.send(field, masterpass)
