@@ -323,14 +323,6 @@ describe("Crypter Core Modules' tests", function () {
     })
 
     it('should check if file exists', function (done) {
-      expect(util.checkFileSync(`${global.paths.data}/rfile.json`))
-        .to.be.true
-      expect(util.checkFileSync(`${global.paths.data}/rfs.json`))
-        .to.be.true
-      expect(util.checkDirectorySync(`${global.paths.data}`))
-        .to.be.true
-      expect(util.checkFileSync(`${global.paths.data}`))
-        .to.be.true
       expect(util.checkDirectorySync(`${global.paths.data}/rfs.json`))
         .to.be.true
       expect(util.checkFileSync('any.file'))

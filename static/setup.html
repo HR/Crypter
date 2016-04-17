@@ -78,23 +78,6 @@
             </p>
           </section>
         </div>
-        <div id="panel-done">
-          <header>
-            <div class="banner">
-              <img src="images/icons/done.svg" class="himg"/>
-            </div>
-            <h1>All done!</h1>
-            <p>You have successfully setup Crypter. Please click finish and open the app again so that it can start doing its magic and protecting your privacy.</p>
-          </header>
-          <button class="fancy done navigationLink" id="done">FINISH</button>
-          <footer class="credit">
-            <img src="images/icons/code.svg" alt="" class="icon"/>
-            with
-            <img src="images/icons/heart.svg" alt="" class="icon"/>
-            by
-            <a onclick="event.preventDefault();require('shell').openExternal('https://git.io/HR');">Habib Rehman</a>
-          </footer>
-        </div>
       </div>
     </section>
     <script type="text/javascript">
@@ -110,10 +93,12 @@
         correct: 'CORRECT MASTERPASS',
         setSuccess: 'MASTERPASS SUCCESSFULLY SET',
         empty: 'PLEASE ENTER A MASTERPASS',
+        done: 'You have successfully completed the setup! <br/> Please relaunch the program to start encrypting after this window closes automatically'
       }
       var colors = {
         bad: '#9F3A38',
         good: '#2ECC71',
+        highlight: '#333333'
       }
 
       /* Encryption animation */
@@ -135,21 +120,13 @@
           var MPregex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g,
             MasterPass = $('input#setMasterPassInput').val()
           if (MPregex.test(MasterPass)) {
-            errLabel.text(responses.setSuccess)
-              .css('color', colors.good)
-              .show()
             ipcRenderer.send('setMasterPass', MasterPass)
           } else if (!MasterPass) {
-            errLabel.text(responses.empty)
-              .show()
+            errLabel.text(responses.empty).show()
           } else {
             console.log('invalid')
-            errLabel.text(responses.invalid)
-              .show()
+            errLabel.text(responses.invalid).show()
           }
-        })
-        $('#done').click(function() {
-          ipcRenderer.send('done')
         })
 
         /* Encryption animation */
@@ -185,7 +162,11 @@
           errLabel.text(`ERROR: ${err}`.toUpperCase())
           errLabel.show()
         } else {
-          navigate('done')
+          errLabel.text(responses.setSuccess).css('color', colors.good).show()
+          $('p.note').html(responses.done).css('color', colors.highlight)
+          setTimeout(function() {
+            ipcRenderer.send('done')
+          }, 5000)
         }
       })
     </script>

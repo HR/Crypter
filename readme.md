@@ -1,6 +1,6 @@
 # Crypter [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-Crypt is a simple, convenient and secure encryption client.  
+Crypter is a simple, convenient and secure encryption client.  
 Simplifies password generation by deriving it using your MasterPassKey
 (see Crypto).
 Since it is an Electron app so it is cross-platform but has currently only been
@@ -12,7 +12,7 @@ All of the UI and functionality has been implemented but tests are still being.
 ## Crypto
 > One key to to derive them all!
 
-Crypt uses a MasterPass (obtained at setup) to derive a MasterPassKey using the
+Crypter uses a MasterPass (obtained at setup) to derive a MasterPassKey using the
 PBKDF2 key derivation algorithm from the MasterPass (see below for spec). It
 then derives unique encryption keys for every file to be encrypted from the
 MasterPassKey. This method allows for the generation of very secure encryption

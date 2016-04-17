@@ -11,6 +11,9 @@ const logger = require('../../script/logger')
 chai.should()
 chai.use(chaiAsPromised)
 
+console.log(`cwd: ${process.cwd()}`)
+console.log(`__dirname: ${__dirname}`)
+
 let wait = function (s) {
   return new Promise((resolve, reject) => {
     setTimeout(function () {
@@ -22,11 +25,13 @@ let wait = function (s) {
 let saveScreenshot = function (client, filename) {
   return new Promise(function(resolve, reject) {
     // receive screenshot as Buffer
-    var screenhot = client.saveScreenshot() // returns base64 string buffer
-    fs.writeFile(filename, screenshot, 'base64', function (err) {
-      if (err) reject(err)
-      resolve()
-    })
+    var screenshot = client.saveScreenshot()
+    fs.writeFileSync(filename, screenshot, 'base64')
+    resolve()
+    // fs.writeFile(filename, client.saveScreenshot() , 'base64', function (err) {
+    //   if (err) reject(err)
+    //   resolve()
+    // })
   })
 }
 
@@ -88,6 +93,9 @@ describe("Crypter Render Modules's tests", function () {
           .then(() => {
             return wait(300) // wait 2 seconds
           })
+          .then(() => {
+            return saveScreenshot(client, `./screens/${response}.png`)
+          })
           .getText('#setMasterPassLabel')
           .then((text) => {
             expect(text).to.equal(response)
@@ -104,9 +112,9 @@ describe("Crypter Render Modules's tests", function () {
         .then(() => {
           return checkResponse(this.app.client, nomp, responses.empty)
         })
-        .then(() => {
-          return saveScreenshot(this.app.client, 'screens/masterpass_empty')
-        })
+        // .then(() => {
+        //   return saveScreenshot(this.app.client, '../../screens/masterpass_empty.png')
+        // })
         .then(() => {
           return checkResponse(this.app.client, invalidmp, responses.invalid)
         })
