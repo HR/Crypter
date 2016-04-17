@@ -206,7 +206,7 @@ function CryptWindow (callback) {
 function SetupWindow (callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
-    width: 640,
+    width: 600,
     height: 420,
     center: true,
     show: true,
