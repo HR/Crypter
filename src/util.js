@@ -18,16 +18,3 @@ exports.checkFileSync = function (path) {
   }
   return true
 }
-
-exports.streamToString = function (stream, callback) {
-  const chunks = []
-  stream.on('data', (chunk) => {
-    chunks.push(chunk)
-  })
-  stream.on('error', function (err) {
-    callback(err)
-  })
-  stream.on('end', () => {
-    callback(null, chunks.join(''))
-  })
-}
