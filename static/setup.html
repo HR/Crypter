@@ -70,9 +70,8 @@
                 <input type="password" id="setMasterPassInput" class="" placeholder="********"/>
                 <label for="password" id="setMasterPassLabel"></label>
               </div>
-
+              <button class="fancy" id="setMasterPass">SET</button>
             </form>
-            <button class="fancy" id="setMasterPass">SET</button>
             <p class="note">
               NOTE: If lost, all previously synced data will be unrecoverable! So, please store it safely.
             </p>
@@ -81,21 +80,25 @@
       </div>
     </section>
     <script type="text/javascript">
+      'use strict'
       window.$ = window.jQuery = require('jquery')
       var remote = require('electron').remote
       var ipcRenderer = require('electron').ipcRenderer
       var webContents = remote.getCurrentWebContents()
       var logger = require('../script/logger.js')
       var errLabel
-
-      var responses = {
+      const DONE_TIMEOUT = 5000
+      const SPEED = 4500
+      const OFFSET = SPEED * 0.6
+      const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g
+      const RESPONSES = {
         invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
         correct: 'CORRECT MASTERPASS',
         setSuccess: 'MASTERPASS SUCCESSFULLY SET',
         empty: 'PLEASE ENTER A MASTERPASS',
         done: 'You have successfully completed the setup! <br/> Please relaunch the program to start encrypting after this window closes automatically'
       }
-      var colors = {
+      const COLORS = {
         bad: '#9F3A38',
         good: '#2ECC71',
         highlight: '#333333'
@@ -106,7 +109,7 @@
         /* Variable assignments */
         errLabel = $('label[for="password"]').first()
         /* Navigation */
-        errLabel.hide().css('color', colors.bad)
+        errLabel.hide().css('color', COLORS.bad)
         $('.navigationLink').each(function(index) {
           $(this).click(function() {
             navigate(this.getAttribute('data-target'))
@@ -117,29 +120,26 @@
         /* setMasterPass */
         $('#setMasterPass').click(function() {
           console.log('setMasterPass button clicked')
-          var MPregex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g,
-            MasterPass = $('input#setMasterPassInput').val()
-          if (MPregex.test(MasterPass)) {
+          var MasterPass = $('input#setMasterPassInput').val()
+          if (MP_REGEX.test(MasterPass)) {
             ipcRenderer.send('setMasterPass', MasterPass)
           } else if (!MasterPass) {
-            errLabel.text(responses.empty).show()
+            errLabel.text(RESPONSES.empty).show()
           } else {
             console.log('invalid')
-            errLabel.text(responses.invalid).show()
+            errLabel.text(RESPONSES.invalid).show()
           }
         })
 
         /* Encryption animation */
 
-        var speed = 4500
-        var offseted = speed * 0.6
-        $('.marquee-1').marquee({direction: 'right', gap: 0, duplicated: true, duration: speed}).addClass('visible')
+        $('.marquee-1').marquee({direction: 'right', gap: 0, duplicated: true, duration: SPEED}).addClass('visible')
 
-        $('.marquee-2').marquee({direction: 'right', gap: 0, duplicated: true, duration: speed, delayBeforeStart: offseted})
+        $('.marquee-2').marquee({direction: 'right', gap: 0, duplicated: true, duration: SPEED, delayBeforeStart: OFFSET})
 
         setTimeout(function() {
           $('.marquee-2').addClass('visible')
-        }, offseted)
+        }, OFFSET)
         $('.marquee').css('position', 'relative')
         $('.banner + .himg').css('margin-top', '-7.5rem')
       })
@@ -148,12 +148,9 @@
       function navigate(panelID) {
         var oldSel = $('.panel-container > div.current')
         var sel = $(`#panel-${panelID}`)
-        // TODO: find cleaner fix for unexpected button styling on panel transform
         $('.current button').hide()
-        if (oldSel)
-          oldSel.removeClass('current')
+        oldSel.removeClass('current')
         sel.addClass('current')
-        $('.current button').show()
       }
 
       ipcRenderer.on('setMasterPassResult', function(event, err) {
@@ -162,11 +159,11 @@
           errLabel.text(`ERROR: ${err}`.toUpperCase())
           errLabel.show()
         } else {
-          errLabel.text(responses.setSuccess).css('color', colors.good).show()
-          $('p.note').html(responses.done).css('color', colors.highlight)
+          errLabel.text(RESPONSES.setSuccess).css('color', COLORS.good).show()
+          $('p.note').html(RESPONSES.done).css('color', COLORS.highlight)
           setTimeout(function() {
             ipcRenderer.send('done')
-          }, 5000)
+          }, DONE_TIMEOUT)
         }
       })
     </script>

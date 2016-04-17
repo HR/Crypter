@@ -23,9 +23,7 @@
             <input type="password" name="masterpass" id="checkMasterPassInput" placeholder="********" />
             <label for="checkMasterPassInput" id="checkMasterPassLabel"></label>
           </div>
-          <div class="submit">
-            <input type="submit" value="Verify" id="checkMasterPass" />
-          </div>
+          <button id="checkMasterPass">Verify</button>
         </form>
       </div>
     </div>
@@ -55,11 +53,7 @@
 
       $('#checkMasterPass').click(function () {
         console.log('checkMasterPass button clicked')
-        validateField('checkMasterPass', errLabelCheckMP)
-      })
-      $('#setMasterPass').click(function () {
-        console.log('setMasterPass button clicked')
-        validateField('setMasterPass', errLabelSetMP)
+        validateMasterPass('checkMasterPass', errLabelCheckMP)
       })
     })
 
@@ -85,7 +79,7 @@
     })
 
     /* Helper functions */
-    function validateField (field, errLabel) {
+    function validateMasterPass (field, errLabel) {
       var MPregex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g,
         MPel = $(`input#${field + 'Input'}`)
       const masterpass = MPel.val()

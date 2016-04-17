@@ -101,29 +101,6 @@ img.info:hover + p.info {
   padding   : 0.2rem;
 }
 
-/* Page transitions */
-.moveUp-enter {
-  transition-duration       : 0.3s;
-  transition-property       : transform, opacity;
-  transition-timing-function: ease-out;
-  transform                 : translate3d(0,100%,0);
-  z-index                   : 10000;
-}
-.moveUp-enter.moveUp-enter-active {
-  transform: translate3d(0,0,0);
-}
-.moveUp-leave {
-  transition-duration       : 0.3s;
-  transition-property       : transform, opacity;
-  transition-timing-function: ease-out;
-  transform                 : translate3d(0,0,0);
-  opacity                   : 1;
-}
-.moveUp-leave.moveUp-leave-active {
-  transform: translate3d(0,-15%,0);
-  opacity  : 0.3;
-}
-
 /* font declarations */
 @font-face {
   font-family: 'Roboto';

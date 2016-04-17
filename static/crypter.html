@@ -155,8 +155,7 @@
       function navigate(panelID) {
         var oldSel = $('.panel-container > div.current')
         var sel = $(`#panel-${panelID}`)
-        if (oldSel)
-          oldSel.removeClass('current')
+        oldSel.removeClass('current')
         sel.addClass('current')
       }
     </script>
