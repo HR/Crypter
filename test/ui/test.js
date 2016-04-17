@@ -19,6 +19,17 @@ let wait = function (s) {
   })
 }
 
+let saveScreenshot = function (client, filename) {
+  return new Promise(function(resolve, reject) {
+    // receive screenshot as Buffer
+    var screenhot = client.saveScreenshot() // returns base64 string buffer
+    fs.writeFile(filename, screenshot, 'base64', function (err) {
+      if (err) reject(err)
+      resolve()
+    })
+  })
+}
+
 const masterpass = 'random#101'
 
 var responses = {
@@ -46,6 +57,7 @@ describe("Crypter Render Modules's tests", function () {
       // path: '../dest/Crypter-darwin-x64/Crypter.app/Contents/MacOS/Electron',
       path: path.join(__dirname, '../../dest/CrypterTest-darwin-x64/CrypterTest.app/Contents/MacOS/CrypterTest')
     })
+
     return this.app.start()
   })
 
@@ -91,6 +103,9 @@ describe("Crypter Render Modules's tests", function () {
         })
         .then(() => {
           return checkResponse(this.app.client, nomp, responses.empty)
+        })
+        .then(() => {
+          return saveScreenshot(this.app.client, 'screens/masterpass_empty')
         })
         .then(() => {
           return checkResponse(this.app.client, invalidmp, responses.invalid)

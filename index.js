@@ -42,19 +42,10 @@ global.views = {
 /**
  * Main (run once app is in ready state)
  **/
-let run = function () {
- return new Promise(function(resolve, reject) {
-   // initialise mdb
-   global.mdb = new Db(global.paths.mdb)
-   resolve(global.mdb.onlyGetValue('creds'))
- })
-}
-
 
 app.on('ready', function () {
   // Check synchronously whether paths exist
-
- run()
+  init.run()
    .then((mainRun) => {
      // If the MDB or vault does not exist, run setup
      // otherwise run main
@@ -68,11 +59,7 @@ app.on('ready', function () {
          })
          .then(() => {
            // Start menubar
-           return new Promise(function(resolve, reject) {
-             CryptWindow(function () {
-               resolve()
-             })
-           })
+           return cryptWindow()
          })
          .then(() => {
            app.quit()
@@ -86,20 +73,8 @@ app.on('ready', function () {
      } else {
        // Run Setup
        logger.info('Setup run. Creating Setup wizard...')
-       let setup = function () {
-         return new Promise(function (resolve, reject) {
-           SetupWindow(function (err) {
-             if (err) {
-               logger.error(err)
-               reject(err)
-             } else {
-               logger.info('MAIN Setup successfully completed. quitting...')
-               resolve()
-             }
-           })
-         })
-       }
-       setup()
+
+       setupWindow()
          .then(() => {
            // setup successfully completed
            app.quit()
@@ -123,9 +98,6 @@ app.on('ready', function () {
  **/
 app.on('window-all-closed', () => {
   logger.verbose('APP: window-all-closed event emitted')
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
 })
 app.on('quit', () => {
   logger.info('APP: quit event emitted')
@@ -140,6 +112,56 @@ app.on('will-quit', (event) => {
     global.mdb.close()
   }
 })
+
+/**
+ * Promises
+ **/
+
+ let cryptWindow = function () {
+   return new Promise(function(resolve, reject) {
+     CryptWindow(function () {
+       resolve()
+     })
+   })
+ }
+
+ let setupWindow = function () {
+   return new Promise(function (resolve, reject) {
+     SetupWindow(function (err) {
+       if (err) {
+         logger.error(err)
+         reject(err)
+       } else {
+         logger.info('MAIN Setup successfully completed. quitting...')
+         resolve()
+       }
+     })
+   })
+ }
+
+ let crypt = function (origpath) {
+   return new Promise(function(resolve, reject) {
+     // the destination path for encrypted file
+     logger.verbose('crypt promise started')
+     let destpath = `${origpath}.crypto`
+     crypto.encrypt(origpath, destpath, global.MasterPassKey.get())
+       .then((creds) => {
+           var file = {}
+           file.name = path.basename(origpath)
+           file.path = origpath
+           file.cryptPath = destpath
+           file.salt = creds.salt.toString('hex') // Convert salt used to derivekey to hex string
+           file.key = creds.key.toString('hex') // Convert dervived key to hex string
+           file.iv = creds.iv.toString('hex') // Convert iv to hex string
+           file.authTag = creds.tag.toString('hex') // Convert authTag to hex string
+           resolve(file)
+       })
+       .catch((err) => {
+         reject(err)
+       })
+   })
+ }
+
 
 /**
  * Windows
@@ -160,28 +182,7 @@ function CryptWindow (callback) {
   // loads crypt.html view into the BrowserWindow
   win.loadURL(global.views.crypter)
   // win.openDevTools()
-  let crypt = function (origpath) {
-    return new Promise(function(resolve, reject) {
-      // the destination path for encrypted file
-      logger.verbose('crypt promise started')
-      let destpath = `${origpath}.crypto`
-      crypto.encrypt(origpath, destpath, global.MasterPassKey.get())
-        .then((creds) => {
-            var file = {}
-            file.name = path.basename(origpath)
-            file.path = origpath
-            file.cryptPath = destpath
-            file.salt = creds.salt.toString('hex') // Convert salt used to derivekey to hex string
-            file.key = creds.key.toString('hex') // Convert dervived key to hex string
-            file.iv = creds.iv.toString('hex') // Convert iv to hex string
-            file.authTag = creds.tag.toString('hex') // Convert authTag to hex string
-            resolve(file)
-        })
-        .catch((err) => {
-          reject(err)
-        })
-    })
-  }
+
   ipc.on('cryptFile', function (event, filePath) {
     logger.verbose('IPCMAIN: cryptFile emitted. Starting encryption...')
     crypt(filePath)
