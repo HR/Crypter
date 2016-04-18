@@ -139,29 +139,6 @@ app.on('will-quit', (event) => {
    })
  }
 
- let crypt = function (origpath) {
-   return new Promise(function(resolve, reject) {
-     // the destination path for encrypted file
-     logger.verbose('crypt promise started')
-     let destpath = `${origpath}.crypto`
-     crypto.encrypt(origpath, destpath, global.MasterPassKey.get())
-       .then((creds) => {
-           var file = {}
-           file.name = path.basename(origpath)
-           file.path = origpath
-           file.cryptPath = destpath
-           file.salt = creds.salt.toString('hex') // Convert salt used to derivekey to hex string
-           file.key = creds.key.toString('hex') // Convert dervived key to hex string
-           file.iv = creds.iv.toString('hex') // Convert iv to hex string
-           file.authTag = creds.tag.toString('hex') // Convert authTag to hex string
-           resolve(file)
-       })
-       .catch((err) => {
-         reject(err)
-       })
-   })
- }
-
 
 /**
  * Windows
@@ -185,7 +162,7 @@ function CryptWindow (callback) {
 
   ipc.on('cryptFile', function (event, filePath) {
     logger.verbose('IPCMAIN: cryptFile emitted. Starting encryption...')
-    crypt(filePath)
+    crypto.crypt(filePath, global.MasterPassKey.get())
       .then((file) => {
         webContents.send('cryptedFile', file)
       })

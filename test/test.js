@@ -75,7 +75,6 @@ describe("Crypter Core Modules' tests", function () {
   // After all tests have run
   after(function () {
     fs.removeSync(global.paths.tmp)
-    fs.removeSync(global.paths.home)
   })
 
 
@@ -89,27 +88,6 @@ describe("Crypter Core Modules' tests", function () {
 
     describe('Hashing & deriving', function () {
       const masterpass = 'crypto#101'
-
-      it('should get same digest hash for genFileHash as openssl', function () {
-        return crypto.genFileHash(t1path)
-          .then((hash) => {
-            global.execute(`openssl dgst -md5 ${t1path}`)
-              .then((stdout) => {
-                let ohash = stdout.replace('MD5(test.txt)= ', '')
-                expect(hash)
-                  .to.equal(ohash)
-                expect(crypto.verifyFileHash(hash, ohash))
-                  .to.be.true
-                expect(false).to.true
-              })
-              .catch((err) => {
-                throw err
-              })
-          })
-          .catch((err) => {
-            throw err
-          })
-      })
 
       it('should derivePassKey using a MasterPass correctly when salt is buffer', function (done) {
         crypto.derivePassKey(masterpass, null, function (err, dmpkey, dmpsalt) {
@@ -138,90 +116,21 @@ describe("Crypter Core Modules' tests", function () {
     })
 
     describe('Encryption', function () {
-      it('should generate iv, encrypt & decrypt an obj with MPKey when salt is buffer', function (done) {
-        const toCryptObj = _.cloneDeep(global.vault)
-        const fpath = `${global.paths.tmp}/cryptedObj.crypto`
-        crypto.genIV()
-          .then(function (viv) {
-            crypto.encryptObj(toCryptObj, fpath, global.MasterPassKey.get(), viv, function (err, authTag) {
-              if (err) done(err)
-              crypto.decryptObj(fpath, global.MasterPassKey.get(), viv, authTag, function (err, devaulted) {
-                if (err) done(err)
-                expect(devaulted)
-                  .to.deep.equal(toCryptObj)
-                done()
-              })
-            })
-          })
-          .catch((err) => {
-            done(err)
-          })
-      })
-
-      it('should generate iv, encrypt & decrypt vault obj with MPKey with persistent salt', function (done) {
-        const toCryptObj = _.cloneDeep(global.vault)
-        const fpath = `${global.paths.tmp}/cryptedObj2.crypto`
-        crypto.genIV()
-          .then(function (viv) {
-            const pviv = JSON.parse(JSON.stringify(viv))
-            crypto.encryptObj(toCryptObj, fpath, global.MasterPassKey.get(), pviv, function (err, authTag) {
-              if (err) done(err)
-              crypto.decryptObj(fpath, global.MasterPassKey.get(), viv, authTag, function (err, devaulted) {
-                if (err) done(err)
-                expect(devaulted)
-                  .to.deep.equal(toCryptObj)
-                done()
-              })
-            })
-          })
-          .catch((err) => {
-            done(err)
-          })
-      })
-
-      it('should encrypt file with pass without errors & have all expected creds', function (done) {
+      it('should encrypt file with pass without errors & have all expected creds', function () {
         before(function () {
           fs.writeFileSync(t1path, '#Crypter', 'utf8')
         })
-        crypto.encrypt(t1path, `${t1path}.crypto`, global.MasterPassKey.get(), function (err, key, iv, tag) {
-          if (err) done(err)
-          try {
-            let file = {}
-            file.iv = iv.toString('hex')
-            file.authTag = tag.toString('hex')
-            done()
-          } catch (err) {
-            if (err) done(err)
-          }
-        })
-      })
-
-      // it('should encrypt and decrypt file with pass', function (done) {
-      // 	let cryptoPath = '${t1path}.crypto'
-      // 	crypto.encrypt(t1path, cryptoPath, global.MasterPassKey.get(), function (err, key, iv, tag) {
-      // 		if (err) done(err)
-      // 		crypto.decrypt(cryptoPath, '${global.paths.tmp}/test2.txt', key, null, null, function (err, iv, tag) {
-      // 			if (err) done(err)
-      // 			fs.readFile('${global.paths.tmp}/test2.txt', function read(err, data) {
-      // 				if (err) done(err)
-      // 				expect(data.toString('utf8')).to.equal('#Crypter')
-      // 				done()
-      // 			})
-      // 		})
-      // 	})
-      // })
-
-      it('should convert key to shares and back with shares obj', function (done) {
-        const key = scrypto.randomBytes(defaults.keyLength)
-          .toString('hex')
-        const sharesObj = crypto.pass2shares(key)
-        const ckey = crypto.shares2pass(sharesObj)
-        const ckeyArray = crypto.shares2pass(sharesObj.data)
-        expect(ckey)
-          .to.equal(key)
-        expect(ckeyArray)
-          .to.equal(key)
-        done()
+        return crypto.crypt(t1path, global.MasterPassKey.get())
+          .then((file) => {
+            expect(file).not.be.empty
+            expect(file.path).to.equal(t1path)
+            expect(file.cryptPath).to.equal(`${t1path}.crypto`)
+            expect(file.iv).not.be.empty
+            expect(file.salt).not.be.empty
+            expect(file.key).not.be.empty
+            expect(file.iv).not.be.empty
+            expect(file.authTag).not.be.empty
+          })
       })
     })
   })
@@ -283,7 +192,7 @@ describe("Crypter Core Modules' tests", function () {
       return db.onlyGetValue('notExist')
         .then((token) => {
           expect(token)
-            .to.equal(null)
+            .to.equal(false)
           db.close()
         })
     })
@@ -309,21 +218,8 @@ describe("Crypter Core Modules' tests", function () {
       fs.writeFileSync(t1path, t1data, 'utf8')
     })
 
-    it('should convert ReadableStream into a valid utf-8 string for streamToString', function (done) {
-      const readStream = fs.createReadStream(t1path)
-      readStream.on('error', (e) => {
-        done(e)
-      })
-      util.streamToString(readStream, function (err, string) {
-        if (err) done(err)
-        expect(string)
-          .to.deep.equal(t1data)
-        done()
-      })
-    })
-
     it('should check if file exists', function (done) {
-      expect(util.checkDirectorySync(`${global.paths.data}/rfs.json`))
+      expect(util.checkDirectorySync('./'))
         .to.be.true
       expect(util.checkFileSync('any.file'))
         .to.be.false

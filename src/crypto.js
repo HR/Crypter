@@ -7,6 +7,7 @@
 const secrets = require('secrets.js')
 const fs = require('fs-extra')
 const util = require('./util')
+const path = require('path')
 const logger = require('../script/logger')
 const _ = require('lodash')
 const Readable = require('stream').Readable
@@ -26,6 +27,29 @@ let defaults = {
   padLength: 1024, // 1 MB
   shares: 3,
   th: 2
+}
+
+exports.crypt = function (origpath, masterpass) {
+  return new Promise(function(resolve, reject) {
+    // the destination path for encrypted file
+    logger.verbose('crypt promise started')
+    let destpath = `${origpath}.crypto`
+    exports.encrypt(origpath, destpath, masterpass)
+      .then((creds) => {
+          var file = {}
+          file.name = path.basename(origpath)
+          file.path = origpath
+          file.cryptPath = destpath
+          file.salt = creds.salt.toString('hex') // Convert salt used to derivekey to hex string
+          file.key = creds.key.toString('hex') // Convert dervived key to hex string
+          file.iv = creds.iv.toString('hex') // Convert iv to hex string
+          file.authTag = creds.tag.toString('hex') // Convert authTag to hex string
+          resolve(file)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 }
 
 exports.encrypt = function (origpath, destpath, mpkey) {
@@ -76,27 +100,7 @@ exports.encrypt = function (origpath, destpath, mpkey) {
 
 }
 
-exports.genIV = function () {
-  return new Promise(function (resolve, reject) {
-    try {
-      const iv = crypto.randomBytes(defaults.ivLength) // Synchronous gen
-      resolve(iv)
-    } catch (err) {
-      reject(err)
-    }
-  })
-}
 
-exports.genSalt = function () {
-  return new Promise(function (resolve, reject) {
-    try {
-      const salt = crypto.randomBytes(defaults.keyLength) // Synchronous gen
-      resolve(salt)
-    } catch (err) {
-      reject(err)
-    }
-  })
-}
 
 exports.derivePassKey = function (pass, psalt, callback) {
   if (!pass) return callback(new Error('MasterPassKey not provided'))
