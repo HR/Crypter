@@ -100,7 +100,27 @@ exports.encrypt = function (origpath, destpath, mpkey) {
 
 }
 
-
+// exports.genIV = function () {
+//   return new Promise(function (resolve, reject) {
+//     try {
+//       const iv = crypto.randomBytes(defaults.ivLength) // Synchronous gen
+//       resolve(iv)
+//     } catch (err) {
+//       reject(err)
+//     }
+//   })
+// }
+//
+// exports.genSalt = function () {
+//   return new Promise(function (resolve, reject) {
+//     try {
+//       const salt = crypto.randomBytes(defaults.keyLength) // Synchronous gen
+//       resolve(salt)
+//     } catch (err) {
+//       reject(err)
+//     }
+//   })
+// }
 
 exports.derivePassKey = function (pass, psalt, callback) {
   if (!pass) return callback(new Error('MasterPassKey not provided'))
