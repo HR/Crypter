@@ -1,4 +1,4 @@
-# Crypter [![Code Climate](https://codeclimate.com/github/HR/Crypter/badges/gpa.svg)](https://codeclimate.com/github/HR/Crypter) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+# Crypter [![Build Status](https://travis-ci.org/HR/Crypter.svg?branch=master)](https://travis-ci.org/HR/Crypter) [![Build Status](https://travis-ci.org/HR/Crypter.svg?branch=master)](https://travis-ci.org/HR/Crypter) [![Code Climate](https://codeclimate.com/github/HR/Crypter/badges/gpa.svg)](https://codeclimate.com/github/HR/Crypter) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 Crypter is a simple, convenient and secure encryption client.  
 Simplifies password generation by deriving it using your MasterPassKey
