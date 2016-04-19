@@ -51,7 +51,7 @@ app.on('ready', function () {
      // otherwise run main
      if (mainRun) {
        // Run main
-       logger.info('Main run. Creating CryptWindow...')
+       logger.info('Main run. Creating CrypterWindow...')
 
        init.main() // Initialise (open mdb and get creds)
          .then(() => {
@@ -59,7 +59,7 @@ app.on('ready', function () {
          })
          .then(() => {
            // Start menubar
-           return cryptWindow()
+           return crypterWindow()
          })
          .then(() => {
            app.quit()
@@ -117,34 +117,35 @@ app.on('will-quit', (event) => {
  * Promises
  **/
 
- let cryptWindow = function () {
-   return new Promise(function(resolve, reject) {
-     CryptWindow(function () {
-       resolve()
-     })
+// Creates the crypter window
+let crypterWindow = function () {
+ return new Promise(function(resolve, reject) {
+   CrypterWindow(function () {
+     resolve()
    })
- }
+ })
+}
 
- let setupWindow = function () {
-   return new Promise(function (resolve, reject) {
-     SetupWindow(function (err) {
-       if (err) {
-         logger.error(err)
-         reject(err)
-       } else {
-         logger.info('MAIN Setup successfully completed. quitting...')
-         resolve()
-       }
-     })
+let setupWindow = function () {
+ return new Promise(function (resolve, reject) {
+   SetupWindow(function (err) {
+     if (err) {
+       logger.error(err)
+       reject(err)
+     } else {
+       logger.info('MAIN Setup successfully completed. quitting...')
+       resolve()
+     }
    })
- }
+ })
+}
 
 
 /**
  * Windows
  **/
 
-function CryptWindow (callback) {
+function CrypterWindow (callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 350, // 300

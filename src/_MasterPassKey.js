@@ -23,7 +23,7 @@ const MasterPassKey = (function () {
     if (key instanceof Buffer) {
       mpk.set(this, key)
     } else {
-      throw new Error('MasterPassKey not a Buffer')
+      return new Error('MasterPassKey not a Buffer')
     }
   }
 

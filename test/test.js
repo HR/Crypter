@@ -282,5 +282,10 @@ describe("Crypter Core Modules' tests", function () {
       expect(MPK.get()).to.be.an('error')
       expect(MPK.get().message).to.equal('MasterPassKey is not set')
     })
+    it('should throw error when instantiated with data type other than a Buffer', function () {
+      const MPK = new MasterPassKey()
+      expect(MPK.set('pass')).to.be.an('error')
+      expect(MPK.set().message).to.equal('MasterPassKey not a Buffer')
+    })
   })
 })
