@@ -298,22 +298,6 @@ exports.MasterPassPromptWindow = function (callback) {
       })
   })
 
-  ipc.on('setMasterPass', function (event, masterpass) {
-    logger.verbose('IPCMAIN: setMasterPass emitted Setting Masterpass...')
-    MasterPass.set(masterpass)
-      .then((mpkey) => {
-        global.MasterPassKey = new MasterPassKey(mpkey)
-        return
-      })
-      .then(() => {
-        return global.mdb.saveGlobalObj('creds')
-      })
-      .catch((err) => {
-        webContents.send('setMasterPassResult', err)
-        throw err
-      })
-  })
-
   win.on('closed', function () {
     logger.info('win.closed event emitted for PromptWindow')
     callback(error, gotMP)

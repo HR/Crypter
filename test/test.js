@@ -6,7 +6,6 @@ const crypto = require('../src/crypto.js')
 const util = require('../src/util')
 const Db = require('../src/Db')
 const MasterPassKey = require('../src/_MasterPassKey')
-// const synker = require('../src/synker')
 const MasterPass = require('../src/MasterPass')
 // const logger = require('../script/logger')
 const scrypto = require('crypto')
@@ -198,15 +197,14 @@ describe("Crypter Core Modules' tests", function () {
         })
     })
 
-    // it('should throw error when global object not exist for restoreGlobalObj', function () {
-    //   return db.saveGlobalObj('fake')
-    //     .catch((err) => {
-    //       expect(false).to.be(true)
-    //       expect(err).to.be.an('error')
-    //       expect(err.message).to.equal('Unsupported state or unable to authenticate data')
-    //       db.close()
-    //     })
-    // })
+    it('should throw error when global object not exist for restoreGlobalObj', function () {
+      return db.restoreGlobalObj('fake')
+        .catch((err) => {
+          expect(err.notFound).to.be.true
+          expect(err.status).to.equal(404)
+          db.close()
+        })
+    })
 
   })
   /**
