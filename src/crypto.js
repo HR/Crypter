@@ -8,7 +8,6 @@ const secrets = require('secrets.js')
 const fs = require('fs-extra')
 const util = require('./util')
 const path = require('path')
-const logger = require('../script/logger')
 const _ = require('lodash')
 const Readable = require('stream').Readable
 const crypto = require('crypto')
@@ -32,7 +31,6 @@ let defaults = {
 exports.crypt = function (origpath, masterpass) {
   return new Promise(function(resolve, reject) {
     // the destination path for encrypted file
-    logger.verbose('crypt promise started')
     let destpath = `${origpath}.crypto`
     exports.encrypt(origpath, destpath, masterpass)
       .then((creds) => {
@@ -61,7 +59,6 @@ exports.encrypt = function (origpath, destpath, mpkey) {
         // return error to callback YOLO#101
         reject(err)
       }
-      // logger.verbose(`Pbkdf2 generated key ${key.toString('hex')} using iv = ${iv.toString('hex')}, salt = ${salt.toString('hex')}`)
       const origin = fs.createReadStream(origpath)
       const dest = fs.createWriteStream(destpath)
       const iv = crypto.randomBytes(defaults.ivLength) // generate pseudorandom iv
@@ -70,23 +67,19 @@ exports.encrypt = function (origpath, destpath, mpkey) {
       origin.pipe(cipher).pipe(dest)
 
       cipher.on('error', () => {
-        logger.verbose(`CIPHER STREAM: Error while encrypting file`)
         reject(err)
       })
 
       origin.on('error', () => {
-        logger.verbose(`ORIGIN STREAM: Error while reading file to ${destpath}`)
         reject(err)
       })
 
       dest.on('error', () => {
-        logger.verbose(`DEST STREAM: Error while writting file to ${destpath}`)
         reject(err)
       })
 
       dest.on('finish', () => {
         const tag = cipher.getAuthTag()
-        logger.verbose(`Finished encrypted/written to ${destpath}`)
         resolve({
           salt: salt,
           key: key,
@@ -122,36 +115,33 @@ exports.encrypt = function (origpath, destpath, mpkey) {
 //   })
 // }
 
-exports.derivePassKey = function (pass, psalt, callback) {
-  if (!pass) return callback(new Error('MasterPassKey not provided'))
-    // If psalt is provided
-  const salt = (psalt) ? ((psalt instanceof Buffer) ? psalt : new Buffer(psalt.data)) : crypto.randomBytes(defaults.keyLength)
-  crypto.pbkdf2(pass, salt, defaults.mpk_iterations, defaults.keyLength, defaults.digest, (err, pkey) => {
-    if (err) {
-      // return error to callback
-      return callback(err)
-    } else {
-      // logger.verbose(`Pbkdf2 generated: \npkey = ${pkey.toString('hex')} \nwith salt = ${salt.toString('hex')}`)
-      return callback(null, pkey, salt)
-    }
+exports.derivePassKey = function (pass, psalt) {
+  return new Promise(function(resolve, reject) {
+    if (!pass) reject(new Error('MasterPassKey not provided'))
+      // If psalt is provided
+    const salt = (psalt) ? ((psalt instanceof Buffer) ? psalt : new Buffer(psalt.data)) : crypto.randomBytes(defaults.keyLength)
+    crypto.pbkdf2(pass, salt, defaults.mpk_iterations, defaults.keyLength, defaults.digest, (err, key) => {
+      if (err) reject(err)
+
+      resolve({key: key, salt: salt})
+    })
   })
 }
 
 // create a sha256 hash of the MasterPassKey
-exports.genPassHash = function (mpass, salt, callback) {
-  // logger.verbose(`crypto.genPassHash() invoked`)
-  const pass = (mpass instanceof Buffer) ? mpass.toString('hex') : mpass
+exports.genPassHash = function (masterpass, salt, callback) {
+  return new Promise(function(resolve, reject) {
+    const pass = (masterpass instanceof Buffer) ? masterpass.toString('hex') : masterpass
 
-  if (salt) {
-    const hash = crypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
-      // logger.verbose(`genPassHash: S, pass = ${pass}, salt = ${salt}, hash = ${hash}`)
-    callback(hash)
-  } else {
-    const salt = crypto.randomBytes(defaults.keyLength).toString('hex')
-    const hash = crypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
-      // logger.verbose(`genPassHash: NS, pass = ${pass}, salt = ${salt}, hash = ${hash}`)
-    callback(hash, salt)
-  }
+    if (salt) {
+      const hash = crypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
+      resolve({hash: hash, key: masterpass})
+    } else {
+      const salt = crypto.randomBytes(defaults.keyLength).toString('hex')
+      const hash = crypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
+      resolve({hash: hash, salt: salt, key: masterpass})
+    }
+  })
 }
 
 // check if calculated hash is equal to stored hash

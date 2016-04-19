@@ -88,8 +88,8 @@
       var logger = require('../script/logger.js')
       var errLabel
       const DONE_TIMEOUT = 5000
-      const SPEED = 4500
-      const OFFSET = SPEED * 0.6
+      const SPEED = 5000
+      const OFFSET = SPEED * 0.8
       const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g
       const RESPONSES = {
         invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
@@ -140,8 +140,6 @@
         setTimeout(function() {
           $('.marquee-2').addClass('visible')
         }, OFFSET)
-        $('.marquee').css('position', 'relative')
-        $('.banner + .himg').css('margin-top', '-7.5rem')
       })
 
       /* Helper functions */

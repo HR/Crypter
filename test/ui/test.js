@@ -91,14 +91,18 @@ describe("Crypter Render Modules's tests", function () {
         client.setValue('#setMasterPassInput', input)
           .click('#setMasterPass')
           .then(() => {
-            return wait(300) // wait 2 seconds
+            return wait(200) // wait 2 seconds
           })
-          .then(() => {
-            return saveScreenshot(client, `./screens/${response}.png`)
-          })
+          // .then(() => {
+          //   return saveScreenshot(client, `./screens/${response}.png`)
+          // })
           .getText('#setMasterPassLabel')
           .then((text) => {
             expect(text).to.equal(response)
+            return
+          })
+          .catch((err) => {
+            throw err
           })
       }
       return this.app.client
@@ -122,7 +126,7 @@ describe("Crypter Render Modules's tests", function () {
           return checkResponse(this.app.client, masterpass, responses.setSuccess)
         })
         .then(() => {
-          return wait(500) // wait 2 seconds
+          return wait(200) // wait 2 seconds
         })
         .catch((err) => {
           throw err
@@ -138,11 +142,15 @@ describe("Crypter Render Modules's tests", function () {
       client.setValue('#checkMasterPassInput', input)
         .click('#checkMasterPass')
         .then(() => {
-          return wait(300) // wait 2 seconds
+          return wait(1000) // wait 2 seconds
         })
         .getText('#checkMasterPassLabel')
         .then((text) => {
           expect(text).to.equal(response)
+          return
+        })
+        .catch((err) => {
+          throw err
         })
     }
 

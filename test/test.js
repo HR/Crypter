@@ -88,30 +88,31 @@ describe("Crypter Core Modules' tests", function () {
 
     describe('Hashing & deriving', function () {
       const masterpass = 'crypto#101'
-
-      it('should derivePassKey using a MasterPass correctly when salt is buffer', function (done) {
-        crypto.derivePassKey(masterpass, null, function (err, dmpkey, dmpsalt) {
-          if (err) done(err)
-          crypto.derivePassKey(masterpass, dmpsalt, function (err, mpkey, mpsalt) {
-            if (err) done(err)
-            expect(dmpkey.toString('hex'))
-              .to.equal(mpkey.toString('hex'))
-            done()
+      it('should derivePassKey using a MasterPass correctly when salt is buffer', function () {
+        let mpkey
+        return crypto.derivePassKey(masterpass, null)
+          .then((dmp) => {
+            mpkey = dmp.key
+            return crypto.derivePassKey(masterpass, dmp.salt)
           })
-        })
+          .then((dmp) => {
+            expect(dmp.key.toString('hex'))
+              .to.equal(mpkey.toString('hex'))
+          })
       })
 
-      it('should derivePassKey using a MasterPass correctly with persistent salt', function (done) {
-        crypto.derivePassKey(masterpass, null, function (err, dmpkey, dmpsalt) {
-          if (err) done(err)
-          const pdmpsalt = JSON.parse(JSON.stringify(dmpsalt))
-          crypto.derivePassKey(masterpass, pdmpsalt, function (err, mpkey, mpsalt) {
-            if (err) done(err)
-            expect(dmpkey.toString('hex'))
-              .to.equal(mpkey.toString('hex'))
-            done()
+      it('should derivePassKey using a MasterPass correctly with persistent salt', function () {
+        let mpkey
+        return crypto.derivePassKey(masterpass, null)
+          .then((dmp) => {
+            const pdmpsalt = JSON.parse(JSON.stringify(dmp.salt))
+            mpkey = dmp.key
+            return crypto.derivePassKey(masterpass, pdmpsalt)
           })
-        })
+          .then((dmp) => {
+            expect(dmp.key.toString('hex'))
+              .to.equal(mpkey.toString('hex'))
+          })
       })
     })
 
@@ -235,28 +236,29 @@ describe("Crypter Core Modules' tests", function () {
    * MasterPass & MasterPassKey module.js
    ******************************/
   describe('MasterPass module', function () {
-    it('should set and check masterpass', function (done) {
+    it('should set and check masterpass', function () {
       const pass = 'V1R3$1NNUM3RI$'
-      MasterPass.set(pass, function (err, mpkey) {
-        if (err) done(err)
-        MasterPass.check(pass, function (err, MATCH, dmpkey) {
-          if (err) done(err)
-          expect(MATCH)
-            .to.be.true
-          expect(dmpkey.toString('hex'))
-            .to.equal(mpkey.toString('hex'))
-          done()
+      var mpkey
+      return MasterPass.set(pass)
+        .then((mpk) => {
+          mpkey = mpk
+          return MasterPass.check(pass)
         })
-      })
+        .then((result) => {
+          expect(result.match)
+            .to.be.true
+          expect(result.key.toString('hex'))
+            .to.equal(mpkey.toString('hex'))
+        })
     })
 
-    it('should throw error if not provided or undefined', function (done) {
+    it('should throw error if not provided or undefined', function () {
       const pass = ''
-      MasterPass.check(pass, function (err, MATCH, dmpkey) {
-        expect(err).to.be.an('error')
-        expect(err.message).to.equal('MasterPassKey not provided')
-        done()
-      })
+      return MasterPass.check(pass)
+        .catch((err) => {
+          expect(err).to.be.an('error')
+          expect(err.message).to.equal('MasterPassKey not provided')
+        })
     })
   })
 

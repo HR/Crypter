@@ -21,34 +21,40 @@ exports.Prompt = function () {
   })
 }
 
-exports.check = function (masterpass, callback) {
-  crypto.derivePassKey(masterpass, global.creds.mpsalt, function (err, mpkey, mpsalt) {
-    // logger.verbose('checkMasterPass derivePassKey callback')
-    if (err) {
-      logger.error(`ERROR: derivePassKey failed, ${err.stack}`)
-      return callback(err, null)
-    }
-    crypto.genPassHash(mpkey, global.creds.mpksalt, function (mpkhash) {
-      // logger.verbose(`creds.mpkhash = ${global.creds.mpkhash}, mpkhash (of entered mp) = ${mpkhash}`)
-      const MATCH = crypto.verifyPassHash(global.creds.mpkhash, mpkhash) // check if masterpasskey derived is correct
-      logger.info(`MATCH: ${global.creds.mpkhash} (creds.mpkhash) === ${mpkhash} (mpkhash) = ${MATCH}`)
-      return callback(null, MATCH, mpkey)
-    })
+exports.check = function (masterpass) {
+  return new Promise(function(resolve, reject) {
+    crypto.derivePassKey(masterpass, global.creds.mpsalt)
+      .then((mpk) => {
+        return crypto.genPassHash(mpk.key, global.creds.mpksalt)
+      })
+      .then((mpk) => {
+        const match = crypto.verifyPassHash(global.creds.mpkhash, mpk.hash) // check if masterpasskey derived is correct
+        logger.info(`match: ${global.creds.mpkhash} (creds.mpkhash) === ${mpk.hash} (mpkhash) = ${mpk.match}`)
+        resolve({match: match, key: mpk.key})
+      })
+      .catch((err) => {
+        reject(err)
+      })
   })
+
 }
 
-exports.set = function (masterpass, callback) {
+exports.set = function (masterpass) {
   // TODO: decide whther to put updated masterpass instantly
   // logger.verbose(`setMasterPass() for ${masterpass}`)
-  crypto.derivePassKey(masterpass, null, function (err, mpkey, mpsalt) {
-    if (err) return callback(err)
-    global.creds.mpsalt = mpsalt
-    // logger.verbose(`\n global.creds.mpsalt = ${global.creds.mpsalt.toString('hex')}`)
-    crypto.genPassHash(mpkey, null, function (mpkhash, mpksalt) {
-      global.creds.mpkhash = mpkhash
-      global.creds.mpksalt = mpksalt
-      return callback(null, mpkey)
-    // logger.verbose(`derivePassKey callback: \npbkdf2 mpkey = ${mpkey.toString('hex')},\nmpsalt = ${global.creds.mpsalt.toString('hex')},\nmpkhash = ${mpkhash},\nmpksalt = ${mpksalt}`)
-    })
+  return new Promise(function(resolve, reject) {
+    crypto.derivePassKey(masterpass, null)
+      .then((mpk) => {
+        global.creds.mpsalt = mpk.salt
+        return crypto.genPassHash(mpk.key, null)
+      })
+      .then((mpk) => {
+        global.creds.mpkhash = mpk.hash
+        global.creds.mpksalt = mpk.salt
+        resolve(mpk.key)
+      })
+      .catch((err) => {
+        reject(err)
+      })
   })
 }

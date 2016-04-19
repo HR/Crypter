@@ -184,7 +184,7 @@ function SetupWindow (callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 600,
-    height: 420,
+    height: 400,
     center: true,
     show: true,
     titleBarStyle: 'hidden-inset'
@@ -205,14 +205,21 @@ function SetupWindow (callback) {
 
   ipc.on('setMasterPass', function (event, masterpass) {
     logger.verbose('IPCMAIN: setMasterPass emitted Setting Masterpass...')
-    MasterPass.set(masterpass, function (err, mpkey) {
-      global.MasterPassKey = new MasterPassKey(mpkey)
-      global.mdb.saveGlobalObj('creds')
-        .catch((err) => {
-          throw err
-        })
-      webContents.send('setMasterPassResult', err)
-    })
+    MasterPass.set(masterpass)
+      .then((mpkey) => {
+        global.MasterPassKey = new MasterPassKey(mpkey)
+        return
+      })
+      .then(() => {
+        return global.mdb.saveGlobalObj('creds')
+      })
+      .then(() => {
+        webContents.send('setMasterPassResult', null)
+      })
+      .catch((err) => {
+        webContents.send('setMasterPassResult', err)
+        throw err
+      })
   })
 
   ipc.on('done', function (event, masterpass) {
@@ -239,6 +246,7 @@ function SetupWindow (callback) {
 exports.MasterPassPromptWindow = function (callback) {
   let gotMP = false
   let error = null
+  const CLOSE_TIMEOUT = 1000
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 300, // 300
@@ -254,49 +262,56 @@ exports.MasterPassPromptWindow = function (callback) {
   // win.openDevTools()
   ipc.on('checkMasterPass', function (event, masterpass) {
     logger.verbose('IPCMAIN: checkMasterPass emitted. Checking MasterPass...')
-
-    MasterPass.check(masterpass, function (err, match, mpkey) {
-      if (err) {
+    MasterPass.check(masterpass)
+      .then((res) => {
+        if (res.match) {
+          // password matches
+          logger.info('IPCMAIN: PASSWORD MATCHES!')
+          // Save MasterPassKey (while program is running)
+          global.MasterPassKey = new MasterPassKey(res.key)
+          // send result match result to masterpassprompt.html
+          webContents.send('checkMasterPassResult', {
+            err: null,
+            match: res.match
+          })
+          gotMP = true
+          // Close after 1 second
+          setTimeout(function () {
+            win.close()
+          }, CLOSE_TIMEOUT)
+        } else {
+          logger.warn('IPCMAIN: PASSWORD DOES NOT MATCH!')
+          webContents.send('checkMasterPassResult', {
+            err: null,
+            match: res.match
+          })
+        }
+      })
+      .catch((err) => {
         // send error
         webContents.send('checkMasterPassResult', err)
         error = err
-        win.close()
-      }
-      if (match) {
-        // password matches
-        logger.info('IPCMAIN: PASSWORD MATCHES!')
-        // Save MasterPassKey (while program is running)
-        global.MasterPassKey = new MasterPassKey(mpkey)
-        // send result match result to masterpassprompt.html
-        webContents.send('checkMasterPassResult', {
-          err: null,
-          match: match
-        })
-        gotMP = true
         // Close after 1 second
         setTimeout(function () {
           win.close()
-        }, 1000)
-      } else {
-        logger.warn('IPCMAIN: PASSWORD DOES NOT MATCH!')
-        webContents.send('checkMasterPassResult', {
-          err: null,
-          match: match
-        })
-      }
-    })
+        }, CLOSE_TIMEOUT)
+      })
   })
 
   ipc.on('setMasterPass', function (event, masterpass) {
     logger.verbose('IPCMAIN: setMasterPass emitted Setting Masterpass...')
-    MasterPass.set(masterpass, function (err, mpkey) {
-      global.MasterPassKey = new MasterPassKey(mpkey)
-      global.mdb.saveGlobalObj('creds')
-        .catch((err) => {
-          throw err
-        })
-      webContents.send('setMasterPassResult', err)
-    })
+    MasterPass.set(masterpass)
+      .then((mpkey) => {
+        global.MasterPassKey = new MasterPassKey(mpkey)
+        return
+      })
+      .then(() => {
+        return global.mdb.saveGlobalObj('creds')
+      })
+      .catch((err) => {
+        webContents.send('setMasterPassResult', err)
+        throw err
+      })
   })
 
   win.on('closed', function () {
