@@ -7,20 +7,6 @@
 const crypto = require('./crypto')
 const logger = require('../script/logger')
 const _ = require('lodash')
-const Main = (process.env.TEST_RUN) ? null : require('../index')
-
-exports.Prompt = function () {
-  return new Promise(function (resolve, reject) {
-    Main.MasterPassPromptWindow(function (err, gotMP) {
-      if (err) reject(err)
-      if (gotMP) {
-        resolve()
-      } else {
-        reject(new Error('Could not get MasterPass'))
-      }
-    })
-  })
-}
 
 exports.check = function (masterpass) {
   return new Promise(function(resolve, reject) {

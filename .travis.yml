@@ -28,6 +28,7 @@ script:
   - ./script/travis-build.sh
 
 after_success:
+  - gulp coverage
   - npm run coveralls
   - npm run codeclimate
 

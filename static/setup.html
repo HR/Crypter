@@ -112,14 +112,16 @@
         errLabel.hide().css('color', COLORS.bad)
         $('.navigationLink').each(function(index) {
           $(this).click(function() {
+            // on click call navigate() with the elements data-target value
             navigate(this.getAttribute('data-target'))
           })
         })
+
+        //
         navigate('welcome')
 
-        /* setMasterPass */
+        // add click event listner to setMasterPass button
         $('#setMasterPass').click(function() {
-          console.log('setMasterPass button clicked')
           var MasterPass = $('input#setMasterPassInput').val()
           if (MP_REGEX.test(MasterPass)) {
             ipcRenderer.send('setMasterPass', MasterPass)
@@ -132,9 +134,7 @@
         })
 
         /* Encryption animation */
-
         $('.marquee-1').marquee({direction: 'right', gap: 0, duplicated: true, duration: SPEED}).addClass('visible')
-
         $('.marquee-2').marquee({direction: 'right', gap: 0, duplicated: true, duration: SPEED, delayBeforeStart: OFFSET})
 
         setTimeout(function() {

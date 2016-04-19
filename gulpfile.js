@@ -1,5 +1,11 @@
 const gulp = require('gulp')
 const shell = require('gulp-shell')
+const babel = require('gulp-babel')
+const env = require('gulp-env')
+const jeditor = require("gulp-json-editor")
+const istanbul = require('gulp-babel-istanbul')
+const injectModules = require('gulp-inject-modules')
+const mocha = require('gulp-mocha')
 
 gulp.task('default', shell.task([
   // Absolute path '/usr/local/lib/node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .'
@@ -9,6 +15,24 @@ gulp.task('default', shell.task([
   'unset TEST_RUN && node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron --debug=5858 .'
 // 'node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron --debug-brk=5858 .'
 ]))
+
+gulp.task('coverage', function (cb) {
+  const envs = env.set({
+    TEST_RUN: true
+  })
+  gulp.src('src/**/*.js')
+    .pipe(envs)
+    .pipe(istanbul())
+    .pipe(istanbul.hookRequire()) // or you could use .pipe(injectModules())
+    .on('finish', function () {
+      gulp.src('test/*.js')
+        .pipe(babel())
+        .pipe(injectModules())
+        .pipe(mocha())
+        .pipe(istanbul.writeReports())
+        .on('end', cb)
+    })
+})
 
 gulp.task('rebuildni', shell.task([
   // start node inspector server
@@ -32,7 +56,7 @@ gulp.task('driver', shell.task([
 
 gulp.task('test', shell.task([
   // Run test stuff
-  "mocha --compilers js:babel-core/register test/"
+  'mocha --compilers js:babel-core/register test/'
 ]))
 
 gulp.task('ntest', shell.task([

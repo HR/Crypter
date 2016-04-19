@@ -50,7 +50,7 @@ app.on('ready', function () {
        init.main() // Initialise (open mdb and get creds)
          .then(() => {
            // Obtain MasterPass, derive MasterPassKey and set globally
-           return MasterPass.Prompt()
+           return masterPassPromptWindow()
          })
          .then(() => {
            // Create the Crypter window and open it
@@ -133,6 +133,19 @@ let setupWindow = function () {
      }
    })
  })
+}
+
+let masterPassPromptWindow = function () {
+  return new Promise(function (resolve, reject) {
+    MasterPassPromptWindow(function (err, gotMP) {
+      if (err) reject(err)
+      if (gotMP) {
+        resolve()
+      } else {
+        reject(new Error('Could not get MasterPass'))
+      }
+    })
+  })
 }
 
 
@@ -247,7 +260,7 @@ function SetupWindow (callback) {
 
 
 // exporting window to be used in MasterPass module
-exports.MasterPassPromptWindow = function (callback) {
+function MasterPassPromptWindow (callback) {
   let gotMP = false
   let error = null
   const CLOSE_TIMEOUT = 1000
