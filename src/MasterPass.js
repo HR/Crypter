@@ -6,6 +6,7 @@
 
 const crypto = require('./crypto')
 const logger = require('../script/logger')
+const _ = require('lodash')
 const Main = (process.env.TEST_RUN) ? null : require('../index')
 
 exports.Prompt = function () {
@@ -28,8 +29,9 @@ exports.check = function (masterpass) {
         return crypto.genPassHash(mpk.key, global.creds.mpksalt)
       })
       .then((mpk) => {
-        const match = crypto.verifyPassHash(global.creds.mpkhash, mpk.hash) // check if masterpasskey derived is correct
-        logger.info(`match: ${global.creds.mpkhash} (creds.mpkhash) === ${mpk.hash} (mpkhash) = ${mpk.match}`)
+        // check if MasterPassKey hash is equal to the stored hash (from mdb)
+        const match = _.isEqual(global.creds.mpkhash, mpk.hash)
+        logger.info(`match: ${global.creds.mpkhash} (creds.mpkhash) === ${mpk.hash} (mpkhash) = ${match}`)
         resolve({match: match, key: mpk.key})
       })
       .catch((err) => {
@@ -40,8 +42,6 @@ exports.check = function (masterpass) {
 }
 
 exports.set = function (masterpass) {
-  // TODO: decide whther to put updated masterpass instantly
-  // logger.verbose(`setMasterPass() for ${masterpass}`)
   return new Promise(function(resolve, reject) {
     crypto.derivePassKey(masterpass, null)
       .then((mpk) => {

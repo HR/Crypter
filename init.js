@@ -4,7 +4,6 @@
  * Initialisers
  ******************************/
 const _ = require('lodash')
-const fs = require('fs-extra')
 const logger = require('./script/logger')
 const Db = require('./src/Db')
 
@@ -12,13 +11,13 @@ exports.run = function () {
   return new Promise(function(resolve, reject) {
     // initialise mdb
     global.mdb = new Db(global.paths.mdb)
+    // Get the credentials serialized object from mdb
+    // Resolves with false if not found
     resolve(global.mdb.onlyGetValue('creds'))
   })
 }
 
 exports.main = function () {
-  // Decrypt db (the Vault) and get ready for use
-  // open mdb
   logger.verbose(`PROMISE: Main initialisation`)
   return new Promise(function (resolve, reject) {
     global.mdb.restoreGlobalObj('creds')
@@ -28,11 +27,5 @@ exports.main = function () {
       .catch((err) => {
         reject(err)
       })
-  })
-}
-
-exports.setup = function () {
-  logger.verbose(`PROMISE: Setup initialisation`)
-  return new Promise(function (resolve, reject) {
   })
 }

@@ -7,7 +7,8 @@ Since it is an Electron app so it is cross-platform but has currently only been
 tested on OSX.
 
 ## Status
-All of the UI and functionality has been implemented but tests are still being.
+All of the UI and functionality has been implemented but tests are still being
+written.
 
 ## Crypto
 > One key to to derive them all!

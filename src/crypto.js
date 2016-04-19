@@ -8,7 +8,6 @@ const secrets = require('secrets.js')
 const fs = require('fs-extra')
 const util = require('./util')
 const path = require('path')
-const _ = require('lodash')
 const Readable = require('stream').Readable
 const crypto = require('crypto')
 
@@ -142,9 +141,4 @@ exports.genPassHash = function (masterpass, salt, callback) {
       resolve({hash: hash, salt: salt, key: masterpass})
     }
   })
-}
-
-// check if calculated hash is equal to stored hash
-exports.verifyPassHash = function (mpkhash, gmpkhash) {
-  return _.isEqual(mpkhash, gmpkhash)
 }
