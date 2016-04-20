@@ -7,6 +7,7 @@ engines:
       languages:
       - javascript
     exclude_fingerprints:
+      - faca6a53a5a4ae580279527e261dd1da
   eslint:
     enabled: true
   fixme:
@@ -17,3 +18,4 @@ ratings:
   - "**.js"
 exclude_paths:
 - test/
+- static/js/jquery.marquee.min.js
