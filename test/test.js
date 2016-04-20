@@ -269,17 +269,23 @@ describe("Crypter Core Modules' tests", function () {
       })
     }
     beforeEach(function () {
-      db = new Db(`${global.paths.tmp}/db`)
-      global.testo = {
-        'RAND0M-ID3': {
-          name: 'crypto',
-          id: 22,
-          secure: true
+      return new Promise(function(resolve, reject) {
+        db = new Db(`${global.paths.tmp}/db`)
+        global.testo = {
+          'RAND0M-ID3': {
+            name: 'crypto',
+            id: 22,
+            secure: true
+          }
         }
-      }
+        resolve()
+      })
     })
     afterEach(function () {
-      db.close()
+      return new Promise(function(resolve, reject) {
+        db.close()
+        resolve()
+      })
     })
     it('should save and restore obj', function () {
       const beforeSaveObj = _.cloneDeep(global.testo)
@@ -289,8 +295,7 @@ describe("Crypter Core Modules' tests", function () {
           return db.restoreGlobalObj('testo')
         })
         .then(() => {
-          expect(global.testo)
-            .to.deep.equal(beforeSaveObj)
+          expect(global.testo).to.deep.equal(beforeSaveObj)
           return
         })
         .catch((err) => {
@@ -331,8 +336,8 @@ describe("Crypter Core Modules' tests", function () {
       })
       it('should resolve null if key not found', function () {
         return db.onlyGetValue('notExist')
-          .then((token) => {
-            expect(token).to.equal(false)
+          .then((value) => {
+            expect(value).to.equal(false)
           })
       })
       it('should resolve null if key not found', function () {
