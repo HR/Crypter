@@ -17,5 +17,5 @@ ratings:
   - "**.css"
   - "**.js"
 exclude_paths:
-- test/
+- test/**/*
 - static/js/jquery.marquee.min.js
