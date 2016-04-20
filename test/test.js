@@ -280,7 +280,6 @@ describe("Crypter Core Modules' tests", function () {
     })
     afterEach(function () {
       db.close()
-      resolve()
     })
     it('should save and restore obj', function () {
       const beforeSaveObj = _.cloneDeep(global.testo)
