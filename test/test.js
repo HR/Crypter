@@ -187,18 +187,32 @@ describe("Crypter Core Modules' tests", function () {
         })
       })
     }
+    let close = function (key, value) {
+      return new Promise(function (resolve, reject) {
+        db.put(key, value, function (err) {
+          if (err) reject(err) // db save error
+          resolve()
+        })
+      })
+    }
     beforeEach(function () {
-      db = new Db(`${global.paths.tmp}/db`)
-      global.testo = {
-        'RAND0M-ID3': {
-          name: 'crypto',
-          id: 22,
-          secure: true
+      return new Promise(function(resolve, reject) {
+        db = new Db(`${global.paths.tmp}/db`)
+        global.testo = {
+          'RAND0M-ID3': {
+            name: 'crypto',
+            id: 22,
+            secure: true
+          }
         }
-      }
+        resolve()
+      })
     })
     afterEach(function () {
-      db.close()
+      return new Promise(function(resolve, reject) {
+        db.close()
+        resolve()
+      })
     })
     it('should save and restore obj', function () {
       const beforeSaveObj = _.cloneDeep(global.testo)
@@ -279,9 +293,6 @@ describe("Crypter Core Modules' tests", function () {
           b: global.g
         }
         return db.saveGlobalObj('g')
-          .then(() => {
-            db.close()
-          })
           .catch((err) => {
             expect(err).to.be.an('error')
             expect(err.message).to.equal('Converting circular structure to JSON')
