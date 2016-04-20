@@ -12,11 +12,10 @@ const LessPluginCleanCSS = require('less-plugin-clean-css')
 const cleancss = new LessPluginCleanCSS({ advanced: true })
 
 gulp.task('default', ['less'], shell.task([
-  // Absolute path '/usr/local/lib/node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .'
   // Run electron
   // 'ELECTRON_RUN_AS_NODE=true node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron node_modules/node-inspector/bin/inspector.js'
   'unset TEST_RUN && node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron --debug=5858 .'
-// 'node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron --debug-brk=5858 .'
+  // 'node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron --debug-brk=5858 .'
 ]))
 
 gulp.task('coverage', function (cb) {
@@ -46,26 +45,6 @@ gulp.task('less', function () {
     .pipe(gulp.dest('./static/style/'))
 })
 
-gulp.task('rebuildni', shell.task([
-  // start node inspector server
-  'node_modules/.bin/node-pre-gyp --target=$(node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron -v | sed s/\v//g) --runtime=electron --fallback-to-build --directory node_modules/v8-debug/ --dist-url=https://atom.io/download/atom-shell reinstall && node_modules/.bin/node-pre-gyp --target=$(node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron -v | sed s/\v//g) --runtime=electron --fallback-to-build --directory node_modules/v8-profiler/ --dist-url=https://atom.io/download/atom-shell reinstall'
-]))
-
-gulp.task('buildnative', shell.task([
-  // start build the native module
-  './node_modules/.bin/electron-rebuild #1'
-]))
-
-gulp.task('ni', shell.task([
-  // start node inspector server
-  'ELECTRON_RUN_AS_NODE=true node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron node_modules/node-inspector/bin/inspector.js'
-]))
-
-gulp.task('driver', shell.task([
-  // Run chromedriver
-  './node_modules/chromedriver/bin/chromedriver'
-]))
-
 gulp.task('test', shell.task([
   // Run test stuff
   'mocha --compilers js:babel-core/register test/'
@@ -85,12 +64,22 @@ gulp.task('run', function () {
     ]))
 })
 
-gulp.task('lint', function () {
-  return gulp.src('*', {
-    read: false
-  })
-    .pipe(shell([
-      // lint
-      'eslint src/*.js src/*/*.js *.js'
-    ]))
-})
+gulp.task('rebuildni', shell.task([
+  // start node inspector server
+  'node_modules/.bin/node-pre-gyp --target=$(node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron -v | sed s/\v//g) --runtime=electron --fallback-to-build --directory node_modules/v8-debug/ --dist-url=https://atom.io/download/atom-shell reinstall && node_modules/.bin/node-pre-gyp --target=$(node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron -v | sed s/\v//g) --runtime=electron --fallback-to-build --directory node_modules/v8-profiler/ --dist-url=https://atom.io/download/atom-shell reinstall'
+]))
+
+gulp.task('buildnative', shell.task([
+  // start build the native module
+  './node_modules/.bin/electron-rebuild #1'
+]))
+
+gulp.task('ni', shell.task([
+  // start node inspector server
+  'ELECTRON_RUN_AS_NODE=true node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron node_modules/node-inspector/bin/inspector.js'
+]))
+
+gulp.task('driver', shell.task([
+  // Run chromedriver
+  './node_modules/chromedriver/bin/chromedriver'
+]))

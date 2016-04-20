@@ -1,23 +1,12 @@
 engines:
   csslint:
-    enabled: true
+    enabled: false
   duplication:
     enabled: true
     config:
       languages:
       - javascript
     exclude_fingerprints:
-    - 555c80119b06560cd2e96eb4e4e91f26
-    - a81ed3d8cb6b36bacb95a0ab40d09d78
-    - 9af23dc9a75d6c11f28122e9f83e7309
-    - faca6a53a5a4ae580279527e261dd1da
-    - 144b552ca7471e150abb4ece59240e71
-    - b6c67c6a789360da74461e8dc22b2536
-    - bf11f48abb523883890c3c231fdfe501
-    - 2ab70e3a2f2ce555ee7420b40fbe0da9
-    - 5f8344bc790a3219cc39e93121b9b0f2
-    - d1bf4042b06b81f46b2e6757271c72cf
-    - 7f38f148bab47278e71884d18cb16389
   eslint:
     enabled: true
   fixme:
@@ -25,12 +14,6 @@ engines:
 ratings:
   paths:
   - "**.css"
-  - "**.inc"
   - "**.js"
-  - "**.jsx"
-  - "**.module"
-  - "**.php"
-  - "**.py"
-  - "**.rb"
 exclude_paths:
 - test/
