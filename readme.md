@@ -1,4 +1,6 @@
-![alt tag](Crypter.gif?raw=true "Crypter application banner")
+<p align="center">
+  <img src="/github/Welcome_screen.png?raw=true" alt="Crypter app icon">
+</p>
 # Crypter [![Build Status](https://travis-ci.org/HR/Crypter.svg?branch=master)](https://travis-ci.org/HR/Crypter) [![Coverage Status](https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=master)](https://coveralls.io/github/HR/Crypter?branch=master) [![Code Climate](https://codeclimate.com/github/HR/Crypter/badges/gpa.svg)](https://codeclimate.com/github/HR/Crypter) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 Crypter is a simple, convenient and secure encryption client.  
@@ -8,8 +10,14 @@ Since it is an Electron app so it is cross-platform but has currently only been
 tested on OSX.
 
 ## Status
-All of the UI and functionality has been implemented but tests are still being
-written.
+All of the UI and functionality has been implemented. All internal modules are
+fully tested (100% coverage).
+
+## Screens
+Some of them
+![alt text](/github/Crypter_screen.png)
+![alt text](/github/MasterPass_screen.png)
+
 
 ## Crypto
 > One key to to derive them all!
