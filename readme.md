@@ -35,6 +35,9 @@ files from the MasterPassKey using the PBKDF2 key derivation algorithm again.
 This method allows for the generation of very secure encryption keys for data
 encryption.
 
+Authentication is used by default since the AES-256-GCM symmetric block cipher
+is used.
+
 ```
 // Crypto defaults
 let defaults = {
@@ -47,6 +50,24 @@ let defaults = {
   mpk_iterations: 100000 // MasterPassKey derivation iterations
 }
 ```
+
+## Security
+Crypter uses a WeakMap to store the MasterPassKey inside the MasterPassKey class
+using closure function. This to ensure that the MasterPassKey is as inaccessible
+(externally) as possible which increases the protection of the MasterPassKey.
+The MasterPassKey is never flushed to the filesystem and always kept in (main)
+memory. Since JS does not give control over or allow such a low-level operation
+as wiping memory, the program relies on the garbage collection and volatility of
+the main memory for the permanent erasure of the MasterPassKey stored in memory.
+
+A decent number of iterations (see above specs) are used for the derivation of
+the MasterPassKey to mitigate brute-force attacks. A good amount of iterations
+are used for the derivation of the encryption keys from the MasterPasKey this is
+so that performance and speed is not significantly compromised. For critical
+application, you may choose to select 10,000,000 iterations instead (in
+src/crypto.js). Refer to
+http://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf for
+more info
 
 ## Dev
 

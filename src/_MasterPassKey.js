@@ -3,7 +3,7 @@
  * MasterPass.js
  * Provides a way to securely set and retrieve the MasterPass globally
  * MasterPassKey is protected (private var) and only exist in Main memory
- * MasterPassKey is a derived key of the actual user MasterPass
+ * MasterPassKey is a derived key from the actual user MasterPass
  ******************************/
 
 const MasterPassKey = (function () {
