@@ -13,11 +13,9 @@ nvm use "$NODE_VERSION"
 node --version
 npm --version
 
-npm install gulp -g
 npm install electron-packager -g
 npm install --no-optional
 
-gulp compile-less
 npm test
 
 # if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then

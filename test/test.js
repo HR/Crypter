@@ -62,17 +62,6 @@ describe("Crypter Core Modules' tests", function () {
 
   const t1path = `${global.paths.tmp}/test.txt`
 
-  // Before all tests have run
-  before(function () {
-    global.execute = function (command, callback) {
-      return new Promise(function (resolve, reject) {
-        exec(command, function (err, stdout, stderr) {
-          resolve(stdout)
-        })
-      })
-    }
-  })
-
   // After all tests have run
   after(function () {
     fs.removeSync(global.paths.tmp)
@@ -162,162 +151,6 @@ describe("Crypter Core Modules' tests", function () {
               expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
             })
         })
-      // TODO: test cipher error
-      // it('throw cipher error when masterpass is not passed', function () {
-      //   return crypto.encrypt(t1path, `${t1path.crypto}`, '$')
-      //     .catch((err) => {
-      //       expect(err).to.be.an('error')
-      //       expect(err.message).to.equal("ENOENT: no such ")
-      //     })
-      // })
-      })
-    })
-  })
-
-  /**
-   * Db module.js
-   ******************************/
-  describe('Db module', function () {
-    let db
-    let putValue = function (key, value) {
-      return new Promise(function (resolve, reject) {
-        db.put(key, value, function (err) {
-          if (err) reject(err) // db save error
-          resolve()
-        })
-      })
-    }
-    let close = function (key, value) {
-      return new Promise(function (resolve, reject) {
-        db.put(key, value, function (err) {
-          if (err) reject(err) // db save error
-          resolve()
-        })
-      })
-    }
-    beforeEach(function () {
-      return new Promise(function(resolve, reject) {
-        db = new Db(`${global.paths.tmp}/db`)
-        global.testo = {
-          'RAND0M-ID3': {
-            name: 'crypto',
-            id: 22,
-            secure: true
-          }
-        }
-        resolve()
-      })
-    })
-    afterEach(function () {
-      return new Promise(function(resolve, reject) {
-        db.close()
-        resolve()
-      })
-    })
-    it('should save and restore obj', function () {
-      const beforeSaveObj = _.cloneDeep(global.testo)
-      return db.saveGlobalObj('testo')
-        .then(() => {
-          global.testo = null
-          return db.restoreGlobalObj('testo')
-        })
-        .then(() => {
-          expect(global.testo)
-            .to.deep.equal(beforeSaveObj)
-          return
-        })
-        .catch((err) => {
-          throw (err)
-        })
-    })
-
-    it('should save and restore obj persistently', function () {
-      const beforeSaveObj = _.cloneDeep(global.testo)
-      return db.saveGlobalObj('testo')
-        .then(() => {
-          global.testo = null
-          db.close()
-          db = new Db(`${global.paths.tmp}/db`)
-          return db.restoreGlobalObj('testo')
-        })
-        .then(() => {
-          expect(global.testo)
-            .to.deep.equal(beforeSaveObj)
-          return
-        })
-        .catch((err) => {
-          throw (err)
-        })
-    })
-
-    describe('onlyGetValue', () => {
-      it('should resolve value if key exists', function () {
-        return putValue('key', 'value')
-          .then(() => {
-            return db.onlyGetValue('key')
-          }).then((value) => {
-            expect(value).to.equal('value')
-          })
-          .catch((err) => {
-            throw err
-          })
-      })
-      it('should resolve null if key not found', function () {
-        return db.onlyGetValue('notExist')
-          .then((token) => {
-            expect(token).to.equal(false)
-          })
-      })
-      it('should resolve null if key not found', function () {
-        return db.onlyGetValue('')
-          .catch((err) => {
-            // expect(err instanceof ReadError).to.be.true
-            expect(err.message).to.equal('key cannot be an empty String')
-          })
-      })
-    })
-
-    describe('restoreGlobalObj', () => {
-      it('should not save global object if empty', function () {
-        global.b = {}
-        return db.saveGlobalObj('b')
-          .then(() => {
-          })
-          .catch((err) => {
-            throw err
-          })
-      })
-      it('should throw error when global obj to save is undefined', function () {
-        global.g = {}
-        global.g.a = {
-          b: global.g
-        }
-        return db.saveGlobalObj('g')
-          .catch((err) => {
-            expect(err).to.be.an('error')
-            expect(err.message).to.equal('Converting circular structure to JSON')
-          })
-      })
-    })
-
-    describe('saveGlobalObj', () => {
-      it('should throw error when global object not exist', function () {
-        return db.restoreGlobalObj('fake')
-          .catch((err) => {
-            expect(err.notFound).to.be.true
-            expect(err.status).to.equal(404)
-          })
-      })
-
-      it('should throw error when JSON fails to parse', function () {
-        return putValue('s', 'i')
-          .then(() => {
-            return db.restoreGlobalObj('s')
-          })
-          .catch((err) => {
-            expect(err).to.be.an('error')
-            expect(err.message).to.equal('Unexpected token i')
-          })
       })
     })
   })
@@ -411,6 +244,153 @@ describe("Crypter Core Modules' tests", function () {
       const MPK = new MasterPassKey()
       expect(MPK.set('pass')).to.be.an('error')
       expect(MPK.set().message).to.equal('MasterPassKey not a Buffer')
+    })
+  })
+
+  /**
+   * Db module.js
+   ******************************/
+  describe('Db module', function () {
+    let db
+    let putValue = function (key, value) {
+      return new Promise(function (resolve, reject) {
+        db.put(key, value, function (err) {
+          if (err) reject(err) // db save error
+          resolve()
+        })
+      })
+    }
+    let close = function (key, value) {
+      return new Promise(function (resolve, reject) {
+        db.put(key, value, function (err) {
+          if (err) reject(err) // db save error
+          resolve()
+        })
+      })
+    }
+    beforeEach(function () {
+      db = new Db(`${global.paths.tmp}/db`)
+      global.testo = {
+        'RAND0M-ID3': {
+          name: 'crypto',
+          id: 22,
+          secure: true
+        }
+      }
+    })
+    afterEach(function () {
+      db.close()
+      resolve()
+    })
+    it('should save and restore obj', function () {
+      const beforeSaveObj = _.cloneDeep(global.testo)
+      return db.saveGlobalObj('testo')
+        .then(() => {
+          global.testo = null
+          return db.restoreGlobalObj('testo')
+        })
+        .then(() => {
+          expect(global.testo)
+            .to.deep.equal(beforeSaveObj)
+          return
+        })
+        .catch((err) => {
+          throw (err)
+        })
+    })
+
+    it('should save and restore obj persistently', function () {
+      const beforeSaveObj = _.cloneDeep(global.testo)
+      return db.saveGlobalObj('testo')
+        .then(() => {
+          global.testo = null
+          db.close()
+          db = new Db(`${global.paths.tmp}/db`)
+          return db.restoreGlobalObj('testo')
+        })
+        .then(() => {
+          expect(global.testo)
+            .to.deep.equal(beforeSaveObj)
+          return
+        })
+        .catch((err) => {
+          throw (err)
+        })
+    })
+
+    describe('onlyGetValue', () => {
+      it('should resolve value if key exists', function () {
+        return putValue('key', 'value')
+          .then(() => {
+            return db.onlyGetValue('key')
+          }).then((value) => {
+          expect(value).to.equal('value')
+        })
+          .catch((err) => {
+            throw err
+          })
+      })
+      it('should resolve null if key not found', function () {
+        return db.onlyGetValue('notExist')
+          .then((token) => {
+            expect(token).to.equal(false)
+          })
+      })
+      it('should resolve null if key not found', function () {
+        return db.onlyGetValue('')
+          .catch((err) => {
+            // expect(err instanceof ReadError).to.be.true
+            expect(err.message).to.equal('key cannot be an empty String')
+          })
+      })
+    })
+
+    describe('restoreGlobalObj', () => {
+      it('should not save global object if empty', function () {
+        global.b = {}
+        return db.saveGlobalObj('b')
+          .then(() => {
+          })
+          .catch((err) => {
+            throw err
+          })
+      })
+      it('should throw error when global obj to save is undefined', function () {
+        global.g = {}
+        global.g.a = {
+          b: global.g
+        }
+        return db.saveGlobalObj('g')
+          .then(() => {
+            db.close()
+          })
+          .catch((err) => {
+            db.close()
+            expect(err).to.be.an('error')
+            expect(err.message).to.equal('Converting circular structure to JSON')
+          })
+      })
+    })
+
+    describe('saveGlobalObj', () => {
+      it('should throw error when global object not exist', function () {
+        return db.restoreGlobalObj('fake')
+          .catch((err) => {
+            expect(err.notFound).to.be.true
+            expect(err.status).to.equal(404)
+          })
+      })
+
+      it('should throw error when JSON fails to parse', function () {
+        return putValue('s', 'i')
+          .then(() => {
+            return db.restoreGlobalObj('s')
+          })
+          .catch((err) => {
+            expect(err).to.be.an('error')
+            expect(err.message).to.equal('Unexpected token i')
+          })
+      })
     })
   })
 })
