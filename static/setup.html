@@ -59,7 +59,7 @@
           <section id="masterpassprompt">
             <header>
               <div class="banner">
-                <img class="himg" src="images/icons/masterpass.svg" alt=""/>
+                <img class="himg" src="images/icons/masterpass.svg"/>
               </div>
               <h1>Set a MasterPass for encryption</h1>
               <img class="info" src="images/icons/info.svg" alt=""/>
@@ -82,11 +82,9 @@
     <script type="text/javascript">
       'use strict'
       window.$ = window.jQuery = require('jquery')
-      var remote = require('electron').remote
-      var ipcRenderer = require('electron').ipcRenderer
-      var webContents = remote.getCurrentWebContents()
-      var logger = require('../script/logger.js')
-      var errLabel
+      // load interprocess communication module
+      const ipcRenderer = require('electron').ipcRenderer
+      var errLabel = $('label[for="password"]').first()
       const DONE_TIMEOUT = 5000
       const SPEED = 5000
       const OFFSET = SPEED * 0.8
@@ -106,29 +104,36 @@
 
       /* Encryption animation */
       $(window).load(function() {
-        /* Variable assignments */
-        errLabel = $('label[for="password"]').first()
         /* Navigation */
         errLabel.hide().css('color', COLORS.bad)
+        // attach event listner to every element with class navigationLink
         $('.navigationLink').each(function(index) {
           $(this).click(function() {
-            // on click call navigate() with the elements data-target value
+            // when the element is clicked
+            // call navigate() with the elements data-target value
             navigate(this.getAttribute('data-target'))
           })
         })
 
-        //
+        // navigate to welcome screen by default
         navigate('welcome')
 
-        // add click event listner to setMasterPass button
+        // attach click event listner to setMasterPass button
         $('#setMasterPass').click(function() {
+          // Event handler function
+          // retrieve the masterpass input value
           var MasterPass = $('input#setMasterPassInput').val()
-          if (MP_REGEX.test(MasterPass)) {
-            ipcRenderer.send('setMasterPass', MasterPass)
-          } else if (!MasterPass) {
+
+          if (!MasterPass) {
+            // MP is empty, set errLabel text to response for empty
+            // and show errLabel
             errLabel.text(RESPONSES.empty).show()
+          } else if (MP_REGEX.test(MasterPass)) {
+            // MP is valid, send the masterpass to controller function
+            ipcRenderer.send('setMasterPass', MasterPass)
           } else {
-            console.log('invalid')
+            // MP is invalid, set errLabel text to response for invalid
+            // and show errLabel
             errLabel.text(RESPONSES.invalid).show()
           }
         })
@@ -143,12 +148,12 @@
       })
 
       /* Helper functions */
-      function navigate(panelID) {
-        var oldSel = $('.panel-container > div.current')
-        var sel = $(`#panel-${panelID}`)
-        $('.current button').hide()
-        oldSel.removeClass('current')
-        sel.addClass('current')
+      function navigate(panelName) {
+        var oldSel = $('.panel-container > div.current') // current panel
+        var sel = $(`#panel-${panelName}`) // panel to navigate to
+        // $('.current button').hide()
+        oldSel.removeClass('current') // apply hide styling
+        sel.addClass('current') // apply show styling
       }
 
       ipcRenderer.on('setMasterPassResult', function(event, err) {
