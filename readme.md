@@ -13,11 +13,11 @@ tested on OSX.
 All of the UI and functionality has been implemented. All internal modules are
 fully tested (100% coverage).
 
-## Screens
-Some of them
-![alt text](/github/Crypter_screen.png)
-![alt text](/github/MasterPass_screen.png)
-
+## Screens (some of them)
+<p align="center">
+  <img src="/github/Crypter_screen.png?raw=true" alt="Crypter app icon" width="400">
+  <img src="/github/MasterPass_screen.png?raw=true" alt="Crypter app icon" width="400">
+</p>
 
 ## Crypto
 > One key to to derive them all!
