@@ -2,15 +2,18 @@ const gulp = require('gulp')
 const shell = require('gulp-shell')
 const babel = require('gulp-babel')
 const env = require('gulp-env')
+const less = require('gulp-less')
+const path = require('path')
 const jeditor = require("gulp-json-editor")
 const istanbul = require('gulp-babel-istanbul')
 const injectModules = require('gulp-inject-modules')
 const mocha = require('gulp-mocha')
+const LessPluginCleanCSS = require('less-plugin-clean-css')
+const cleancss = new LessPluginCleanCSS({ advanced: true })
 
-gulp.task('default', shell.task([
+gulp.task('default', ['less'], shell.task([
   // Absolute path '/usr/local/lib/node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .'
   // Run electron
-  // TODO: add compile less bash command > "for i in static/style/*.less do lessc $i ${i:0:${#i} - 5}.css done"
   // 'ELECTRON_RUN_AS_NODE=true node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron node_modules/node-inspector/bin/inspector.js'
   'unset TEST_RUN && node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron --debug=5858 .'
 // 'node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron --debug-brk=5858 .'
@@ -23,7 +26,7 @@ gulp.task('coverage', function (cb) {
   gulp.src('src/**/*.js')
     .pipe(envs)
     .pipe(istanbul())
-    .pipe(istanbul.hookRequire()) // or you could use .pipe(injectModules())
+    .pipe(istanbul.hookRequire())
     .on('finish', function () {
       gulp.src('test/*.js')
         .pipe(babel())
@@ -32,6 +35,15 @@ gulp.task('coverage', function (cb) {
         .pipe(istanbul.writeReports())
         .on('end', cb)
     })
+})
+
+gulp.task('less', function () {
+  return gulp.src('./static/style/*.less')
+    .pipe(less({
+      paths: [ path.join(__dirname, 'less', 'includes') ],
+      plugins: [cleancss]
+    }))
+    .pipe(gulp.dest('./static/style/'))
 })
 
 gulp.task('rebuildni', shell.task([
@@ -57,21 +69,6 @@ gulp.task('driver', shell.task([
 gulp.task('test', shell.task([
   // Run test stuff
   'mocha --compilers js:babel-core/register test/'
-]))
-
-gulp.task('ntest', shell.task([
-  // Run test stuff
-  'mocha --reporter nyan --compilers js:babel-core/register'
-]))
-
-gulp.task('cov', shell.task([
-  // Run test stuff
-  './node_modules/.bin/babel-node ./node_modules/.bin/isparta cover --root src/ ./node_modules/.bin/_mocha'
-]))
-
-gulp.task('lcov', shell.task([
-  // Run test stuff
-  './node_modules/.bin/babel-node ./node_modules/.bin/isparta cover --root src/ ./node_modules/.bin/_mocha --reporter mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js'
 ]))
 
 gulp.task('watch', function () {

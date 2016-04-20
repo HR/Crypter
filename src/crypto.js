@@ -28,20 +28,20 @@ let defaults = {
 }
 
 exports.crypt = function (origpath, masterpass) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     // the destination path for encrypted file
     let destpath = `${origpath}.crypto`
     exports.encrypt(origpath, destpath, masterpass)
       .then((creds) => {
-          var file = {}
-          file.name = path.basename(origpath)
-          file.path = origpath
-          file.cryptPath = destpath
-          file.salt = creds.salt.toString('hex') // Convert salt used to derivekey to hex string
-          file.key = creds.key.toString('hex') // Convert dervived key to hex string
-          file.iv = creds.iv.toString('hex') // Convert iv to hex string
-          file.authTag = creds.tag.toString('hex') // Convert authTag to hex string
-          resolve(file)
+        var file = {}
+        file.name = path.basename(origpath)
+        file.path = origpath
+        file.cryptPath = destpath
+        file.salt = creds.salt.toString('hex') // Convert salt used to derivekey to hex string
+        file.key = creds.key.toString('hex') // Convert dervived key to hex string
+        file.iv = creds.iv.toString('hex') // Convert iv to hex string
+        file.authTag = creds.tag.toString('hex') // Convert authTag to hex string
+        resolve(file)
       })
       .catch((err) => {
         reject(err)
@@ -52,76 +52,48 @@ exports.crypt = function (origpath, masterpass) {
 exports.encrypt = function (origpath, destpath, mpkey) {
   // decrypts any arbitrary data passed with the pass
   return new Promise(function (resolve, reject) {
-    const salt = crypto.randomBytes(defaults.keyLength) // generate pseudorandom salt
-    crypto.pbkdf2(mpkey, salt, defaults.iterations, defaults.keyLength, defaults.digest, (err, key) => {
-      if (err) {
-        // return error to callback YOLO#101
-        reject(err)
-      }
-      const origin = fs.createReadStream(origpath)
-      const dest = fs.createWriteStream(destpath)
-      const iv = crypto.randomBytes(defaults.ivLength) // generate pseudorandom iv
-      const cipher = crypto.createCipheriv(defaults.algorithm, key, iv)
+    exports.deriveKey(mpkey)
+      .then((dcreds) => {
+        const origin = fs.createReadStream(origpath)
+        const dest = fs.createWriteStream(destpath)
+        const iv = crypto.randomBytes(defaults.ivLength) // generate pseudorandom iv
+        const cipher = crypto.createCipheriv(defaults.algorithm, dcreds.key, iv)
 
-      origin.pipe(cipher).pipe(dest)
+        origin.pipe(cipher).pipe(dest)
 
-      cipher.on('error', () => {
-        reject(err)
-      })
+        origin.on('error', (err) => {
+          reject(err)
+        })
 
-      origin.on('error', () => {
-        reject(err)
-      })
+        dest.on('error', (err) => {
+          reject(err)
+        })
 
-      dest.on('error', () => {
-        reject(err)
-      })
-
-      dest.on('finish', () => {
-        const tag = cipher.getAuthTag()
-        resolve({
-          salt: salt,
-          key: key,
-          iv: iv,
-          tag: tag
+        dest.on('finish', () => {
+          const tag = cipher.getAuthTag()
+          resolve({
+            salt: dcreds.salt,
+            key: dcreds.key,
+            iv: iv,
+            tag: tag
+          })
         })
       })
-
-    })
+      .catch((err) => {
+         // reject if error occured while deriving key
+         reject(err)
+      })
   })
-
 }
 
-// exports.genIV = function () {
-//   return new Promise(function (resolve, reject) {
-//     try {
-//       const iv = crypto.randomBytes(defaults.ivLength) // Synchronous gen
-//       resolve(iv)
-//     } catch (err) {
-//       reject(err)
-//     }
-//   })
-// }
-//
-// exports.genSalt = function () {
-//   return new Promise(function (resolve, reject) {
-//     try {
-//       const salt = crypto.randomBytes(defaults.keyLength) // Synchronous gen
-//       resolve(salt)
-//     } catch (err) {
-//       reject(err)
-//     }
-//   })
-// }
-
-exports.derivePassKey = function (pass, psalt) {
-  return new Promise(function(resolve, reject) {
-    if (!pass) reject(new Error('MasterPassKey not provided'))
-      // If psalt is provided
+exports.deriveKey = function (pass, psalt) {
+  return new Promise(function (resolve, reject) {
+    // reject with error if pass not provided
+    if (!pass) reject(new Error('Pass to derive key from not provided'))
+    // If psalt is provided
     const salt = (psalt) ? ((psalt instanceof Buffer) ? psalt : new Buffer(psalt.data)) : crypto.randomBytes(defaults.keyLength)
     crypto.pbkdf2(pass, salt, defaults.mpk_iterations, defaults.keyLength, defaults.digest, (err, key) => {
       if (err) reject(err)
-
       resolve({key: key, salt: salt})
     })
   })
@@ -129,7 +101,7 @@ exports.derivePassKey = function (pass, psalt) {
 
 // create a sha256 hash of the MasterPassKey
 exports.genPassHash = function (masterpass, salt, callback) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     const pass = (masterpass instanceof Buffer) ? masterpass.toString('hex') : masterpass
 
     if (salt) {

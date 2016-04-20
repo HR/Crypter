@@ -18,11 +18,12 @@ console.log(`__dirname: ${__dirname}`)
 
 describe("Crypter Core Modules' tests", function () {
   global.paths = {
-    mdb: path.join(__dirname,'/tmp/mdb'),
-    tmp: path.join(__dirname,'/tmp')
+    mdb: path.join(__dirname, '/tmp/mdb'),
+    tmp: path.join(__dirname, '/tmp')
   }
-  console.log(require('util').inspect(global.paths, { depth: null }))
-
+  console.log(require('util').inspect(global.paths, {
+    depth: null
+  }))
 
   global.defaults = {
     iterations: 4096, // file encryption key iterations
@@ -60,6 +61,7 @@ describe("Crypter Core Modules' tests", function () {
   global.mdb = new Db(global.paths.mdb)
 
   const t1path = `${global.paths.tmp}/test.txt`
+
   // Before all tests have run
   before(function () {
     global.execute = function (command, callback) {
@@ -76,7 +78,6 @@ describe("Crypter Core Modules' tests", function () {
     fs.removeSync(global.paths.tmp)
   })
 
-
   /** Crypto module.js
    ******************************/
 
@@ -85,52 +86,90 @@ describe("Crypter Core Modules' tests", function () {
       fs.writeFileSync(t1path, '#Crypter', 'utf8')
     })
 
-    describe('Hashing & deriving', function () {
+    describe('deriveKey & genPassHash', function () {
       const masterpass = 'crypto#101'
-      it('should derivePassKey using a MasterPass correctly when salt is buffer', function () {
+      it('should deriveKey using a MasterPass correctly when salt is buffer', function () {
         let mpkey
-        return crypto.derivePassKey(masterpass, null)
+        return crypto.deriveKey(masterpass, null)
           .then((dmp) => {
             mpkey = dmp.key
-            return crypto.derivePassKey(masterpass, dmp.salt)
+            return crypto.deriveKey(masterpass, dmp.salt)
           })
           .then((dmp) => {
-            expect(dmp.key.toString('hex'))
-              .to.equal(mpkey.toString('hex'))
+            expect(dmp.key.toString('hex')).to.equal(mpkey.toString('hex'))
           })
       })
 
-      it('should derivePassKey using a MasterPass correctly with persistent salt', function () {
+      it('should deriveKey using a MasterPass correctly with persistent salt', function () {
         let mpkey
-        return crypto.derivePassKey(masterpass, null)
+        return crypto.deriveKey(masterpass, null)
           .then((dmp) => {
             const pdmpsalt = JSON.parse(JSON.stringify(dmp.salt))
             mpkey = dmp.key
-            return crypto.derivePassKey(masterpass, pdmpsalt)
+            return crypto.deriveKey(masterpass, pdmpsalt)
           })
           .then((dmp) => {
-            expect(dmp.key.toString('hex'))
-              .to.equal(mpkey.toString('hex'))
+            expect(dmp.key.toString('hex')).to.equal(mpkey.toString('hex'))
           })
       })
     })
 
     describe('Encryption', function () {
-      it('should encrypt file with pass without errors & have all expected creds', function () {
-        before(function () {
-          fs.writeFileSync(t1path, '#Crypter', 'utf8')
+      before(function () {
+        fs.writeFileSync(t1path, '#Crypter', 'utf8')
+      })
+      describe('crypt promise', function () {
+        it('should encrypt file with pass without errors & have all expected creds', function () {
+          return crypto.crypt(t1path, global.MasterPassKey.get())
+            .then((file) => {
+              expect(file).not.be.empty
+              expect(file.path).to.equal(t1path)
+              expect(file.cryptPath).to.equal(`${t1path}.crypto`)
+              expect(file.iv).not.be.empty
+              expect(file.salt).not.be.empty
+              expect(file.key).not.be.empty
+              expect(file.iv).not.be.empty
+              expect(file.authTag).not.be.empty
+            })
         })
-        return crypto.crypt(t1path, global.MasterPassKey.get())
-          .then((file) => {
-            expect(file).not.be.empty
-            expect(file.path).to.equal(t1path)
-            expect(file.cryptPath).to.equal(`${t1path}.crypto`)
-            expect(file.iv).not.be.empty
-            expect(file.salt).not.be.empty
-            expect(file.key).not.be.empty
-            expect(file.iv).not.be.empty
-            expect(file.authTag).not.be.empty
-          })
+        it('throw error when pass not supplied', function () {
+          return crypto.crypt(t1path)
+            .catch((err) => {
+              expect(err).to.be.an('error')
+              expect(err.message).to.equal('Pass to derive key from not provided')
+            })
+        })
+        it('throw error when empty destination path to encrypt is passed', function () {
+          return crypto.crypt('', global.MasterPassKey.get())
+            .catch((err) => {
+              expect(err).to.be.an('error')
+              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
+            })
+        })
+      })
+      describe('encrypt promise', function () {
+        it('throw origin error when empty filepath to encrypt is passed', function () {
+          return crypto.encrypt('', '', global.MasterPassKey.get())
+            .catch((err) => {
+              expect(err).to.be.an('error')
+              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
+            })
+        })
+        it('throw dest error when empty destination path to encrypt is passed', function () {
+          return crypto.encrypt(t1path, '', global.MasterPassKey.get())
+            .catch((err) => {
+              expect(err).to.be.an('error')
+              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
+            })
+        })
+      // TODO: test cipher error
+      // it('throw cipher error when masterpass is not passed', function () {
+      //   return crypto.encrypt(t1path, `${t1path.crypto}`, '$')
+      //     .catch((err) => {
+      //       expect(err).to.be.an('error')
+      //       expect(err.message).to.equal("ENOENT: no such ")
+      //     })
+      // })
       })
     })
   })
@@ -140,6 +179,14 @@ describe("Crypter Core Modules' tests", function () {
    ******************************/
   describe('Db module', function () {
     let db
+    let putValue = function (key, value) {
+      return new Promise(function (resolve, reject) {
+        db.put(key, value, function (err) {
+          if (err) reject(err) // db save error
+          resolve()
+        })
+      })
+    }
     beforeEach(function () {
       db = new Db(`${global.paths.tmp}/db`)
       global.testo = {
@@ -149,6 +196,9 @@ describe("Crypter Core Modules' tests", function () {
           secure: true
         }
       }
+    })
+    afterEach(function () {
+      db.close()
     })
     it('should save and restore obj', function () {
       const beforeSaveObj = _.cloneDeep(global.testo)
@@ -160,7 +210,6 @@ describe("Crypter Core Modules' tests", function () {
         .then(() => {
           expect(global.testo)
             .to.deep.equal(beforeSaveObj)
-          db.close()
           return
         })
         .catch((err) => {
@@ -180,7 +229,6 @@ describe("Crypter Core Modules' tests", function () {
         .then(() => {
           expect(global.testo)
             .to.deep.equal(beforeSaveObj)
-          db.close()
           return
         })
         .catch((err) => {
@@ -188,24 +236,79 @@ describe("Crypter Core Modules' tests", function () {
         })
     })
 
-    it('should return null if key not found for onlyGetValue', function () {
-      return db.onlyGetValue('notExist')
-        .then((token) => {
-          expect(token)
-            .to.equal(false)
-          db.close()
-        })
+    describe('onlyGetValue', () => {
+      it('should resolve value if key exists', function () {
+        return putValue('key', 'value')
+          .then(() => {
+            return db.onlyGetValue('key')
+          }).then((value) => {
+            expect(value).to.equal('value')
+          })
+          .catch((err) => {
+            throw err
+          })
+      })
+      it('should resolve null if key not found', function () {
+        return db.onlyGetValue('notExist')
+          .then((token) => {
+            expect(token).to.equal(false)
+          })
+      })
+      it('should resolve null if key not found', function () {
+        return db.onlyGetValue('')
+          .catch((err) => {
+            // expect(err instanceof ReadError).to.be.true
+            expect(err.message).to.equal('key cannot be an empty String')
+          })
+      })
     })
 
-    it('should throw error when global object not exist for restoreGlobalObj', function () {
-      return db.restoreGlobalObj('fake')
-        .catch((err) => {
-          expect(err.notFound).to.be.true
-          expect(err.status).to.equal(404)
-          db.close()
-        })
+    describe('restoreGlobalObj', () => {
+      it('should not save global object if empty', function () {
+        global.b = {}
+        return db.saveGlobalObj('b')
+          .then(() => {
+          })
+          .catch((err) => {
+            throw err
+          })
+      })
+      it('should throw error when global obj to save is undefined', function () {
+        global.g = {}
+        global.g.a = {
+          b: global.g
+        }
+        return db.saveGlobalObj('g')
+          .then(() => {
+            db.close()
+          })
+          .catch((err) => {
+            expect(err).to.be.an('error')
+            expect(err.message).to.equal('Converting circular structure to JSON')
+          })
+      })
     })
 
+    describe('saveGlobalObj', () => {
+      it('should throw error when global object not exist', function () {
+        return db.restoreGlobalObj('fake')
+          .catch((err) => {
+            expect(err.notFound).to.be.true
+            expect(err.status).to.equal(404)
+          })
+      })
+
+      it('should throw error when JSON fails to parse', function () {
+        return putValue('s', 'i')
+          .then(() => {
+            return db.restoreGlobalObj('s')
+          })
+          .catch((err) => {
+            expect(err).to.be.an('error')
+            expect(err.message).to.equal('Unexpected token i')
+          })
+      })
+    })
   })
   /**
    * Util module.js
@@ -217,16 +320,18 @@ describe("Crypter Core Modules' tests", function () {
       fs.writeFileSync(t1path, t1data, 'utf8')
     })
 
-    it('should check if file exists', function (done) {
-      expect(util.checkDirectorySync('./'))
-        .to.be.true
-      expect(util.checkFileSync('any.file'))
-        .to.be.false
-      expect(util.checkFileSync('anydir/file'))
-        .to.be.false
-      expect(util.checkFileSync('anydir'))
-        .to.be.false
-      done()
+    describe('checkFileSync and checkDirectorySync', function () {
+      it('should check if file exists', function (done) {
+        expect(util.checkDirectorySync('./'))
+          .to.be.true
+        expect(util.checkFileSync('any.file'))
+          .to.be.false
+        expect(util.checkFileSync('anydir/file'))
+          .to.be.false
+        expect(util.checkFileSync('anydir'))
+          .to.be.false
+        done()
+      })
     })
   })
 
@@ -250,12 +355,21 @@ describe("Crypter Core Modules' tests", function () {
         })
     })
 
-    it('should throw error if not provided or undefined', function () {
+    it('should throw error if not provided when checking', function () {
       const pass = ''
       return MasterPass.check(pass)
         .catch((err) => {
           expect(err).to.be.an('error')
-          expect(err.message).to.equal('MasterPassKey not provided')
+          expect(err.message).to.equal('Pass to derive key from not provided')
+        })
+    })
+
+    it('should throw error if not provided when setting', function () {
+      const pass = ''
+      return MasterPass.set(pass)
+        .catch((err) => {
+          expect(err).to.be.an('error')
+          expect(err.message).to.equal('Pass to derive key from not provided')
         })
     })
   })

@@ -72,6 +72,7 @@ app.on('ready', function () {
 
        setupWindow()
          .then(() => {
+           logger.info('MAIN Setup successfully completed. quitting...')
            // setup successfully completed
            app.quit()
          })
@@ -109,7 +110,7 @@ app.on('will-quit', (event) => {
 })
 
 /**
- * Promises
+ * Promisification of windows
  **/
 
 // Creates the crypter window
@@ -125,10 +126,8 @@ let setupWindow = function () {
  return new Promise(function (resolve, reject) {
    SetupWindow(function (err) {
      if (err) {
-       logger.error(err)
        reject(err)
      } else {
-       logger.info('MAIN Setup successfully completed. quitting...')
        resolve()
      }
    })

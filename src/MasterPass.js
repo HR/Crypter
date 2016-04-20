@@ -10,7 +10,7 @@ const _ = require('lodash')
 
 exports.check = function (masterpass) {
   return new Promise(function(resolve, reject) {
-    crypto.derivePassKey(masterpass, global.creds.mpsalt)
+    crypto.deriveKey(masterpass, global.creds.mpsalt)
       .then((mpk) => {
         return crypto.genPassHash(mpk.key, global.creds.mpksalt)
       })
@@ -29,7 +29,7 @@ exports.check = function (masterpass) {
 
 exports.set = function (masterpass) {
   return new Promise(function(resolve, reject) {
-    crypto.derivePassKey(masterpass, null)
+    crypto.deriveKey(masterpass, null)
       .then((mpk) => {
         global.creds.mpsalt = mpk.salt
         return crypto.genPassHash(mpk.key, null)
@@ -40,6 +40,7 @@ exports.set = function (masterpass) {
         resolve(mpk.key)
       })
       .catch((err) => {
+        // reject if error occurs
         reject(err)
       })
   })

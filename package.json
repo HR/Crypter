@@ -71,9 +71,11 @@
     "gulp-env": "^0.4.0",
     "gulp-inject-modules": "^0.1.1",
     "gulp-json-editor": "^2.2.1",
+    "gulp-less": "^3.0.5",
     "gulp-mocha": "^2.2.0",
     "gulp-shell": "*",
     "isparta": "^4.0.0",
+    "less-plugin-clean-css": "^1.5.1",
     "mocha-lcov-reporter": "^1.2.0",
     "spectron": "^1.37.0",
     "standard": "^6.0.8"

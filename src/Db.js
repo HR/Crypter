@@ -31,14 +31,16 @@ Db.prototype.saveGlobalObj = function (objName) {
     // If object not empty then save it in db
     if (!(_.isEmpty(global[objName]))) {
       // stringify object and store as a string with objName as key
-      const serializedObj = JSON.stringify(global[objName])
-      self.put(objName, serializedObj, function (err) {
-        if (err) {
-          // I/O or other error, reject the promise
-          reject(err)
-        }
-        resolve()
-      })
+      try {
+        // wrap serialization of object around try catch as it could throw error
+        const serializedObj = JSON.stringify(global[objName])
+        self.put(objName, serializedObj, function (err) {
+          if (err) reject(err) // db save error
+          resolve()
+        })
+      } catch (err) {
+        reject(err)
+      }
     } else {
       // If object empty then do not save it
       resolve()
