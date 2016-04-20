@@ -183,6 +183,9 @@ describe("Crypter Core Modules' tests", function () {
    * MasterPass & MasterPassKey module.js
    ******************************/
   describe('MasterPass module', function () {
+    after(function () {
+      global.mdb.close()
+    })
     it('should set and check masterpass', function () {
       const pass = 'V1R3$1NNUM3RI$'
       var mpkey
@@ -268,24 +271,19 @@ describe("Crypter Core Modules' tests", function () {
         })
       })
     }
-    beforeEach(function () {
-      return new Promise(function(resolve, reject) {
-        db = new Db(`${global.paths.tmp}/db`)
-        global.testo = {
-          'RAND0M-ID3': {
-            name: 'crypto',
-            id: 22,
-            secure: true
-          }
+    before(() => {
+      global.testo = {
+        'RAND0M-ID3': {
+          name: 'crypto',
+          id: 22,
+          secure: true
         }
-        resolve()
-      })
+      }
+      db = new Db(`${global.paths.tmp}/db`)
     })
-    afterEach(function () {
-      return new Promise(function(resolve, reject) {
-        db.close()
-        resolve()
-      })
+
+    after(function () {
+      db.close()
     })
     it('should save and restore obj', function () {
       const beforeSaveObj = _.cloneDeep(global.testo)
@@ -365,11 +363,7 @@ describe("Crypter Core Modules' tests", function () {
           b: global.g
         }
         return db.saveGlobalObj('g')
-          .then(() => {
-            db.close()
-          })
           .catch((err) => {
-            db.close()
             expect(err).to.be.an('error')
             expect(err.message).to.equal('Converting circular structure to JSON')
           })
