@@ -196,14 +196,12 @@ function SetupWindow (callback) {
     height: 400,
     center: true,
     show: true,
-    titleBarStyle: 'hidden-inset'
-  // width: 580,
-  // height: 420
-  // resizable: false,
+    titleBarStyle: 'hidden-inset',
+    resizable: false
   })
 
-  let setupComplete = false
   let webContents = win.webContents
+  let error = null
   // loads setup.html view into the SetupWindow
   win.loadURL(global.views.setup)
   // win.openDevTools()
@@ -232,14 +230,14 @@ function SetupWindow (callback) {
       .catch((err) => {
         // Inform user of the error that occured while setting the MasterPass
         webContents.send('setMasterPassResult', err)
-        throw err
+        error = err
       })
   })
 
   ipc.on('done', function (event, masterpass) {
     logger.info('IPCMAIN: done emitted setup complete. Closing...')
-    // set setupComplete flag to true
-    setupComplete = true
+    // done with setup
+    error = null
     // close window (invokes 'closed') event
     win.close()
   })
@@ -247,13 +245,7 @@ function SetupWindow (callback) {
   win.on('closed', function () {
     logger.verbose('IPCMAIN: win.closed event emitted for setupWindow.')
     win = null
-    if (setupComplete) {
-      // User successfully completed the setup, report
-      callback(null)
-    } else {
-      // User quit the setup, report error
-      callback(new Error('SetupWindow did not finish successfully'))
-    }
+    callback((error) ? error : null)
   })
 }
 
