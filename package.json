@@ -26,7 +26,8 @@
     "coveralls": "node ./node_modules/.bin/coveralls < coverage/lcov.info",
     "codeclimate": "node ./node_modules/.bin/codeclimate-test-reporter < coverage/lcov.info",
     "productNameChange": "perl -pi -e 's/\"Crypter\"/\"CrypterTest\"/g' ./dest/CrypterTest-darwin-x64/CrypterTest.app/Contents/Resources/app/package.json && perl -pi -e 's/Crypter/CrypterTest/g' ./dest/CrypterTest-darwin-x64/CrypterTest.app/Contents/Resources/app/index.js",
-    "start": "./node_modules/gulp/bin/gulp.js",
+    "start": "./node_modules/.bin/electron .",
+    "wbuild": "chmod +x script/win-build.sh && script/win-build.sh",
     "build": "electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage)' --prune --asar --all --version=$(npm run electronVersion)"
   },
   "keywords": [

@@ -14,7 +14,7 @@ const cleancss = new LessPluginCleanCSS({ advanced: true })
 gulp.task('default', ['less'], shell.task([
   // Run electron
   // 'ELECTRON_RUN_AS_NODE=true node_modules/.bin/electron node_modules/node-inspector/bin/inspector.js'
-  'unset TEST_RUN && node_modules/.bin/electron --debug=5858 .'
+  'unset TEST_RUN && node_modules/.bin/electron .'
   // 'node_modules/.bin/electron --debug-brk=5858 .'
 ]))
 

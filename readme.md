@@ -33,7 +33,7 @@ the PBKDF2 key derivation algorithm from the MasterPass (see below for spec). It
 then derives very secure encryption keys that are used for the encryption of
 files from the MasterPassKey using the PBKDF2 key derivation algorithm again.
 This method allows for the generation of very secure encryption keys for data
-encryption. Moreover, by just (anywhere safely) storing the credentials used to
+encryption. Moreover, by just publicly storing the credentials used to
 derive the MasterPassKey and the salts used to derive the encryption keys you
 have the flexibility of deriving the encryption keys whenever you need to and
 not having to worry about storing them securely. All you have to do is remember
