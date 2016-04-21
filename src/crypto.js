@@ -52,30 +52,44 @@ exports.crypt = function (origpath, masterpass) {
 exports.encrypt = function (origpath, destpath, mpkey) {
   // decrypts any arbitrary data passed with the pass
   return new Promise(function (resolve, reject) {
+    // derive the encryption key
     exports.deriveKey(mpkey)
       .then((dcreds) => {
+        // readstream to read the (unencrypted) file
         const origin = fs.createReadStream(origpath)
+        // writestream to write (encrypted) file
         const dest = fs.createWriteStream(destpath)
-        const iv = crypto.randomBytes(defaults.ivLength) // generate pseudorandom iv
+        // generate a cryptographically secure random iv
+        const iv = crypto.randomBytes(defaults.ivLength)
+        // create the AES-256-GCM cipher with iv and derive encryption key
         const cipher = crypto.createCipheriv(defaults.algorithm, dcreds.key, iv)
 
+        // Read file, apply tranformation (encryption) to stream and
+        // then write stream to filesystem
         origin.pipe(cipher).pipe(dest)
 
+        // readstream error handler
         origin.on('error', (err) => {
+          // reject on readstream error
           reject(err)
         })
 
+        // writestream error handler
         dest.on('error', (err) => {
+          // reject on writestream
           reject(err)
         })
 
+        // writestream finish handler
         dest.on('finish', () => {
+          // get the generated Message Authentication Code
           const tag = cipher.getAuthTag()
+          // return all the credentials and parameters used for encryption
           resolve({
             salt: dcreds.salt,
             key: dcreds.key,
-            iv: iv,
-            tag: tag
+            iv,
+            tag
           })
         })
       })
@@ -91,10 +105,10 @@ exports.deriveKey = function (pass, psalt) {
     // reject with error if pass not provided
     if (!pass) reject(new Error('Pass to derive key from not provided'))
     // If psalt is provided
-    const salt = (psalt) ? ((psalt instanceof Buffer) ? psalt : new Buffer(psalt.data)) : crypto.randomBytes(defaults.keyLength)
+    const salt = (psalt) ? ((psalt instanceof Buffer) ? psalt : new Buffer(psalt)) : crypto.randomBytes(defaults.keyLength)
     crypto.pbkdf2(pass, salt, defaults.mpk_iterations, defaults.keyLength, defaults.digest, (err, key) => {
       if (err) reject(err)
-      resolve({key: key, salt: salt})
+      resolve({key, salt})
     })
   })
 }
@@ -106,11 +120,11 @@ exports.genPassHash = function (masterpass, salt, callback) {
 
     if (salt) {
       const hash = crypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
-      resolve({hash: hash, key: masterpass})
+      resolve({hash, key: masterpass})
     } else {
       const salt = crypto.randomBytes(defaults.keyLength).toString('hex')
       const hash = crypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
-      resolve({hash: hash, salt: salt, key: masterpass})
+      resolve({hash, salt, key: masterpass})
     }
   })
 }

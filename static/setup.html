@@ -67,7 +67,7 @@
             </header>
             <form onsubmit="return false;">
               <div class="masterpass">
-                <input type="password" id="setMasterPassInput" class="" placeholder="********"/>
+                <input type="password" id="setMasterPassInput" placeholder="********"/>
                 <label for="password" id="setMasterPassLabel"></label>
               </div>
               <button class="fancy" id="setMasterPass">SET</button>
@@ -149,21 +149,25 @@
 
       /* Helper functions */
       function navigate(panelName) {
-        var oldSel = $('.panel-container > div.current') // current panel
-        var sel = $(`#panel-${panelName}`) // panel to navigate to
+        var oldSel = $('.panel-container > div.current') // get current panel
+        var sel = $(`#panel-${panelName}`) // get panel to navigate to
         // $('.current button').hide()
         oldSel.removeClass('current') // apply hide styling
         sel.addClass('current') // apply show styling
       }
 
       ipcRenderer.on('setMasterPassResult', function(event, err) {
-        logger.verbose('IPCRENDER: setMasterPassResult emitted')
         if (err) {
+          // Display the error that occured when setting the MasterPass
           errLabel.text(`ERROR: ${err}`.toUpperCase())
           errLabel.show()
         } else {
+          // Display the MasterPass set success
           errLabel.text(RESPONSES.setSuccess).css('color', COLORS.good).show()
+          // Change note text to give further instruction and higlight it
           $('p.note').html(RESPONSES.done).css('color', COLORS.highlight)
+          // Invoke (setup) done event in main after 5 seconds
+          // So that user has time to comprehend the above change
           setTimeout(function() {
             ipcRenderer.send('done')
           }, DONE_TIMEOUT)

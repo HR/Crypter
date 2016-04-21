@@ -16,7 +16,7 @@
     "node": ">=4"
   },
   "scripts": {
-    "electronVersion": "node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron -v | sed s/\\v//g",
+    "electronVersion": "node_modules/.bin/electron -v | sed s/\\v//g",
     "test": "TEST_RUN=true mocha --compilers js:babel-core/register test/test.js",
     "xltest": "unset TEST_RUN && rm -rf ~/Library/Application\\ Support/CrypterTest && mocha --compilers js:babel-core/register ./test/ui/*.js",
     "xtest": "unset TEST_RUN && npm run xtestbuild && mocha --compilers js:babel-core/register ./test/ui/*.js",

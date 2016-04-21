@@ -190,29 +190,28 @@ function CrypterWindow (callback) {
 }
 
 function SetupWindow (callback) {
-  // creates a new BrowserWindow
+  // setup view controller
+
+  // creates the setup window
   let win = new BrowserWindow({
     width: 600,
-    height: 400,
+    height: 380,
     center: true,
     show: true,
     titleBarStyle: 'hidden-inset',
-    resizable: false
+    // resizable: false
   })
 
   let webContents = win.webContents
-  let error = null
+  let error
   // loads setup.html view into the SetupWindow
   win.loadURL(global.views.setup)
   // win.openDevTools()
 
-  webContents.on('will-navigate', function (event, url) {
-    logger.verbose(`IPCMAIN: will-navigate emitted URL: ${url}`)
-  })
-
   ipc.on('setMasterPass', function (event, masterpass) {
+    // setMasterPass event triggered by render proces
     logger.verbose('IPCMAIN: setMasterPass emitted Setting Masterpass...')
-    // derive MasterPassKey
+    // derive MasterPassKey, genPassHash and set creds globally
     MasterPass.set(masterpass)
       .then((mpkey) => {
         // set the derived MasterPassKey globally
@@ -235,8 +234,10 @@ function SetupWindow (callback) {
   })
 
   ipc.on('done', function (event, masterpass) {
+    // Dond event emotted from render process
     logger.info('IPCMAIN: done emitted setup complete. Closing...')
-    // done with setup
+    // Setup successfully finished
+    // therefore set error to nothing
     error = null
     // close window (invokes 'closed') event
     win.close()
@@ -244,7 +245,9 @@ function SetupWindow (callback) {
 
   win.on('closed', function () {
     logger.verbose('IPCMAIN: win.closed event emitted for setupWindow.')
+    // close window by setting it to nothing (null)
     win = null
+    // if error occured then send error back to callee else send null
     callback((error) ? error : null)
   })
 }
@@ -252,7 +255,7 @@ function SetupWindow (callback) {
 
 // exporting window to be used in MasterPass module
 function MasterPassPromptWindow (callback) {
-  let gotMP = false
+  let gotMP = false // init gotMP flag with false
   let error = null
   const CLOSE_TIMEOUT = 1000
   // creates a new BrowserWindow
@@ -311,8 +314,9 @@ function MasterPassPromptWindow (callback) {
 
   win.on('closed', function () {
     logger.info('win.closed event emitted for PromptWindow')
+    // send error and gotMP back to callee
     callback(error, gotMP)
-    // close the window
+    // close window by setting it to nothing (null)
     win = null
   })
 

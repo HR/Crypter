@@ -79,12 +79,16 @@ describe("Crypter Core Modules' tests", function () {
       const masterpass = 'crypto#101'
       it('should deriveKey using a MasterPass correctly when salt is buffer', function () {
         let mpkey
+        let mpsalt
         return crypto.deriveKey(masterpass, null)
           .then((dmp) => {
+            expect(dmp.salt instanceof Buffer).to.be.true
             mpkey = dmp.key
+            mpsalt = dmp.salt
             return crypto.deriveKey(masterpass, dmp.salt)
           })
           .then((dmp) => {
+            expect(dmp.salt).to.equal(mpsalt)
             expect(dmp.key.toString('hex')).to.equal(mpkey.toString('hex'))
           })
       })
@@ -98,6 +102,7 @@ describe("Crypter Core Modules' tests", function () {
             return crypto.deriveKey(masterpass, pdmpsalt)
           })
           .then((dmp) => {
+            expect(dmp.salt instanceof Buffer).to.be.true
             expect(dmp.key.toString('hex')).to.equal(mpkey.toString('hex'))
           })
       })
@@ -128,24 +133,10 @@ describe("Crypter Core Modules' tests", function () {
               expect(err.message).to.equal('Pass to derive key from not provided')
             })
         })
-        it('throw error when empty destination path to encrypt is passed', function () {
-          return crypto.crypt('', global.MasterPassKey.get())
-            .catch((err) => {
-              expect(err).to.be.an('error')
-              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
-            })
-        })
       })
       describe('encrypt promise', function () {
         it('throw origin error when empty filepath to encrypt is passed', function () {
-          return crypto.encrypt('', '', global.MasterPassKey.get())
-            .catch((err) => {
-              expect(err).to.be.an('error')
-              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
-            })
-        })
-        it('throw dest error when empty destination path to encrypt is passed', function () {
-          return crypto.encrypt(t1path, '', global.MasterPassKey.get())
+          return crypto.encrypt('', `${global.paths.tmp}`, global.MasterPassKey.get())
             .catch((err) => {
               expect(err).to.be.an('error')
               expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
