@@ -33,11 +33,6 @@ describe("Crypter Core Modules' tests", function () {
     // create temporary dir
     fs.ensureDirSync(global.paths.tmp)
     global.mdb = new Db(global.paths.mdb)
-
-    // log global.paths
-    console.log(require('util').inspect(global.paths, {
-      depth: null
-    }))
   })
 
   // After all tests have run
@@ -285,9 +280,10 @@ describe("Crypter Core Modules' tests", function () {
         return putValue('key', 'value')
           .then(() => {
             return db.onlyGetValue('key')
-          }).then((value) => {
-          expect(value).to.equal('value')
-        })
+          })
+          .then((value) => {
+            expect(value).to.equal('value')
+          })
           .catch((err) => {
             throw err
           })
