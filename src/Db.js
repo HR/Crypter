@@ -14,11 +14,13 @@ const util = require('util')
  * @param {location}:string the location at which the Db to create or is at
  */
 
-function Db (location) {
-  // If levelup Db already exists at the location, it opens the Db
-  // If no levelup Db exists at the location, it creates a new Db
+// Db class constructor
+function Db (path) {
+  // If levelup Db already exists at the path, it opens the Db
+  // If no levelup Db exists at the path, it creates a new Db
   // Calls the levelup constructor
-  levelup.call(this, location)
+  // this refers to the Db instance
+  levelup.call(this, path)
 }
 
 // Inherit all properties and methods from levelup superclass
@@ -73,7 +75,7 @@ Db.prototype.restoreGlobalObj = function (objName) {
 
 // Only get value for a key from Db if it exists otherwise return null
 Db.prototype.onlyGetValue = function (key) {
-  const self = this // get reference to th class instance
+  const self = this // get reference to the class instance
   return new Promise(function (resolve, reject) {
     self.get(key, function (err, value) { // get value of key from db
       if (err) {

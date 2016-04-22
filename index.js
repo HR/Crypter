@@ -9,7 +9,6 @@ const crypto = require('./src/crypto')
 const Db = require('./src/Db')
 const MasterPass = require('./src/MasterPass')
 const MasterPassKey = require('./src/_MasterPassKey')
-const init = require('./init')
 const _ = require('lodash')
 const logger = require('./script/logger')
 // change exec path
@@ -33,13 +32,41 @@ global.views = {
 }
 
 /**
+ * Promisification of initialisation
+ **/
+
+const init = function () {
+  return new Promise(function(resolve, reject) {
+    // initialise mdb
+    global.mdb = new Db(global.paths.mdb)
+    // Get the credentials serialized object from mdb
+    // Resolves with false if not found
+    resolve(global.mdb.onlyGetValue('creds'))
+  })
+}
+
+const initMain = function () {
+  logger.verbose(`PROMISE: Main initialisation`)
+  return new Promise(function (resolve, reject) {
+    // restore the creds object globally
+    global.mdb.restoreGlobalObj('creds')
+      .then(() => {
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
+/**
  * Event handlers
  **/
 
 // Main event handler
 app.on('ready', function () {
   // Check synchronously whether paths exist
-  init.run()
+  init()
    .then((mainRun) => {
      // If the credentials not find in mdb, run setup
      // otherwise run main
@@ -47,7 +74,7 @@ app.on('ready', function () {
        // Run main
        logger.info('Main run. Creating CrypterWindow...')
 
-       init.main() // Initialise (open mdb and get creds)
+       initMain() // Initialise (open mdb and get creds)
          .then(() => {
            // Obtain MasterPass, derive MasterPassKey and set globally
            return masterPassPromptWindow()

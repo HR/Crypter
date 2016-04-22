@@ -9,7 +9,7 @@ const fs = require('fs-extra')
 const util = require('./util')
 const path = require('path')
 const Readable = require('stream').Readable
-const crypto = require('crypto')
+const scrypto = require('crypto')
 
 // Crypto default constants
 // TODO: change accordingly when changed in settings
@@ -33,7 +33,9 @@ exports.crypt = function (origpath, masterpass) {
     let destpath = `${origpath}.crypto`
     exports.encrypt(origpath, destpath, masterpass)
       .then((creds) => {
+        // create a file object
         var file = {}
+        // extract file name from path
         file.name = path.basename(origpath)
         file.path = origpath
         file.cryptPath = destpath
@@ -60,9 +62,9 @@ exports.encrypt = function (origpath, destpath, mpkey) {
         // writestream to write (encrypted) file
         const dest = fs.createWriteStream(destpath)
         // generate a cryptographically secure random iv
-        const iv = crypto.randomBytes(defaults.ivLength)
+        const iv = scrypto.randomBytes(defaults.ivLength)
         // create the AES-256-GCM cipher with iv and derive encryption key
-        const cipher = crypto.createCipheriv(defaults.algorithm, dcreds.key, iv)
+        const cipher = scrypto.createCipheriv(defaults.algorithm, dcreds.key, iv)
 
         // Read file, apply tranformation (encryption) to stream and
         // then write stream to filesystem
@@ -104,26 +106,44 @@ exports.deriveKey = function (pass, psalt) {
   return new Promise(function (resolve, reject) {
     // reject with error if pass not provided
     if (!pass) reject(new Error('Pass to derive key from not provided'))
-    // If psalt is provided
-    const salt = (psalt) ? ((psalt instanceof Buffer) ? psalt : new Buffer(psalt)) : crypto.randomBytes(defaults.keyLength)
-    crypto.pbkdf2(pass, salt, defaults.mpk_iterations, defaults.keyLength, defaults.digest, (err, key) => {
+
+    // If psalt is provided and is a Buffer then assign it
+    // If psalt is provided and is not a Buffer then make it and assign it
+    // If psalt is not provided then generate a CSPRN and assign it
+    const salt = (psalt)
+      ? ((psalt instanceof Buffer)
+        ? psalt
+        : new Buffer(psalt))
+      : scrypto.randomBytes(defaults.keyLength)
+
+    // derive the key using the salt, password and default crypto setup
+    scrypto.pbkdf2(pass, salt, defaults.mpk_iterations, defaults.keyLength, defaults.digest, (err, key) => {
       if (err) reject(err)
+      // return the key and the salt
       resolve({key, salt})
     })
   })
 }
 
 // create a sha256 hash of the MasterPassKey
-exports.genPassHash = function (masterpass, salt, callback) {
+exports.genPassHash = function (masterpass, salt) {
   return new Promise(function (resolve, reject) {
+    // convert the masterpass (of type Buffer) to a hex encoded string
     const pass = (masterpass instanceof Buffer) ? masterpass.toString('hex') : masterpass
 
+    // if salt provided then the MasterPass is being checked
+    // if salt not provided then the MasterPass is being set
     if (salt) {
-      const hash = crypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
+      // create hash from the contanation of the pass and salt
+      // assign the hex digest of the created hash
+      const hash = scrypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
       resolve({hash, key: masterpass})
     } else {
-      const salt = crypto.randomBytes(defaults.keyLength).toString('hex')
-      const hash = crypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
+      // generate a CSPRN and use it as the salt
+      const salt = scrypto.randomBytes(defaults.keyLength).toString('hex')
+      // create hash from the contanation of the pass and salt
+      // assign the hex digest of the created hash
+      const hash = scrypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
       resolve({hash, salt, key: masterpass})
     }
   })
