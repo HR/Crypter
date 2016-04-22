@@ -7,7 +7,6 @@ const util = require('../src/util')
 const Db = require('../src/Db')
 const MasterPassKey = require('../src/_MasterPassKey')
 const MasterPass = require('../src/MasterPass')
-// const logger = require('../script/logger')
 const scrypto = require('crypto')
 const _ = require('lodash')
 const fs = require('fs-extra')
@@ -17,53 +16,33 @@ console.log(`cwd: ${process.cwd()}`)
 console.log(`__dirname: ${__dirname}`)
 
 describe("Crypter Core Modules' tests", function () {
+  // Declare globals
+  global.creds = {}
   global.paths = {
     mdb: path.join(__dirname, '/tmp/mdb'),
     tmp: path.join(__dirname, '/tmp')
   }
-  console.log(require('util').inspect(global.paths, {
-    depth: null
-  }))
+  global.MasterPassKey = new MasterPassKey(scrypto.randomBytes(32))
 
-  global.defaults = {
-    iterations: 4096, // file encryption key iterations
-    keyLength: 32, // in bytes
-    ivLength: 12,
-    algorithm: 'aes-256-gcm',
-    salgorithm: 'aes-256-ctr',
-    digest: 'sha256',
-    hash_alg: 'sha256',
-    check_hash_alg: 'md5',
-    padLength: 1024,
-    mpk_iterations: 100000, // masterpass key iterations
-    shares: 3,
-    threshold: 2
-  }
+  // Declare constants
+  const KEY_LENGTH = 32 // 32 bytes
+  const TEST_FILE_PATH = `${global.paths.tmp}/test.txt`
 
-  global.vault = {
-    'RAND0M-ID3': {
-      name: 'crypto',
-      id: 22,
-      secure: true
-    },
-    'R3C0M-I4D': {
-      name: 'cry9to',
-      id: 2090,
-      secure: false
-    }
-  }
+  // Before all tests have run
+  before(() => {
+    // create temporary dir
+    fs.ensureDirSync(global.paths.tmp)
+    global.mdb = new Db(global.paths.mdb)
 
-  global.creds = {}
-
-  // Declare globals
-  fs.ensureDirSync(global.paths.tmp)
-  global.MasterPassKey = new MasterPassKey(scrypto.randomBytes(global.defaults.keyLength))
-  global.mdb = new Db(global.paths.mdb)
-
-  const t1path = `${global.paths.tmp}/test.txt`
+    // log global.paths
+    console.log(require('util').inspect(global.paths, {
+      depth: null
+    }))
+  })
 
   // After all tests have run
-  after(function () {
+  after(() => {
+    // remove temporary dir
     fs.removeSync(global.paths.tmp)
   })
 
@@ -71,24 +50,17 @@ describe("Crypter Core Modules' tests", function () {
    ******************************/
 
   describe('Crypto module', function () {
-    before(function () {
-      fs.writeFileSync(t1path, '#Crypter', 'utf8')
-    })
-
     describe('deriveKey & genPassHash', function () {
       const masterpass = 'crypto#101'
       it('should deriveKey using a MasterPass correctly when salt is buffer', function () {
         let mpkey
-        let mpsalt
         return crypto.deriveKey(masterpass, null)
           .then((dmp) => {
             expect(dmp.salt instanceof Buffer).to.be.true
             mpkey = dmp.key
-            mpsalt = dmp.salt
             return crypto.deriveKey(masterpass, dmp.salt)
           })
           .then((dmp) => {
-            expect(dmp.salt).to.equal(mpsalt)
             expect(dmp.key.toString('hex')).to.equal(mpkey.toString('hex'))
           })
       })
@@ -110,15 +82,16 @@ describe("Crypter Core Modules' tests", function () {
 
     describe('Encryption', function () {
       before(function () {
-        fs.writeFileSync(t1path, '#Crypter', 'utf8')
+        // create test file
+        fs.writeFileSync(TEST_FILE_PATH, '#Crypter', 'utf8')
       })
       describe('crypt promise', function () {
         it('should encrypt file with pass without errors & have all expected creds', function () {
-          return crypto.crypt(t1path, global.MasterPassKey.get())
+          return crypto.crypt(TEST_FILE_PATH, global.MasterPassKey.get())
             .then((file) => {
               expect(file).not.be.empty
-              expect(file.path).to.equal(t1path)
-              expect(file.cryptPath).to.equal(`${t1path}.crypto`)
+              expect(file.path).to.equal(TEST_FILE_PATH)
+              expect(file.cryptPath).to.equal(`${TEST_FILE_PATH}.crypto`)
               expect(file.iv).not.be.empty
               expect(file.salt).not.be.empty
               expect(file.key).not.be.empty
@@ -126,8 +99,8 @@ describe("Crypter Core Modules' tests", function () {
               expect(file.authTag).not.be.empty
             })
         })
-        it('throw error when pass not supplied', function () {
-          return crypto.crypt(t1path)
+        it('should throw error when pass not supplied', function () {
+          return crypto.crypt(TEST_FILE_PATH)
             .catch((err) => {
               expect(err).to.be.an('error')
               expect(err.message).to.equal('Pass to derive key from not provided')
@@ -135,7 +108,7 @@ describe("Crypter Core Modules' tests", function () {
         })
       })
       describe('encrypt promise', function () {
-        it('throw origin error when empty filepath to encrypt is passed', function () {
+        it(' should throw origin error when empty filepath to encrypt is passed', function () {
           return crypto.encrypt('', `${global.paths.tmp}`, global.MasterPassKey.get())
             .catch((err) => {
               expect(err).to.be.an('error')
@@ -149,22 +122,18 @@ describe("Crypter Core Modules' tests", function () {
    * Util module.js
    ******************************/
   describe('Util module', function () {
-    const t1path = `${global.paths.tmp}/atest.txt`
+    const TEST_FILE_PATH = `${global.paths.tmp}/atest.txt`
     const t1data = '#Crypter'
     before(function () {
-      fs.writeFileSync(t1path, t1data, 'utf8')
+      fs.writeFileSync(TEST_FILE_PATH, t1data, 'utf8')
     })
 
     describe('checkFileSync and checkDirectorySync', function () {
       it('should check if file exists', function (done) {
-        expect(util.checkDirectorySync('./'))
-          .to.be.true
-        expect(util.checkFileSync('any.file'))
-          .to.be.false
-        expect(util.checkFileSync('anydir/file'))
-          .to.be.false
-        expect(util.checkFileSync('anydir'))
-          .to.be.false
+        expect(util.checkDirectorySync('./')).to.be.true
+        expect(util.checkFileSync('any.file')).to.be.false
+        expect(util.checkFileSync('anydir/file')).to.be.false
+        expect(util.checkFileSync('anydir')).to.be.false
         done()
       })
     })
@@ -175,6 +144,7 @@ describe("Crypter Core Modules' tests", function () {
    ******************************/
   describe('MasterPass module', function () {
     after(function () {
+      // close mdb after all tests in this suite
       global.mdb.close()
     })
     it('should set and check masterpass', function () {
@@ -186,10 +156,8 @@ describe("Crypter Core Modules' tests", function () {
           return MasterPass.check(pass)
         })
         .then((result) => {
-          expect(result.match)
-            .to.be.true
-          expect(result.key.toString('hex'))
-            .to.equal(mpkey.toString('hex'))
+          expect(result.match).to.be.true
+          expect(result.key.toString('hex')).to.equal(mpkey.toString('hex'))
         })
     })
 
@@ -214,8 +182,8 @@ describe("Crypter Core Modules' tests", function () {
 
   describe('MasterPassKey module', function () {
     it('should set and get same masterpasskey', function () {
-      const mpkey = scrypto.randomBytes(global.defaults.keyLength)
-      const newMPK = scrypto.randomBytes(global.defaults.keyLength)
+      const mpkey = scrypto.randomBytes(KEY_LENGTH)
+      const newMPK = scrypto.randomBytes(KEY_LENGTH)
       const MPK = new MasterPassKey(mpkey)
       expect(MPK.get()).to.deep.equal(mpkey)
       expect(MPK.get() instanceof Buffer).to.be.true
@@ -223,7 +191,7 @@ describe("Crypter Core Modules' tests", function () {
       expect(MPK.get()).to.deep.equal(newMPK)
     })
     it('should throw error when deleted and get called', function () {
-      const mpkey = scrypto.randomBytes(global.defaults.keyLength)
+      const mpkey = scrypto.randomBytes(KEY_LENGTH)
       const MPK = new MasterPassKey(mpkey)
       MPK.delete()
       expect(MPK.get()).to.be.an('error')
@@ -246,6 +214,7 @@ describe("Crypter Core Modules' tests", function () {
    ******************************/
   describe('Db module', function () {
     let db
+    // Helper promises
     let putValue = function (key, value) {
       return new Promise(function (resolve, reject) {
         db.put(key, value, function (err) {
@@ -263,28 +232,28 @@ describe("Crypter Core Modules' tests", function () {
       })
     }
     before(() => {
-      global.testo = {
-        'RAND0M-ID3': {
-          name: 'crypto',
-          id: 22,
-          secure: true
-        }
-      }
+      // open test db
       db = new Db(`${global.paths.tmp}/db`)
+      // global test object
+      global.testObj = {
+        name: 'crypto',
+        id: 22,
+        secure: true
+      }
     })
 
     after(function () {
       db.close()
     })
     it('should save and restore obj', function () {
-      const beforeSaveObj = _.cloneDeep(global.testo)
-      return db.saveGlobalObj('testo')
+      const beforeSaveObj = _.cloneDeep(global.testObj)
+      return db.saveGlobalObj('testObj')
         .then(() => {
-          global.testo = null
-          return db.restoreGlobalObj('testo')
+          global.testObj = null
+          return db.restoreGlobalObj('testObj')
         })
         .then(() => {
-          expect(global.testo).to.deep.equal(beforeSaveObj)
+          expect(global.testObj).to.deep.equal(beforeSaveObj)
           return
         })
         .catch((err) => {
@@ -293,16 +262,16 @@ describe("Crypter Core Modules' tests", function () {
     })
 
     it('should save and restore obj persistently', function () {
-      const beforeSaveObj = _.cloneDeep(global.testo)
-      return db.saveGlobalObj('testo')
+      const beforeSaveObj = _.cloneDeep(global.testObj)
+      return db.saveGlobalObj('testObj')
         .then(() => {
-          global.testo = null
+          global.testObj = null
           db.close()
           db = new Db(`${global.paths.tmp}/db`)
-          return db.restoreGlobalObj('testo')
+          return db.restoreGlobalObj('testObj')
         })
         .then(() => {
-          expect(global.testo)
+          expect(global.testObj)
             .to.deep.equal(beforeSaveObj)
           return
         })
@@ -332,13 +301,12 @@ describe("Crypter Core Modules' tests", function () {
       it('should resolve null if key not found', function () {
         return db.onlyGetValue('')
           .catch((err) => {
-            // expect(err instanceof ReadError).to.be.true
             expect(err.message).to.equal('key cannot be an empty String')
           })
       })
     })
 
-    describe('restoreGlobalObj', () => {
+    describe('saveGlobalObj', () => {
       it('should not save global object if empty', function () {
         global.b = {}
         return db.saveGlobalObj('b')
@@ -348,7 +316,7 @@ describe("Crypter Core Modules' tests", function () {
             throw err
           })
       })
-      it('should throw error when global obj to save is undefined', function () {
+      it('should throw error when JSON stringify fails', function () {
         global.g = {}
         global.g.a = {
           b: global.g
@@ -361,7 +329,7 @@ describe("Crypter Core Modules' tests", function () {
       })
     })
 
-    describe('saveGlobalObj', () => {
+    describe('restoreGlobalObj', () => {
       it('should throw error when global object not exist', function () {
         return db.restoreGlobalObj('fake')
           .catch((err) => {
@@ -370,7 +338,7 @@ describe("Crypter Core Modules' tests", function () {
           })
       })
 
-      it('should throw error when JSON fails to parse', function () {
+      it('should throw error when JSON parse fails', function () {
         return putValue('s', 'i')
           .then(() => {
             return db.restoreGlobalObj('s')

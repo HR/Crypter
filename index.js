@@ -90,7 +90,7 @@ app.on('ready', function () {
          .catch(function (error) {
            // Catch any fatal errors and exit
            logger.error(`PROMISE ERR: ${error.stack}`)
-           // dialog.showErrorBox('Oops, we encountered a problem...', error.message)
+          //  dialog.showErrorBox('Oops, we encountered a problem...', error.message)
            app.quit()
          })
      } else {
@@ -122,6 +122,7 @@ app.on('ready', function () {
 app.on('window-all-closed', () => {
   logger.verbose('APP: window-all-closed event emitted')
 })
+
 app.on('quit', () => {
   logger.info('APP: quit event emitted')
 })

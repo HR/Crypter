@@ -39,10 +39,14 @@ exports.crypt = function (origpath, masterpass) {
         file.name = path.basename(origpath)
         file.path = origpath
         file.cryptPath = destpath
-        file.salt = creds.salt.toString('hex') // Convert salt used to derivekey to hex string
-        file.key = creds.key.toString('hex') // Convert dervived key to hex string
-        file.iv = creds.iv.toString('hex') // Convert iv to hex string
-        file.authTag = creds.tag.toString('hex') // Convert authTag to hex string
+        // Convert salt used to derivekey to hex string
+        file.salt = creds.salt.toString('hex')
+        // Convert dervived key to hex string
+        file.key = creds.key.toString('hex')
+        // Convert iv to hex string
+        file.iv = creds.iv.toString('hex')
+        // Convert authTag to hex string
+        file.authTag = creds.tag.toString('hex')
         resolve(file)
       })
       .catch((err) => {
@@ -91,13 +95,12 @@ exports.encrypt = function (origpath, destpath, mpkey) {
             salt: dcreds.salt,
             key: dcreds.key,
             iv,
-            tag
-          })
+          tag})
         })
       })
       .catch((err) => {
-         // reject if error occured while deriving key
-         reject(err)
+        // reject if error occured while deriving key
+        reject(err)
       })
   })
 }
