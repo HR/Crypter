@@ -163,11 +163,11 @@ describe("Crypter Core Modules' tests", function () {
     })
 
     describe('checkFileSync', function () {
-      it('should return true if file exists', function (done) {
+      it('should return true if file exist', function (done) {
         expect(util.checkFileSync(TEST_FILE_PATH)).to.be.true
         done()
       })
-      it('should return false if file does not exists', function (done) {
+      it('should return false if file does not exist', function (done) {
         expect(util.checkFileSync('any.file')).to.be.false
         expect(util.checkFileSync('anydir/file')).to.be.false
         done()
