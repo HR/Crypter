@@ -36,11 +36,11 @@ exports.set = function (masterpass) {
   return new Promise(function(resolve, reject) {
     // Derive the MasterPassKey from the supplied masterpass
     crypto.deriveKey(masterpass, null)
-      .then((mpk) => {
+      .then((mp) => {
         // Save the salt used to generate the MasterPassKey
-        global.creds.mpsalt = mpk.salt
+        global.creds.mpsalt = mp.salt
         // generate the hash for the MasterPassKey
-        return crypto.genPassHash(mpk.key, null)
+        return crypto.genPassHash(mp.key, null)
       })
       .then((mpk) => {
         // Save the salt used to generate the masterpass

@@ -32,6 +32,8 @@
   <script type="text/javascript">
     'use strict'
     var ipcRenderer = require('electron').ipcRenderer
+    // turn off pinch-to-zoom feature
+    // require('electron').webFrame.setZoomFactor(1)
     var logger = require('../script/logger.js')
     window.$ = window.jQuery = require('jquery')
     const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g

@@ -36,7 +36,7 @@ global.views = {
  **/
 
 const init = function () {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     // initialise mdb
     global.mdb = new Db(global.paths.mdb)
     // Get the credentials serialized object from mdb
@@ -49,13 +49,7 @@ const initMain = function () {
   logger.verbose(`PROMISE: Main initialisation`)
   return new Promise(function (resolve, reject) {
     // restore the creds object globally
-    global.mdb.restoreGlobalObj('creds')
-      .then(() => {
-        resolve()
-      })
-      .catch((err) => {
-        reject(err)
-      })
+    resolve(global.mdb.restoreGlobalObj('creds'))
   })
 }
 
@@ -67,56 +61,57 @@ const initMain = function () {
 app.on('ready', function () {
   // Check synchronously whether paths exist
   init()
-   .then((mainRun) => {
-     // If the credentials not find in mdb, run setup
-     // otherwise run main
-     if (mainRun) {
-       // Run main
-       logger.info('Main run. Creating CrypterWindow...')
+    .then((mainRun) => {
+      // If the credentials not find in mdb, run setup
+      // otherwise run main
+      if (mainRun) {
+        // Run main
+        logger.info('Main run. Creating CrypterWindow...')
 
-       initMain() // Initialise (open mdb and get creds)
-         .then(() => {
-           // Obtain MasterPass, derive MasterPassKey and set globally
-           return masterPassPromptWindow()
-         })
-         .then(() => {
-           // Create the Crypter window and open it
-           return crypterWindow()
-         })
-         .then(() => {
-           // Quit app after crypterWindow is closed
-           app.quit()
-         })
-         .catch(function (error) {
-           // Catch any fatal errors and exit
-           logger.error(`PROMISE ERR: ${error.stack}`)
-          //  dialog.showErrorBox('Oops, we encountered a problem...', error.message)
-           app.quit()
-         })
-     } else {
-       // Run Setup
-       logger.info('Setup run. Creating Setup wizard...')
+        // Initialise (open mdb and get creds)
+        initMain()
+          .then(() => {
+            // Obtain MasterPass, derive MasterPassKey and set globally
+            return masterPassPromptWindow()
+          })
+          .then(() => {
+            // Create the Crypter window and open it
+            return crypterWindow()
+          })
+          .then(() => {
+            // Quit app after crypterWindow is closed
+            app.quit()
+          })
+          .catch(function (error) {
+            // Catch any fatal errors and exit
+            logger.error(`PROMISE ERR: ${error.stack}`)
+            //  dialog.showErrorBox('Oops, we encountered a problem...', error.message)
+            app.quit()
+          })
+      } else {
+        // Run Setup
+        logger.info('Setup run. Creating Setup wizard...')
 
-       setupWindow()
-         .then(() => {
-           logger.info('MAIN Setup successfully completed. quitting...')
-           // setup successfully completed
-           app.quit()
-         })
-         .catch(function (error) {
-           logger.error(`PROMISE ERR: ${error.stack}`)
-           // Display error to user
-          //  dialog.showErrorBox('Oops, we encountered a problem...', error.message)
-           app.quit()
-         })
-     }
-   })
-   .catch(function (error) {
-     logger.error(`PROMISE ERR: ${error.stack}`)
-     // Display error to user
-     // dialog.showErrorBox('Oops, we encountered a problem...', error.message)
-     app.quit()
-   })
+        setupWindow()
+          .then(() => {
+            logger.info('MAIN Setup successfully completed. quitting...')
+            // setup successfully completed
+            app.quit()
+          })
+          .catch(function (error) {
+            logger.error(`PROMISE ERR: ${error.stack}`)
+            // Display error to user
+            //  dialog.showErrorBox('Oops, we encountered a problem...', error.message)
+            app.quit()
+          })
+      }
+    })
+    .catch(function (error) {
+      logger.error(`PROMISE ERR: ${error.stack}`)
+      // Display error to user
+      // dialog.showErrorBox('Oops, we encountered a problem...', error.message)
+      app.quit()
+    })
 })
 
 app.on('window-all-closed', () => {
@@ -129,7 +124,6 @@ app.on('quit', () => {
 
 app.on('will-quit', (event) => {
   // will exit program once exit procedures have been run (exit flag is true)
-  // even.preventDefault()
   logger.info(`APP.ON('will-quit'): will-quit event emitted`)
   if (!_.isEmpty(global.mdb)) {
     // close mdb before quitting if opened
@@ -143,25 +137,27 @@ app.on('will-quit', (event) => {
 
 // Creates the crypter window
 let crypterWindow = function () {
- return new Promise(function(resolve, reject) {
-   CrypterWindow(function () {
-     resolve()
-   })
- })
+  return new Promise(function (resolve, reject) {
+    CrypterWindow(function () {
+      resolve()
+    })
+  })
 }
 
+// Creates the setup window
 let setupWindow = function () {
- return new Promise(function (resolve, reject) {
-   SetupWindow(function (err) {
-     if (err) {
-       reject(err)
-     } else {
-       resolve()
-     }
-   })
- })
+  return new Promise(function (resolve, reject) {
+    SetupWindow(function (err) {
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
 }
 
+// Creates the MasterPassPrompt window
 let masterPassPromptWindow = function () {
   return new Promise(function (resolve, reject) {
     MasterPassPromptWindow(function (err, gotMP) {
@@ -175,26 +171,24 @@ let masterPassPromptWindow = function () {
   })
 }
 
-
 /**
- * Windows
+ * Controller functions (windows)
  **/
 
 function CrypterWindow (callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
-    width: 350, // 300
+    width: 350,
     height: 450,
     center: true,
-    titleBarStyle: 'hidden-inset'
-    // resizable: false
+    titleBarStyle: 'hidden-inset',
+    resizable: false
   })
 
   let webContents = win.webContents
 
   // loads crypt.html view into the BrowserWindow
   win.loadURL(global.views.crypter)
-  // win.openDevTools()
 
   // When user selects a file to encrypt in Crypter window
   ipc.on('cryptFile', function (event, filePath) {
@@ -227,14 +221,13 @@ function SetupWindow (callback) {
     center: true,
     show: true,
     titleBarStyle: 'hidden-inset',
-    // resizable: false
+    resizable: false
   })
 
   let webContents = win.webContents
   let error
   // loads setup.html view into the SetupWindow
   win.loadURL(global.views.setup)
-  // win.openDevTools()
 
   ipc.on('setMasterPass', function (event, masterpass) {
     // setMasterPass event triggered by render proces
@@ -280,7 +273,6 @@ function SetupWindow (callback) {
   })
 }
 
-
 // exporting window to be used in MasterPass module
 function MasterPassPromptWindow (callback) {
   let gotMP = false // init gotMP flag with false
@@ -288,23 +280,24 @@ function MasterPassPromptWindow (callback) {
   const CLOSE_TIMEOUT = 1000
   // creates a new BrowserWindow
   let win = new BrowserWindow({
-    width: 300, // 300
+    width: 300,
     height: 435,
     center: true,
-    titleBarStyle: 'hidden-inset'
-  // resizable: false,
+    titleBarStyle: 'hidden-inset',
+    resizable: false
   })
   let webContents = win.webContents
 
   // loads masterpassprompt.html view into the BrowserWindow
   win.loadURL(global.views.masterpassprompt)
-  // win.openDevTools()
+
   ipc.on('checkMasterPass', function (event, masterpass) {
     logger.verbose('IPCMAIN: checkMasterPass emitted. Checking MasterPass...')
+    // Check user submitted MasterPass
     MasterPass.check(masterpass)
       .then((res) => {
         if (res.match) {
-          // password matches
+          // Password matches
           logger.info('IPCMAIN: PASSWORD MATCHES!')
           // Save MasterPassKey (while program is running)
           global.MasterPassKey = new MasterPassKey(res.key)
@@ -342,7 +335,7 @@ function MasterPassPromptWindow (callback) {
 
   win.on('closed', function () {
     logger.info('win.closed event emitted for PromptWindow')
-    // send error and gotMP back to callee
+    // send error and gotMP back to callee (masterPassPromptWindow Promise)
     callback(error, gotMP)
     // close window by setting it to nothing (null)
     win = null

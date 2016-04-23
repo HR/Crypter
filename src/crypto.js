@@ -24,15 +24,17 @@ let defaults = {
 
 exports.crypt = function (origpath, masterpass) {
   return new Promise(function (resolve, reject) {
-    // the destination path for encrypted file
+    // Resolve the destination path for encrypted file
     let destpath = `${origpath}.crypto`
     exports.encrypt(origpath, destpath, masterpass)
       .then((creds) => {
-        // create a file object
+        // create the file object
         var file = {}
         // extract file name from path
         file.name = path.basename(origpath)
+        // Save the path of the (unencrypted) file
         file.path = origpath
+        // Save the path of the encrypted file
         file.cryptPath = destpath
         // Convert salt used to derivekey to hex string
         file.salt = creds.salt.toString('hex')
