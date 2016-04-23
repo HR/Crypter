@@ -27,6 +27,7 @@ describe("Crypter Core Modules' tests", function () {
   // Declare constants
   const KEY_LENGTH = 32 // 32 bytes
   const TEST_FILE_PATH = `${global.paths.tmp}/test.txt`
+  const ENCRYTED_TEST_FILE_PATH = `${TEST_FILE_PATH}.crypto`
 
   // Before all tests have run
   before(() => {
@@ -80,17 +81,43 @@ describe("Crypter Core Modules' tests", function () {
         // create test file
         fs.writeFileSync(TEST_FILE_PATH, '#Crypter', 'utf8')
       })
+      describe('encrypt promise', function () {
+        it('should encrypt file with pass without errors & have all expected creds', function () {
+          return crypto.encrypt(TEST_FILE_PATH, ENCRYTED_TEST_FILE_PATH, global.MasterPassKey.get())
+            .then((creds) => {
+              expect(creds).not.be.empty
+              expect(util.checkFileSync(ENCRYTED_TEST_FILE_PATH)).to.be.true
+              expect(creds.iv).not.be.empty
+              expect(creds.salt).not.be.empty
+              expect(creds.key).not.be.empty
+              expect(creds.tag).not.be.empty
+            })
+            .catch((err) => {
+              throw err
+            })
+        })
+        it('should throw origin error when empty filepath to encrypt is passed', function () {
+          return crypto.encrypt('', `${global.paths.tmp}`, global.MasterPassKey.get())
+            .catch((err) => {
+              expect(err).to.be.an('error')
+              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
+            })
+        })
+      })
       describe('crypt promise', function () {
+        before(function () {
+          // create test file
+          fs.removeSync(ENCRYTED_TEST_FILE_PATH)
+        })
         it('should encrypt file with pass without errors & have all expected creds', function () {
           return crypto.crypt(TEST_FILE_PATH, global.MasterPassKey.get())
             .then((file) => {
               expect(file).not.be.empty
               expect(file.path).to.equal(TEST_FILE_PATH)
-              expect(file.cryptPath).to.equal(`${TEST_FILE_PATH}.crypto`)
+              expect(file.cryptPath).to.equal(ENCRYTED_TEST_FILE_PATH)
               expect(file.iv).not.be.empty
               expect(file.salt).not.be.empty
               expect(file.key).not.be.empty
-              expect(file.iv).not.be.empty
               expect(file.authTag).not.be.empty
             })
         })
@@ -102,15 +129,7 @@ describe("Crypter Core Modules' tests", function () {
             })
         })
       })
-      describe('encrypt promise', function () {
-        it(' should throw origin error when empty filepath to encrypt is passed', function () {
-          return crypto.encrypt('', `${global.paths.tmp}`, global.MasterPassKey.get())
-            .catch((err) => {
-              expect(err).to.be.an('error')
-              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
-            })
-        })
-      })
+
     })
   })
   /**

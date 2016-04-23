@@ -12,19 +12,14 @@ const Readable = require('stream').Readable
 const scrypto = require('crypto')
 
 // Crypto default constants
-// TODO: change accordingly when changed in settings
 let defaults = {
   iterations: 50000, // file encryption key derivation iterations
   keyLength: 32, // encryption key length
   ivLength: 12, // initialisation vector length
   algorithm: 'aes-256-gcm', // encryption algorithm
-  digest: 'sha256', //
-  hash_alg: 'sha256', // hashing algorithm
-  check_hash_alg: 'md5',
-  mpk_iterations: 100000, // MasterPassKey derivation iterations
-  padLength: 1024, // 1 MB
-  shares: 3,
-  th: 2
+  digest: 'sha256', // digest function
+  hash_alg: 'sha256', // hashing function
+  mpk_iterations: 100000 // MasterPassKey derivation iterations
 }
 
 exports.crypt = function (origpath, masterpass) {
@@ -59,7 +54,7 @@ exports.encrypt = function (origpath, destpath, mpkey) {
   // decrypts any arbitrary data passed with the pass
   return new Promise(function (resolve, reject) {
     // derive the encryption key
-    exports.deriveKey(mpkey)
+    exports.deriveKey(mpkey, null, defaults.iterations)
       .then((dcreds) => {
         // readstream to read the (unencrypted) file
         const origin = fs.createReadStream(origpath)
@@ -95,7 +90,8 @@ exports.encrypt = function (origpath, destpath, mpkey) {
             salt: dcreds.salt,
             key: dcreds.key,
             iv,
-          tag})
+            tag
+          })
         })
       })
       .catch((err) => {
@@ -105,7 +101,7 @@ exports.encrypt = function (origpath, destpath, mpkey) {
   })
 }
 
-exports.deriveKey = function (pass, psalt) {
+exports.deriveKey = function (pass, psalt, iterations = defaults.mpk_iterations) {
   return new Promise(function (resolve, reject) {
     // reject with error if pass not provided
     if (!pass) reject(new Error('Pass to derive key from not provided'))
@@ -120,7 +116,7 @@ exports.deriveKey = function (pass, psalt) {
       : scrypto.randomBytes(defaults.keyLength)
 
     // derive the key using the salt, password and default crypto setup
-    scrypto.pbkdf2(pass, salt, defaults.mpk_iterations, defaults.keyLength, defaults.digest, (err, key) => {
+    scrypto.pbkdf2(pass, salt, iterations, defaults.keyLength, defaults.digest, (err, key) => {
       if (err) reject(err)
       // return the key and the salt
       resolve({key, salt})

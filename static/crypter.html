@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Crypter</title>
-    <link rel="stylesheet" href="style/crypt.css" charset="utf-8">
+    <link rel="stylesheet" href="style/crypter.css" charset="utf-8">
   </head>
 
   <body>
@@ -17,8 +17,8 @@
             <p class="intrfo">Crypter derives the encryption keys used to encrypt your data from your MasterPass.</p>
           </header>
           <!-- TODO: Consider using <input class="fancy" type="file" name="name" value="selectfile"> -->
-          <div id="holder" class="fancy">
-            <p id="holderText">
+          <div id="fileInput" class="fancy">
+            <p id="fileInputText">
               Click here to select a file to crypt
             </p>
           </div>
@@ -87,8 +87,8 @@
       var path = require('path')
       window.$ = window.jQuery = require('jquery')
       var errLabel = $('#errLabel')
-      var holder = $('#holder')
-      var holderText = holder.find('#holderText').text()
+      var fileInput = $('#fileInput')
+      var fileInputText = fileInput.find('#fileInputText').text()
       // compile the crypted template
       var crypted_template = Handlebars.compile($('#crypted-template').html())
 
@@ -97,7 +97,8 @@
       }
 
       $(window).load(function() {
-        holder.on('click', handler)
+        // attach click event
+        fileInput.on('click', handler)
         $('.navigationLink').each(function (index) {
           $(this).click(function () {
             navigate(this.getAttribute('data-target'))
@@ -110,9 +111,9 @@
         logger.verbose(`IPCRENDER cryptedFile emitted`)
         var fileHTML = crypted_template(file)
         $('#finfo').html(fileHTML)
-        $('#holderText').text(holderText)
+        $('#fileInputText').text(fileInputText)
         navigate('crypted')
-        holder.on('click',handler)
+        // fileInput.on('click', handler)
       })
       ipcRenderer.on('cryptErr', function(event, err) {
         logger.verbose(`IPCRENDER cryptErr emitted`)
@@ -123,15 +124,17 @@
       /* Helper functions */
       function handler() {
         dialog.showOpenDialog({
-          title: 'Choose a file to Crypt',
+          title: 'Choose a file to Encrypt',
           defaultPath: '~',
           properties: ['openFile']
         }, function(filePath) {
+          // callback for selected file
           // returns undefined if file not selected by user
           if (filePath && filePath.length === 1) {
             var file = filePath[0]
-            holder.off('click',handler)
-            $('#holderText').text(`Encrypting ${path.basename(file)}...`)
+            // fileInput.off('click',handler)
+            $('#fileInputText').text(`Encrypting ${path.basename(file)}...`)
+            // send file to crypter controller function
             ipcRenderer.send('cryptFile', file)
             logger.info(require('util').inspect(filePath, {depth: null}))
           }
