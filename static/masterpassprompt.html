@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Verify the MasterPass</title>
-  <link rel="stylesheet" href="style/masterpassprompt.css" charset="utf-8">
+  <link rel="stylesheet" href="styles/masterpassprompt.css" charset="utf-8">
 </head>
 
 <body>
@@ -88,7 +88,6 @@
       const masterpass = MPel.val()
       if (MP_REGEX.test(masterpass)) {
         errLabel.hide()
-        MPel.val('')
         ipcRenderer.send(field, masterpass)
       } else if (!masterpass) {
         errLabel.text(responses.empty)

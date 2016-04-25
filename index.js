@@ -4,7 +4,6 @@ const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 const ipc = electron.ipcMain
 const dialog = electron.dialog
-const util = require('./src/util')
 const crypto = require('./src/crypto')
 const Db = require('./src/Db')
 const MasterPass = require('./src/MasterPass')
@@ -217,7 +216,7 @@ function SetupWindow (callback) {
   // creates the setup window
   let win = new BrowserWindow({
     width: 600,
-    height: 380,
+    height: 400,
     center: true,
     show: true,
     titleBarStyle: 'hidden-inset',
@@ -277,7 +276,7 @@ function SetupWindow (callback) {
 function MasterPassPromptWindow (callback) {
   let gotMP = false // init gotMP flag with false
   let error = null
-  const CLOSE_TIMEOUT = 1000
+  const CLOSE_TIMEOUT = 5000
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 300,

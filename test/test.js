@@ -3,7 +3,6 @@ const assert = require('assert')
 const path = require('path')
 const expect = require('chai').expect
 const crypto = require('../src/crypto.js')
-const util = require('../src/util')
 const Db = require('../src/Db')
 const MasterPassKey = require('../src/_MasterPassKey')
 const MasterPass = require('../src/MasterPass')
@@ -13,6 +12,15 @@ const fs = require('fs-extra')
 
 console.log(`cwd: ${process.cwd()}`)
 console.log(`__dirname: ${__dirname}`)
+
+let checkFileSync = function (path) {
+  try {
+    fs.accessSync(path, fs.F_OK)
+  } catch (err) {
+    if (err.code === 'ENOENT') return false
+  }
+  return true
+}
 
 describe("Crypter Core Modules' tests", function () {
   // Declare globals
@@ -101,7 +109,7 @@ describe("Crypter Core Modules' tests", function () {
           return crypto.encrypt(TEST_FILE_PATH, ENCRYTED_TEST_FILE_PATH, global.MasterPassKey.get())
             .then((creds) => {
               // The encrypted file should exist at the ENCRYTED_TEST_FILE_PATH
-              expect(util.checkFileSync(ENCRYTED_TEST_FILE_PATH)).to.be.true
+              expect(checkFileSync(ENCRYTED_TEST_FILE_PATH)).to.be.true
               // Creds should have all the expected properties
               expect(creds).not.be.empty
               expect(creds.iv).not.be.empty
@@ -164,12 +172,12 @@ describe("Crypter Core Modules' tests", function () {
 
     describe('checkFileSync', function () {
       it('should return true if file exist', function (done) {
-        expect(util.checkFileSync(TEST_FILE_PATH)).to.be.true
+        expect(checkFileSync(TEST_FILE_PATH)).to.be.true
         done()
       })
       it('should return false if file does not exist', function (done) {
-        expect(util.checkFileSync('any.file')).to.be.false
-        expect(util.checkFileSync('anydir/file')).to.be.false
+        expect(checkFileSync('any.file')).to.be.false
+        expect(checkFileSync('anydir/file')).to.be.false
         done()
       })
     })
