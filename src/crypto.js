@@ -6,7 +6,6 @@
 
 const secrets = require('secrets.js')
 const fs = require('fs-extra')
-const util = require('./util')
 const path = require('path')
 const Readable = require('stream').Readable
 const scrypto = require('crypto')
