@@ -37,12 +37,12 @@ gulp.task('coverage', function (cb) {
 })
 
 gulp.task('less', function () {
-  return gulp.src('./static/style/*.less')
+  return gulp.src('./static/styles/*.less')
     .pipe(less({
       paths: [ path.join(__dirname, 'less', 'includes') ],
       plugins: [cleancss]
     }))
-    .pipe(gulp.dest('./static/style/'))
+    .pipe(gulp.dest('./static/styles/'))
 })
 
 gulp.task('test', shell.task([
