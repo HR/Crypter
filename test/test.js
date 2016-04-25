@@ -160,30 +160,6 @@ describe("Crypter Core Modules' tests", function () {
     })
   })
   /**
-   * Util module.js
-   ******************************/
-  describe('Util module', function () {
-    const TEST_FILE_PATH = `${global.paths.tmp}/atest.txt`
-    // Before any tests are run in this suite
-    before(function () {
-      // Create test file
-      fs.writeFileSync(TEST_FILE_PATH, TEST_FILE_CONTENTS, 'utf8')
-    })
-
-    describe('checkFileSync', function () {
-      it('should return true if file exist', function (done) {
-        expect(checkFileSync(TEST_FILE_PATH)).to.be.true
-        done()
-      })
-      it('should return false if file does not exist', function (done) {
-        expect(checkFileSync('any.file')).to.be.false
-        expect(checkFileSync('anydir/file')).to.be.false
-        done()
-      })
-    })
-  })
-
-  /**
    * MasterPass module.js
    ******************************/
   describe('MasterPass module', function () {
