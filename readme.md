@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://github.com/HR/Crypter"><img src="/res/app-icons/Crypter256.png" alt="Crypter" width="200" style= "margin-bottom: 20px"></a>
+  <a href="https://github.com/HR/Crypter"><img src="/res/app-icons/Crypter256.png" alt="Crypter" width="180" style= "margin-bottom: 1rem"></a>
   <br>
   Crypter
   <br>
