@@ -1,11 +1,36 @@
-<p align="center">
-  <img src="/github/Welcome_screen.png?raw=true" alt="Crypter app icon">
-</p>
-# Crypter [![Build Status](https://travis-ci.org/HR/Crypter.svg?branch=master)](https://travis-ci.org/HR/Crypter) [![Coverage Status](https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=master)](https://coveralls.io/github/HR/Crypter?branch=master) [![Code Climate](https://codeclimate.com/github/HR/Crypter/badges/gpa.svg)](https://codeclimate.com/github/HR/Crypter) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+<h1 align="center">
+  <br>
+  <a href="https://github.com/HR/Crypter"><img src="/res/app-icons/Crypter256.png" alt="Crypter" width="200" style= "margin-bottom: 20px"></a>
+  <br>
+  Crypter
+  <br>
+  <br>
+</h1>
 
-Crypter is a simple, convenient and secure encryption client.
-Simplifies password generation by deriving it using your MasterPassKey
-(see Crypto).
+<h4 align="center">A simple, convenient and secure encryption client.</h4>
+
+<p align="center">
+    <a href="https://travis-ci.org/feross/webtorrent-cli">
+        <img src="https://img.shields.io/travis/feross/webtorrent-cli/master.svg"
+             alt="Travis Build">
+    </a>
+    <a href="https://coveralls.io/github/HR/Crypter?branch=master">
+        <img src="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=master"
+             alt="Test Coverage">
+    </a>
+    <a href="https://coveralls.io/github/HR/Crypter?branch=master">
+        <img src="https://codeclimate.com/github/HR/Crypter/badges/gpa.svg"
+             alt="Codeclimate GPA">
+    </a>
+    <a href="http://standardjs.com/">
+        <img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg"
+             alt="Standard JS Code Style">
+    </a>
+</p>
+<br>
+
+**Crypter** is a simple, convenient and secure encryption client.
+It simplifies password generation by deriving it using your MasterPassKey (see Crypto).
 
 This is based on [Crypto.Sync](https://github.com/HR/CryptoSync) (an end-to-end
 cloud encryption client) which is a more elaborate implementation of the idea.
@@ -21,8 +46,9 @@ releases. If you have any suggestions for features then please let me know!
 
 ## Screens (some of them)
 <p align="center">
-  <img src="/github/Crypter_screen.png?raw=true" alt="Crypter app icon" width="400">
-  <img src="/github/MasterPass_screen.png?raw=true" alt="Crypter app icon" width="400">
+  <img src="/github/Welcome_screen.png?raw=true" alt="Crypter app icon" width="100%">
+  <img src="/github/Crypter_screen.png?raw=true" alt="Crypter app icon" width="50%">
+  <img src="/github/MasterPass_screen.png?raw=true" alt="Crypter app icon" width="50%">
 </p>
 
 ## Crypto
@@ -90,11 +116,11 @@ $ gulp
 ```
 ### Test
 Uses mainly mocha (+ chai) for testing. Since the project uses a lot of JS ES6
-syntax, babel is used as a compiler
+syntax, babel is used as a compiler. To run all the tests
 ```
 $ npm test
 ```
-Uses istanbul for coverage
+Uses istanbul for coverage; to run coverage
 ```
 $ gulp coverage
 ```
@@ -104,8 +130,8 @@ To build the app for your OSX (darwin)
 ```
 $ npm run xbuild
 ```
-Since it is an Electron app so can be built for OS X, Linux, and Windows but has
-currently only been tested on OSX.
+Since it is an Electron app, it can be built for OS X, Linux, and Windows but
+has currently only been tested on OSX.
 
 ## License
 The MIT License (MIT)

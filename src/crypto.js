@@ -108,8 +108,9 @@ exports.deriveKey = function (pass, psalt, iterations = defaults.mpk_iterations)
     if (!pass) reject(new Error('Pass to derive key from not provided'))
 
     // If psalt is provided and is a Buffer then assign it
-    // If psalt is provided and is not a Buffer then make it and assign it
-    // If psalt is not provided then generate a CSPRN and assign it
+    // If psalt is provided and is not a Buffer then coerce it and assign it
+    // If psalt is not provided then generate a cryptographically secure salt
+    // and assign it
     const salt = (psalt)
       ? ((psalt instanceof Buffer)
         ? psalt
@@ -129,6 +130,7 @@ exports.deriveKey = function (pass, psalt, iterations = defaults.mpk_iterations)
 exports.genPassHash = function (masterpass, salt) {
   return new Promise(function (resolve, reject) {
     // convert the masterpass (of type Buffer) to a hex encoded string
+    // if it is not already one
     const pass = (masterpass instanceof Buffer) ? masterpass.toString('hex') : masterpass
 
     // if salt provided then the MasterPass is being checked
@@ -139,7 +141,7 @@ exports.genPassHash = function (masterpass, salt) {
       const hash = scrypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
       resolve({hash, key: masterpass})
     } else {
-      // generate a CSPRN and use it as the salt
+      // generate a cryptographically secure salt and use it as the salt
       const salt = scrypto.randomBytes(defaults.keyLength).toString('hex')
       // create hash from the contanation of the pass and salt
       // assign the hex digest of the created hash
