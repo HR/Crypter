@@ -10,8 +10,8 @@
 <h4 align="center">A simple, convenient and secure encryption client.</h4>
 
 <p align="center">
-    <a href="https://travis-ci.org/feross/webtorrent-cli">
-        <img src="https://img.shields.io/travis/feross/webtorrent-cli/master.svg"
+    <a href="https://travis-ci.org/HR/Crypter">
+        <img src="https://travis-ci.org/HR/Crypter.svg?branch=master"
              alt="Travis Build">
     </a>
     <a href="https://coveralls.io/github/HR/Crypter?branch=master">
