@@ -38,10 +38,9 @@
     "electron"
   ],
   "dependencies": {
-    "async": "*",
     "babel-core": "*",
     "electron-debug": "*",
-    "electron-prebuilt": "^0.37.5",
+    "electron-prebuilt": "0.37.6",
     "estraverse": "^4.2.0",
     "fs-extra": "*",
     "handlebars": "*",
@@ -50,12 +49,11 @@
     "leveldown": "*",
     "levelup": "*",
     "lodash": "*",
-    "mocha": "^2.4.5",
-    "secrets.js": "*",
     "moment": "*",
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "mocha": "^2.4.5",
     "babel-cli": "^6.6.5",
     "babel-eslint": "*",
     "babel-preset-es2015": "*",
@@ -78,7 +76,7 @@
     "isparta": "^4.0.0",
     "less-plugin-clean-css": "^1.5.1",
     "mocha-lcov-reporter": "^1.2.0",
-    "spectron": "^1.37.0",
+    "spectron": "^2.37.0",
     "standard": "^6.0.8"
   }
 }

@@ -144,7 +144,8 @@ describe("Crypter Core Modules' tests", function () {
               expect(file.cryptPath).to.equal(ENCRYTED_TEST_FILE_PATH)
               expect(file.iv).not.be.empty
               expect(file.salt).not.be.empty
-              expect(file.key).not.be.empty
+              // Expect key length to be 32 bytes (256 bits)
+              // expect(file.key.length).to.equal(KEY_LENGTH);
               expect(file.authTag).not.be.empty
             })
         })
@@ -337,6 +338,7 @@ describe("Crypter Core Modules' tests", function () {
       it('should resolve null if key not found', function () {
         return db.onlyGetValue('')
           .catch((err) => {
+            // Expect an error to occur
             expect(err.message).to.equal('key cannot be an empty String')
           })
       })
@@ -347,9 +349,16 @@ describe("Crypter Core Modules' tests", function () {
         global.b = {}
         return db.saveGlobalObj('b')
           .then(() => {
+            global.b = null
+            return db.restoreGlobalObj('b')
           })
           .catch((err) => {
-            throw err
+            // Expect the object not to be found
+            expect(err.notFound).to.be.true
+            expect(err.status).to.equal(404)
+            // Expect global.b to not have been restored
+            // i.e. remained null (set after saveGlobalObj)
+            expect(global.b).to.be.null
           })
       })
       it('should throw error when JSON stringify fails', function () {
@@ -360,6 +369,7 @@ describe("Crypter Core Modules' tests", function () {
         // Serializing an (unserializable) object should give error
         return db.saveGlobalObj('g')
           .catch((err) => {
+            // Expect an error to occur
             expect(err).to.be.an('error')
             expect(err.message).to.equal('Converting circular structure to JSON')
           })
@@ -370,6 +380,7 @@ describe("Crypter Core Modules' tests", function () {
       it('should throw error when global object not exist', function () {
         return db.restoreGlobalObj('fake')
           .catch((err) => {
+            // Expect an error to occur
             expect(err.notFound).to.be.true
             expect(err.status).to.equal(404)
           })
@@ -381,6 +392,7 @@ describe("Crypter Core Modules' tests", function () {
             return db.restoreGlobalObj('s')
           })
           .catch((err) => {
+            // Expect an error to occur
             expect(err).to.be.an('error')
             expect(err.message).to.equal('Unexpected token i')
           })

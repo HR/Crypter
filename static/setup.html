@@ -63,7 +63,7 @@
               </div>
               <h1>Set a MasterPass for encryption</h1>
               <img class="info" src="images/icons/info.svg" alt=""/>
-              <p class="info">A MasterPassKey will be derived from it. This will be used to derive the keys used to encrypt your data.</p>
+              <p class="info">A MasterPassKey will be derived from the MasterPass. This will then be used to derive the keys used to encrypt your data.</p>
             </header>
             <form onsubmit="return false;">
               <div class="masterpass">
@@ -73,7 +73,7 @@
               <button class="fancy" id="setMasterPass">SET</button>
             </form>
             <p class="note">
-              NOTE: If lost, all previously synced data will be unrecoverable! So, please store it safely.
+              NOTE: If lost, encrypted data will be unrecoverable! So, please store it safely.
             </p>
           </section>
         </div>
@@ -151,7 +151,7 @@
       function navigate(panelName) {
         var oldSel = $('.panel-container > div.current') // get current panel
         var sel = $(`#panel-${panelName}`) // get panel to navigate to
-        // $('.current button').hide()
+        $('.current button').hide()
         oldSel.removeClass('current') // apply hide styling
         sel.addClass('current') // apply show styling
       }
