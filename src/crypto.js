@@ -4,7 +4,6 @@
  * Provides the crypto functionality required
  ******************************/
 
-const secrets = require('secrets.js')
 const fs = require('fs-extra')
 const path = require('path')
 const Readable = require('stream').Readable
