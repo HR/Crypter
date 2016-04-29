@@ -121,21 +121,7 @@
         // attach click event listner to setMasterPass button
         $('#setMasterPass').click(function() {
           // Event handler function
-          // retrieve the masterpass input value
-          var MasterPass = $('input#setMasterPassInput').val()
-
-          if (!MasterPass) {
-            // MP is empty, set errLabel text to response for empty
-            // and show errLabel
-            errLabel.text(RESPONSES.empty).show()
-          } else if (MP_REGEX.test(MasterPass)) {
-            // MP is valid, send the masterpass to controller function
-            ipcRenderer.send('setMasterPass', MasterPass)
-          } else {
-            // MP is invalid, set errLabel text to response for invalid
-            // and show errLabel
-            errLabel.text(RESPONSES.invalid).show()
-          }
+          validateMasterPass('setMasterPass', errLabel)
         })
 
         /* Encryption animation */
@@ -156,9 +142,34 @@
         sel.addClass('current') // apply show styling
       }
 
+      function validateMasterPass (field, errLabel) {
+        var MPel = $(`input#${field + 'Input'}`)
+        const masterpass = MPel.val()
+        if (!masterpass) {
+          // MP is empty
+          // set errLabel text to response for empty and show errLabel
+          errLabel.text(RESPONSES.empty).show()
+          // Clear MP input field
+          MPel.val('')
+        } else if (MP_REGEX.test(masterpass)) {
+          // MP is valid
+          // Hide errLabel
+          errLabel.hide()
+          // Send valid MasterPass to render
+          ipcRenderer.send(field, masterpass)
+        } else {
+          // set errLabel text to response for invalid and show errLabel
+          errLabel.text(RESPONSES.invalid).show()
+          // Clear MP input field
+          MPel.val('')
+        }
+      }
+
+      /* Event listeners */
       ipcRenderer.on('setMasterPassResult', function(event, err) {
         if (err) {
-          // Display the error that occured when setting the MasterPass
+          // If error occured
+          // Display the error
           errLabel.text(`ERROR: ${err}`.toUpperCase())
           errLabel.show()
         } else {
@@ -169,6 +180,7 @@
           // Invoke (setup) done event in main after 5 seconds
           // So that user has time to comprehend the above change
           setTimeout(function() {
+            // Close setup window after 5 seconds
             ipcRenderer.send('done')
           }, DONE_TIMEOUT)
         }

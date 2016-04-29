@@ -38,22 +38,20 @@
     window.$ = window.jQuery = require('jquery')
     const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g
     var errLabelCheckMP = $('label[for="checkMasterPassInput"]')
-    var errLabelSetMP = $('label[for="setMasterPassInput"]')
-    var responses = {
+    const RESPONSES = {
       invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
       incorrect: 'INCORRECT MASTERPASS',
       correct: 'CORRECT MASTERPASS',
       setSuccess: 'MASTERPASS SUCCESSFULLY SET',
       empty: 'PLEASE ENTER A MASTERPASS',
     }
-    var colors = {
-      bad: '#9F3A38',
-      good: '#2ECC71',
+    const COLORS = {
+      bad: '#9F3A38', // red
+      good: '#2ECC71', // green
     }
 
     $(window).load(function () {
       errLabelCheckMP.hide()
-      errLabelSetMP.hide()
 
       $('#checkMasterPass').click(function () {
         console.log('checkMasterPass button clicked')
@@ -71,12 +69,12 @@
       }
 
       if (result.match) {
-        errLabelCheckMP.text(responses.correct)
-          .css('color', colors.good)
+        errLabelCheckMP.text(RESPONSES.correct)
+          .css('color', COLORS.good)
           .show()
         return
       } else {
-        errLabelCheckMP.text(responses.incorrect)
+        errLabelCheckMP.text(RESPONSES.incorrect)
           .show()
         return
       }
@@ -90,11 +88,11 @@
         errLabel.hide()
         ipcRenderer.send(field, masterpass)
       } else if (!masterpass) {
-        errLabel.text(responses.empty)
+        errLabel.text(RESPONSES.empty)
           .show()
         MPel.val('')
       } else {
-        errLabel.text(responses.invalid)
+        errLabel.text(RESPONSES.invalid)
           .show()
         MPel.val('')
       }
