@@ -6,7 +6,6 @@
 
 const fs = require('fs-extra')
 const path = require('path')
-const Readable = require('stream').Readable
 const scrypto = require('crypto')
 
 // Crypto default constants

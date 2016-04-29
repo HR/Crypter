@@ -7,7 +7,7 @@ const dialog = electron.dialog
 const crypto = require('./src/crypto')
 const Db = require('./src/Db')
 const MasterPass = require('./src/MasterPass')
-const MasterPassKey = require('./src/_MasterPassKey')
+const MasterPassKey = require('./src/MasterPassKey')
 const _ = require('lodash')
 const logger = require('./script/logger')
 // change exec path
