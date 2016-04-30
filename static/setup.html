@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <title>Crypter Setup</title>
     <link rel="stylesheet" href="styles/setup.css" charset="utf-8">
+    <script src="js/common.js" charset="utf-8"></script>
   </head>
 
   <body>
@@ -81,32 +82,28 @@
     </section>
     <script type="text/javascript">
       'use strict'
-      window.$ = window.jQuery = require('jquery')
-      // load interprocess communication module
-      const ipcRenderer = require('electron').ipcRenderer
-      var errLabel = $('label[for="password"]').first()
+      // Get error label
+      var errLabel = $('#setMasterPassLabel')
+      // Delay (in ms) after which the setup window is closed
       const DONE_TIMEOUT = 5000
+      // Animation config
       const SPEED = 5000
       const OFFSET = SPEED * 0.8
-      const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g
-      const RESPONSES = {
-        invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
-        correct: 'CORRECT MASTERPASS',
-        setSuccess: 'MASTERPASS SUCCESSFULLY SET',
-        empty: 'PLEASE ENTER A MASTERPASS',
-        done: 'You have successfully completed the setup! <br/> Please relaunch the program to start encrypting after this window closes automatically'
-      }
-      const COLORS = {
-        bad: '#9F3A38',
-        good: '#2ECC71',
-        highlight: '#333333'
-      }
 
-      /* Encryption animation */
       $(window).load(function() {
-        /* Navigation */
+        // When DOM has loaded...
+
+        // hide error label and make red
         errLabel.hide().css('color', COLORS.bad)
-        // attach event listner to every element with class navigationLink
+
+        // attach click event listener to setMasterPass button
+        $('#setMasterPass').click(function() {
+          // Event handler function
+          validateMasterPass('setMasterPass', errLabel)
+        })
+
+        /* Navigation */
+        // attach event listener to every element with class navigationLink
         $('.navigationLink').each(function(index) {
           $(this).click(function() {
             // when the element is clicked
@@ -118,12 +115,6 @@
         // navigate to welcome screen by default
         navigate('welcome')
 
-        // attach click event listner to setMasterPass button
-        $('#setMasterPass').click(function() {
-          // Event handler function
-          validateMasterPass('setMasterPass', errLabel)
-        })
-
         /* Encryption animation */
         $('.marquee-1').marquee({direction: 'right', gap: 0, duplicated: true, duration: SPEED}).addClass('visible')
         $('.marquee-2').marquee({direction: 'right', gap: 0, duplicated: true, duration: SPEED, delayBeforeStart: OFFSET})
@@ -132,38 +123,6 @@
           $('.marquee-2').addClass('visible')
         }, OFFSET)
       })
-
-      /* Helper functions */
-      function navigate(panelName) {
-        var oldSel = $('.panel-container > div.current') // get current panel
-        var sel = $(`#panel-${panelName}`) // get panel to navigate to
-        $('.current button').hide()
-        oldSel.removeClass('current') // apply hide styling
-        sel.addClass('current') // apply show styling
-      }
-
-      function validateMasterPass (field, errLabel) {
-        var MPel = $(`input#${field + 'Input'}`)
-        const masterpass = MPel.val()
-        if (!masterpass) {
-          // MP is empty
-          // set errLabel text to response for empty and show errLabel
-          errLabel.text(RESPONSES.empty).show()
-          // Clear MP input field
-          MPel.val('')
-        } else if (MP_REGEX.test(masterpass)) {
-          // MP is valid
-          // Hide errLabel
-          errLabel.hide()
-          // Send valid MasterPass to render
-          ipcRenderer.send(field, masterpass)
-        } else {
-          // set errLabel text to response for invalid and show errLabel
-          errLabel.text(RESPONSES.invalid).show()
-          // Clear MP input field
-          MPel.val('')
-        }
-      }
 
       /* Event listeners */
       ipcRenderer.on('setMasterPassResult', function(event, err) {

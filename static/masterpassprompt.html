@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>Verify the MasterPass</title>
   <link rel="stylesheet" href="styles/masterpassprompt.css" charset="utf-8">
+  <script src="js/common.js" charset="utf-8"></script>
 </head>
 
 <body>
@@ -28,43 +29,28 @@
       </div>
     </div>
   </section>
-
   <script type="text/javascript">
     'use strict'
-    var ipcRenderer = require('electron').ipcRenderer
-    // turn off pinch-to-zoom feature
-    // require('electron').webFrame.setZoomFactor(1)
-    var logger = require('../script/logger.js')
-    window.$ = window.jQuery = require('jquery')
-    const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g
-    var errLabelCheckMP = $('label[for="checkMasterPassInput"]')
-    const RESPONSES = {
-      invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
-      incorrect: 'INCORRECT MASTERPASS',
-      correct: 'CORRECT MASTERPASS',
-      setSuccess: 'MASTERPASS SUCCESSFULLY SET',
-      empty: 'PLEASE ENTER A MASTERPASS',
-    }
-    const COLORS = {
-      bad: '#9F3A38', // red
-      good: '#2ECC71', // green
-    }
+    // Get error label element
+    var errLabelCheckMP = $('#checkMasterPassLabel')
 
     $(window).load(function () {
-      errLabelCheckMP.hide()
+      // When DOM has loaded...
 
+      // hide error label and make red
+      errLabelCheckMP.hide().css('color', COLORS.bad)
+
+      // attach event listener to checkMasterPass button
       $('#checkMasterPass').click(function () {
-        console.log('checkMasterPass button clicked')
         validateMasterPass('checkMasterPass', errLabelCheckMP)
       })
     })
 
     /* Event listeners */
     ipcRenderer.on('checkMasterPassResult', function (event, result) {
-      logger.verbose(`IPCRENDER checkMasterPassResult emitted`)
       if (result.err) {
         errLabelCheckMP.text(`ERROR: ${err}`)
-        .show()
+          .show()
         return
       }
 
@@ -79,25 +65,6 @@
         return
       }
     })
-
-    /* Helper functions */
-    function validateMasterPass (field, errLabel) {
-      var MPel = $(`input#${field + 'Input'}`)
-      const masterpass = MPel.val()
-      if (MP_REGEX.test(masterpass)) {
-        errLabel.hide()
-        ipcRenderer.send(field, masterpass)
-      } else if (!masterpass) {
-        errLabel.text(RESPONSES.empty)
-          .show()
-        MPel.val('')
-      } else {
-        errLabel.text(RESPONSES.invalid)
-          .show()
-        MPel.val('')
-      }
-    }
-
   </script>
 </body>
 

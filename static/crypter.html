@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Crypter</title>
     <link rel="stylesheet" href="styles/crypter.css" charset="utf-8">
+    <script src="js/common.js" charset="utf-8"></script>
   </head>
 
   <body>
@@ -80,21 +81,16 @@
     </script>
 
     <script type="text/javascript">
-      var ipcRenderer = require('electron').ipcRenderer
+      'use strict'
       var dialog = require('electron').remote.dialog
       var logger = require('../script/logger.js')
       var Handlebars = require('handlebars')
       var path = require('path')
-      window.$ = window.jQuery = require('jquery')
       var errLabel = $('#errLabel')
       var fileInput = $('#fileInput')
       var fileInputText = fileInput.find('#fileInputText').text()
       // compile the crypted template
       var crypted_template = Handlebars.compile($('#crypted-template').html())
-
-      var responses = {
-        invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS'
-      }
 
       $(window).load(function() {
         // attach click event
@@ -123,9 +119,10 @@
 
       /* Helper functions */
       function handler() {
+        // Create file input dialog
         dialog.showOpenDialog({
           title: 'Choose a file to Encrypt',
-          defaultPath: '~',
+          defaultPath: '~', // open dialog at home directory
           properties: ['openFile']
         }, function(filePath) {
           // callback for selected file
@@ -133,6 +130,7 @@
           if (filePath && filePath.length === 1) {
             var file = filePath[0]
             // fileInput.off('click',handler)
+            // Set
             $('#fileInputText').text(`Encrypting ${path.basename(file)}...`)
             // send file to crypter controller function
             ipcRenderer.send('cryptFile', file)
@@ -140,13 +138,6 @@
           }
         })
         return false
-      }
-
-      function navigate(panelID) {
-        var oldSel = $('.panel-container > div.current')
-        var sel = $(`#panel-${panelID}`)
-        oldSel.removeClass('current')
-        sel.addClass('current')
       }
     </script>
   </body>
