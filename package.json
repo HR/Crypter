@@ -40,7 +40,7 @@
   "dependencies": {
     "babel-core": "*",
     "electron-debug": "*",
-    "electron-prebuilt": "^0.37.8",
+    "electron-prebuilt": "^1.0.2",
     "estraverse": "^4.2.0",
     "fs-extra": "*",
     "handlebars": "*",
@@ -53,7 +53,6 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
-    "mocha": "^2.4.5",
     "babel-cli": "^6.6.5",
     "babel-eslint": "*",
     "babel-preset-es2015": "*",
@@ -61,6 +60,7 @@
     "chai-as-promised": "^5.3.0",
     "codeclimate-test-reporter": "^0.3.1",
     "coveralls": "^2.11.9",
+    "devtron": "^1.1.0",
     "electron-packager": "*",
     "eslint": "*",
     "eslint-plugin-html": "*",
@@ -68,15 +68,16 @@
     "gulp-babel": "^6.1.2",
     "gulp-babel-istanbul": "^1.0.0",
     "gulp-env": "^0.4.0",
-    "gulp-inject-modules": "^0.1.1",
+    "gulp-inject-modules": "^0.2.0",
     "gulp-json-editor": "^2.2.1",
     "gulp-less": "^3.0.5",
     "gulp-mocha": "^2.2.0",
     "gulp-shell": "*",
     "isparta": "^4.0.0",
     "less-plugin-clean-css": "^1.5.1",
+    "mocha": "^2.4.5",
     "mocha-lcov-reporter": "^1.2.0",
-    "spectron": "^2.37.0",
-    "standard": "^6.0.8"
+    "spectron": "^3.0.0",
+    "standard": "^7.0.1"
   }
 }
