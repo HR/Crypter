@@ -8,6 +8,7 @@ git:
 branches:
   only:
     - master
+    - dev
 
 # env:
 #   - NODE_VERSION='5.8.0'
