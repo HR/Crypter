@@ -201,6 +201,23 @@ function CrypterWindow (callback) {
         webContents.send('cryptErr', err)
       })
   })
+
+  // When user selects a file to decrypt in Crypter window
+  ipc.on('decryptFile', function (event, filePath) {
+    logger.verbose('IPCMAIN: cryptFile emitted. Starting encryption...')
+    let destPath = filePath.replace('.crypto', '.decrypto')
+    crypto.decrypt(filePath, destPath, global.MasterPassKey.get())
+      .then((creds) => {
+        logger.info('decrypted')
+        return
+        // webContents.send('decryptedFile', file)
+      })
+      .catch((err) => {
+        logger.error(err)
+        webContents.send('cryptErr', err)
+      })
+  })
+
   win.on('closed', function () {
     logger.info('win.closed event emitted for PromptWindow')
     win = null
@@ -276,7 +293,7 @@ function SetupWindow (callback) {
 function MasterPassPromptWindow (callback) {
   let gotMP = false // init gotMP flag with false
   let error = null
-  const CLOSE_TIMEOUT = 5000
+  const CLOSE_TIMEOUT = 2000
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 300,

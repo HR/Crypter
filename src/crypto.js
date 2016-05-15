@@ -7,6 +7,9 @@
 const fs = require('fs-extra')
 const path = require('path')
 const scrypto = require('crypto')
+const logger = require('../script/logger')
+const Readable = require('stream').Readable
+const zlib = require('zlib')
 
 // Crypto default constants
 let defaults = {
@@ -50,13 +53,15 @@ exports.crypt = function (origpath, masterpass) {
 }
 
 exports.encrypt = function (origpath, destpath, mpkey) {
-  // decrypts any arbitrary data passed with the pass
+  // Encrypts any arbitrary data passed with the pass
   return new Promise(function (resolve, reject) {
     // derive the encryption key
     exports.deriveKey(mpkey, null, defaults.iterations)
       .then((dcreds) => {
         // readstream to read the (unencrypted) file
         const origin = fs.createReadStream(origpath)
+        // create compressor
+        const zip = zlib.createGzip()
         // writestream to write (encrypted) file
         const dest = fs.createWriteStream(destpath)
         // generate a cryptographically secure random iv
@@ -66,7 +71,14 @@ exports.encrypt = function (origpath, destpath, mpkey) {
 
         // Read file, apply tranformation (encryption) to stream and
         // then write stream to filesystem
-        origin.pipe(cipher).pipe(dest)
+        origin.pipe(zip).pipe(cipher).pipe(dest, { end: false })
+
+        cipher.on('end', () => {
+          // Append iv used to encrypt the file to end of file
+          // write in format Crypter#iv#authTag#salt
+          dest.write(`\nCrypter#${iv.toString('hex')}#${cipher.getAuthTag().toString('hex')}#${dcreds.salt.toString('hex')}`)
+          dest.end()
+        })
 
         // readstream error handler
         origin.on('error', (err) => {
@@ -89,14 +101,88 @@ exports.encrypt = function (origpath, destpath, mpkey) {
             salt: dcreds.salt,
             key: dcreds.key,
             iv,
-            tag
-          })
+          tag})
         })
       })
       .catch((err) => {
         // reject if error occured while deriving key
         reject(err)
       })
+  })
+}
+
+exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
+  // Decrypts any arbitrary data passed with the pass
+  return new Promise(function (resolve, reject) {
+    if (!iv || !authTag) {
+      // extract from last line of file
+      fs.readFile(origpath, 'utf-8', function (err, data) {
+        if (err) reject(err)
+
+        let lines = data.trim().split('\n')
+        let lastLine = lines.slice(-1)[0]
+        let fields = lastLine.split('#')
+        logger.info(`lines: ${lines}, lastLine: ${lastLine}, fields: ${fields}`)
+
+        if (fields[0] === 'Crypter') {
+          const iv = new Buffer(fields[1], 'hex')
+          const authTag = new Buffer(fields[2], 'hex')
+          const salt = new Buffer(fields[3], 'hex')
+          const mainData = lines.slice(0, -1).join()
+          logger.info(`mainData: ${mainData}`)
+
+          // derive the original encryption key for the file
+          exports.deriveKey(mpkey, salt, defaults.iterations)
+            .then((dcreds) => {
+              try {
+                logger.info(`Derived encryption key ${dcreds.key.toString('hex')}`)
+                const decipher = scrypto.createDecipheriv(defaults.algorithm, dcreds.key, iv)
+                logger.info(`authTag: ${authTag.toString('hex')}`)
+                // decipher.setAuthTag(authTag)
+                const dest = fs.createWriteStream(destpath)
+                const unzip = zlib.createGunzip()
+                // let dec = decipher.update(mainData, 'utf8', 'utf8')
+                // dec += decipher.final('utf8')
+                // let origin = new Readable()
+                // // read as stream
+                // origin.push(dec)
+                // origin.push(null)
+                //
+                // origin.pipe(dest)
+                let origin = new Readable()
+                // read as stream
+                origin.push(mainData)
+                origin.push(null)
+
+                origin.pipe(unzip).pipe(decipher).pipe(dest)
+
+                decipher.on('error', (err) => {
+                  reject(err)
+                })
+
+                origin.on('error', (err) => {
+                  reject(err)
+                })
+
+                dest.on('error', (err) => {
+                  reject(err)
+                })
+
+                dest.on('finish', () => {
+                  logger.verbose(`Finished encrypted/written to ${destpath}`)
+                  resolve({iv, authTag})
+                })
+              } catch (err) {
+                reject(err)
+              }
+            })
+        } else {
+          reject(new Error('IV and authTag not supplied'))
+        }
+      })
+    } else {
+      // TODO: Implement normal flow
+    }
   })
 }
 
