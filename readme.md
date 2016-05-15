@@ -84,12 +84,13 @@ let defaults = {
 
 ## Security
 Crypter uses a WeakMap to store the MasterPassKey inside the MasterPassKey class
-using closure function. This to ensure that the MasterPassKey is as inaccessible
-(externally) as possible which increases the protection of the MasterPassKey.
-The MasterPassKey is never flushed to the filesystem and always kept in (main)
-memory. Since JS does not give control over or allow such a low-level operation
-as wiping memory, the program relies on the garbage collection and volatility of
-the main memory for the permanent erasure of the MasterPassKey stored in memory.
+using closure function. This makes the MasterPassKey data held in the object
+(externally) inaccessible to an extent which increases the protection of the
+MasterPassKey. The MasterPassKey is never flushed to the filesystem and always
+kept in (main) memory. Since JS does not give control over or allow such a
+low-level operation as wiping memory, the program relies on the garbage
+collection and volatility of the main memory for the permanent erasure of the
+MasterPassKey stored in memory.
 
 A decent number of iterations (see above specs) are used for the derivation of
 the MasterPassKey to mitigate brute-force attacks. A good amount of iterations
@@ -101,7 +102,8 @@ http://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf for
 more info
 
 ## Dev
-
+The "dev" branch is the development branch and may be unstable. However the
+"master" branch is will always be kept stable.
 ### Install (dependencies)
 To install all dependencies run
 ```
@@ -109,8 +111,8 @@ $ npm install
 ```
 
 ### Run
-Uses gulp for a few things so if you have not already, then install gulp
-globally
+Uses gulp for a few things (so install gulp it globally if haven't already) and
+so to start the app simply run
 ```
 $ gulp
 ```
@@ -120,15 +122,19 @@ syntax, babel is used as a compiler. To run all the tests
 ```
 $ npm test
 ```
-Uses istanbul for coverage; to run coverage
+Uses istanbul for coverage. To run test coverage
 ```
 $ gulp coverage
 ```
 
-### Build (for OSX)
+### Build
 To build the app for your OSX (darwin)
 ```
 $ npm run xbuild
+```
+To build the app for your Windows x84 and x64 (win32) run the win-build script
+```
+$ ./script/win-build.sh
 ```
 Since it is an Electron app, it can be built for OS X, Linux, and Windows but
 has currently only been tested on OSX.
