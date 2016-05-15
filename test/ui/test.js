@@ -126,7 +126,7 @@ describe("Crypter Render Modules's tests", function () {
           return checkResponse(this.app.client, masterpass, responses.setSuccess)
         })
         .then(() => {
-          return wait(200) // wait 2 seconds
+          return wait(2000) // wait 2 seconds
         })
         .catch((err) => {
           throw err
@@ -139,19 +139,21 @@ describe("Crypter Render Modules's tests", function () {
     })
 
     let checkResponse = function (client, input, response) {
-      client.setValue('#checkMasterPassInput', input)
-        .click('#checkMasterPass')
-        .then(() => {
-          return wait(1000) // wait 2 seconds
-        })
-        .getText('#checkMasterPassLabel')
-        .then((text) => {
-          expect(text).to.equal(response)
-          return
-        })
-        .catch((err) => {
-          throw err
-        })
+      return new Promise(function(resolve, reject) {
+        return client.setValue('#checkMasterPassInput', input)
+          .click('#checkMasterPass')
+          .then(() => {
+            return wait(1000)
+          })
+          .getText('#checkMasterPassLabel')
+          .then((text) => {
+            expect(text).to.equal(response)
+            resolve()
+          })
+          .catch((err) => {
+            reject(err)
+          })
+      })
     }
 
     it('should give response for incorrect masterpass', function () {

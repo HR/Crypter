@@ -18,8 +18,8 @@
   "scripts": {
     "electronVersion": "node_modules/.bin/electron -v | sed s/\\v//g",
     "test": "TEST_RUN=true mocha --compilers js:babel-core/register test/test.js",
-    "xltest": "unset TEST_RUN && rm -rf ~/Library/Application\\ Support/CrypterTest && mocha --compilers js:babel-core/register ./test/ui/*.js",
-    "xtest": "unset TEST_RUN && npm run xtestbuild && mocha --compilers js:babel-core/register ./test/ui/*.js",
+    "xltest": "unset TEST_RUN && rm -rf ~/Library/Application\\ Support/CrypterTest/ && mocha --compilers js:babel-core/register ./test/ui/*.js",
+    "xtest": "npm run xtestbuild && npm run xltest",
     "xtestbuild": "npm_package_productName=CrypterTest && electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage|backups|github)' --asar=false --platform=darwin --arch=x64 --version=$(npm run electronVersion) --icon=res/app-icons/Crypter.icns --app-copyright=HR --overwrite && npm run productNameChange",
     "xbuild": "electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage|backups|github)' --asar=false --platform=darwin --arch=x64 --version=$(npm run electronVersion) --icon=res/app-icons/Crypter.icns --app-copyright=Habib_Rehman --overwrite",
     "coverage": "TEST_RUN=true ./node_modules/.bin/babel-node ./node_modules/.bin/isparta cover --root src/ ./node_modules/.bin/_mocha -- test/test.js --reporter mocha-lcov-reporter",
