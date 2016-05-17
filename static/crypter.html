@@ -82,7 +82,9 @@
 
     <script type="text/javascript">
       'use strict'
-      var dialog = require('electron').remote.dialog
+      var remote = require('electron').remote
+      var dialog = remote.dialog
+      var paths = remote.getGlobal('paths')
       var logger = require('../script/logger.js')
       var Handlebars = require('handlebars')
       var path = require('path')
@@ -133,7 +135,7 @@
         // Create file input dialog
         dialog.showOpenDialog({
           title: 'Choose a file to Encrypt',
-          defaultPath: '~', // open dialog at home directory
+          defaultPath: paths.documents, // open dialog at home directory
           properties: ['openFile']
         }, function(filePath) {
           // callback for selected file

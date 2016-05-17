@@ -22,7 +22,9 @@ require('electron-debug')()
 global.creds = {}
 global.paths = {
   mdb: `${app.getPath('userData')}/mdb`,
-  userData: app.getPath('userData')
+  userData: app.getPath('userData'),
+  home: app.getPath('home'),
+  documents: app.getPath('documents')
 }
 global.views = {
   masterpassprompt: `file://${__dirname}/static/masterpassprompt.html`,

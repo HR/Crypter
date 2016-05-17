@@ -11,14 +11,14 @@
 
 <p align="center">
     <a href="https://travis-ci.org/HR/Crypter">
-        <img src="https://travis-ci.org/HR/Crypter.svg?branch=master"
+        <img src="https://travis-ci.org/HR/Crypter.svg?branch=dev"
              alt="Travis Build">
     </a>
-    <a href="https://coveralls.io/github/HR/Crypter?branch=master">
-        <img src="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=master"
+    <a href="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=dev">
+        <img src="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=dev"
              alt="Test Coverage">
     </a>
-    <a href="https://coveralls.io/github/HR/Crypter?branch=master">
+    <a href="https://coveralls.io/github/HR/Crypter?branch=dev">
         <img src="https://codeclimate.com/github/HR/Crypter/badges/gpa.svg"
              alt="Codeclimate GPA">
     </a>
@@ -103,7 +103,8 @@ more info
 
 ## Dev
 The "dev" branch is the development branch and may be unstable. However the
-"master" branch is will always be kept stable.
+"master" branch will always be kept stable.  So issue pull requests for
+improvements mainly on the dev branch.
 ### Install (dependencies)
 To install all dependencies run
 ```

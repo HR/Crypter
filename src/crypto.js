@@ -10,6 +10,7 @@ const scrypto = require('crypto')
 const logger = require('../script/logger')
 const Readable = require('stream').Readable
 const zlib = require('zlib')
+const through2 = require('through2')
 
 // Crypto default constants
 let defaults = {
@@ -76,7 +77,7 @@ exports.encrypt = function (origpath, destpath, mpkey) {
         cipher.on('end', () => {
           // Append iv used to encrypt the file to end of file
           // write in format Crypter#iv#authTag#salt
-          dest.write(`\nCrypter#${iv.toString('hex')}#${cipher.getAuthTag().toString('hex')}#${dcreds.salt.toString('hex')}`)
+          dest.write(`Crypter#${iv.toString('hex')}#${cipher.getAuthTag().toString('hex')}#${dcreds.salt.toString('hex')}`)
           dest.end()
         })
 
@@ -136,9 +137,9 @@ exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
             .then((dcreds) => {
               try {
                 logger.info(`Derived encryption key ${dcreds.key.toString('hex')}`)
-                const decipher = scrypto.createDecipheriv(defaults.algorithm, dcreds.key, iv)
+                let decipher = scrypto.createDecipheriv(defaults.algorithm, dcreds.key, iv)
+                decipher.setAuthTag(authTag)
                 logger.info(`authTag: ${authTag.toString('hex')}`)
-                // decipher.setAuthTag(authTag)
                 const dest = fs.createWriteStream(destpath)
                 const unzip = zlib.createGunzip()
                 // let dec = decipher.update(mainData, 'utf8', 'utf8')
@@ -154,7 +155,7 @@ exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
                 origin.push(mainData)
                 origin.push(null)
 
-                origin.pipe(unzip).pipe(decipher).pipe(dest)
+                origin.pipe(decipher).pipe(unzip).pipe(dest)
 
                 decipher.on('error', (err) => {
                   reject(err)
