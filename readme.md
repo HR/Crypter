@@ -108,7 +108,8 @@ more info
 
 ## Dev
 The "dev" branch is the development branch and may be unstable. However the
-"master" branch is will always be kept stable.
+"master" branch will always be kept stable.  So issue pull requests for
+improvements mainly on the dev branch.
 ### Install (dependencies)
 To install all dependencies run
 ```
