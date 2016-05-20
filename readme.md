@@ -37,12 +37,17 @@ cloud encryption client) which is a more elaborate implementation of the idea.
 So check it out as well!
 
 ## Status
-All of the UI and functionality has been implemented. All internal modules are
-fully tested (100% coverage). Some end-to-end tests have been written (see
-test/ui/test.js) but end-to-end testing is still mostly a WIP.
-## Roadmap
-Decryption and more functionality will be implemented very soon in the coming
-releases. If you have any suggestions for features then please let me know!
+The decryption functionality is being implemented for the next major release
+[v2.0](https://github.com/HR/Crypter/milestones/v2.0) in the "dev" branch. Feel
+free to send PRs to speed this up! 
+
+For the first release [v1.0](https://github.com/HR/Crypter/releases/tag/v1.0)
+(on master branch), all of the UI and the encryption functionality has been
+implemented.  All internal modules are fully tested (100% coverage). Some
+end-to-end tests have been written (see test/ui/test.js) but end-to-end testing
+is still mostly a WIP.
+
+If you have any suggestions then please open an issue!
 
 ## Screens (some of them)
 <p align="center">
