@@ -111,15 +111,22 @@ exports.encrypt = function (origpath, destpath, mpkey) {
       })
   })
 }
+let readFile = function (path) {
+  return new Promise(function(resolve, reject) {
+    fs.readFile(path, 'utf-8', function (err, data) {
+      if (err) reject(err)
+      resolve(data)
+    })
+  })
+}
 
 exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
   // Decrypts any arbitrary data passed with the pass
   return new Promise(function (resolve, reject) {
     if (!iv || !authTag) {
       // extract from last line of file
-      fs.readFile(origpath, 'utf-8', function (err, data) {
-        if (err) reject(err)
 
+      readFile(origpath).then((data) => {
         let lines = data.trim().split('\n')
         let lastLine = lines.slice(-1)[0]
         let fields = lastLine.split('#')
@@ -148,8 +155,7 @@ exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
                 // // read as stream
                 // origin.push(dec)
                 // origin.push(null)
-                //
-                // origin.pipe(dest)
+
                 let origin = new Readable()
                 // read as stream
                 origin.push(mainData)
@@ -178,8 +184,10 @@ exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
               }
             })
         } else {
-          reject(new Error('IV and authTag not supplied'))
+          reject(new Error('Not a Crypter file (can not get salt, iv and authTag)'))
         }
+      }).catch((err) => {
+        reject(err)
       })
     } else {
       // TODO: Implement normal flow
