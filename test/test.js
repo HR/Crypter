@@ -394,7 +394,6 @@ describe("Crypter Core Modules' tests", function () {
           .catch((err) => {
             // Expect an error to occur
             expect(err).to.be.an('error')
-            expect(err.message).to.equal('Unexpected token i')
           })
       })
     })
