@@ -97,7 +97,7 @@
       var crypted_template = Handlebars.compile($('#crypted-template').html())
       const cryptoExt = '.crypto'
 
-      $(window).load(function() {
+      $(window).on('load', function() {
         // attach click event
         fileInput.on('click', handler)
         $('.navigationLink').each(function (index) {

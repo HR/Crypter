@@ -14,6 +14,7 @@ const logger = require('./script/logger')
 logger.info(`AppPath: ${app.getAppPath()}`)
 process.chdir(app.getAppPath())
 logger.info(`Changed cwd to: ${process.cwd()}`)
+logger.info(`Electron node v${process.versions.node}`)
 
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')()
@@ -40,9 +41,13 @@ const init = function () {
   return new Promise(function (resolve, reject) {
     // initialise mdb
     global.mdb = new Db(global.paths.mdb)
+    logger.info(`status: ${global.mdb._status}`)
     // Get the credentials serialized object from mdb
     // Resolves with false if not found
-    resolve(global.mdb.onlyGetValue('creds'))
+    // setTimeout to ensure mdb is open before get creds
+    setTimeout(function () {
+      resolve(global.mdb.onlyGetValue('creds'))
+    }, 1000)
   })
 }
 
@@ -54,6 +59,13 @@ const initMain = function () {
   })
 }
 
+const closeDb = function () {
+  if (_.isEmpty(global.mdb) ? false : global.mdb.isOpen()) {
+    // close mdb before quitting if opened
+    global.mdb.close()
+  }
+}
+
 /**
  * Event handlers
  **/
@@ -63,11 +75,12 @@ app.on('ready', function () {
   // Check synchronously whether paths exist
   init()
     .then((mainRun) => {
+      logger.info(`Init done.`)
       // If the credentials not find in mdb, run setup
       // otherwise run main
       if (mainRun) {
         // Run main
-        logger.info('Main run. Creating CrypterWindow...')
+        logger.info(`Main run. Creating CrypterWindow...`)
 
         // Initialise (open mdb and get creds)
         initMain()
@@ -86,7 +99,7 @@ app.on('ready', function () {
           .catch(function (error) {
             // Catch any fatal errors and exit
             logger.error(`PROMISE ERR: ${error.stack}`)
-            //  dialog.showErrorBox('Oops, we encountered a problem...', error.message)
+            // dialog.showErrorBox('Oops, we encountered a problem...', error.message)
             app.quit()
           })
       } else {
@@ -102,7 +115,7 @@ app.on('ready', function () {
           .catch(function (error) {
             logger.error(`PROMISE ERR: ${error.stack}`)
             // Display error to user
-            //  dialog.showErrorBox('Oops, we encountered a problem...', error.message)
+            dialog.showErrorBox('Oops, we encountered a problem...', error.message)
             app.quit()
           })
       }
@@ -110,7 +123,7 @@ app.on('ready', function () {
     .catch(function (error) {
       logger.error(`PROMISE ERR: ${error.stack}`)
       // Display error to user
-      // dialog.showErrorBox('Oops, we encountered a problem...', error.message)
+      dialog.showErrorBox('Oops, we encountered a problem...', error.message)
       app.quit()
     })
 })
@@ -121,15 +134,13 @@ app.on('window-all-closed', () => {
 
 app.on('quit', () => {
   logger.info('APP: quit event emitted')
+  closeDb()
 })
 
 app.on('will-quit', (event) => {
   // will exit program once exit procedures have been run (exit flag is true)
   logger.info(`APP.ON('will-quit'): will-quit event emitted`)
-  if (!_.isEmpty(global.mdb)) {
-    // close mdb before quitting if opened
-    global.mdb.close()
-  }
+  closeDb()
 })
 
 /**
@@ -212,7 +223,7 @@ function CrypterWindow (callback) {
       .then((creds) => {
         logger.info('decrypted')
         return
-        // webContents.send('decryptedFile', file)
+      // webContents.send('decryptedFile', file)
       })
       .catch((err) => {
         logger.error(err)
@@ -246,6 +257,7 @@ function SetupWindow (callback) {
   let error
   // loads setup.html view into the SetupWindow
   win.loadURL(global.views.setup)
+  webContents.openDevTools()
 
   ipc.on('setMasterPass', function (event, masterpass) {
     // setMasterPass event triggered by render proces

@@ -17,7 +17,7 @@ matrix:
   include:
     - os: osx
       env:
-        - NODE_VERSION=5.8.0
+        - NODE_VERSION=6.1.0
         - BUILD_OS_NAME=darwin
 
 before_script:
