@@ -59,6 +59,7 @@ exports.encrypt = function (origpath, destpath, mpkey) {
     // derive the encryption key
     exports.deriveKey(mpkey, null, defaults.iterations)
       .then((dcreds) => {
+        let tag
         // readstream to read the (unencrypted) file
         const origin = fs.createReadStream(origpath)
         // create compressor
@@ -69,15 +70,28 @@ exports.encrypt = function (origpath, destpath, mpkey) {
         const iv = scrypto.randomBytes(defaults.ivLength)
         // create the AES-256-GCM cipher with iv and derive encryption key
         const cipher = scrypto.createCipheriv(defaults.algorithm, dcreds.key, iv)
+        // create hash
+        const hash = scrypto.createHash('sha1')
+        hash.setEncoding('hex')
+
+        cipher.on('readable', () => {
+          var data = cipher.read()
+          if (data)
+            hash.update(data)
+        })
 
         // Read file, apply tranformation (encryption) to stream and
         // then write stream to filesystem
         origin.pipe(zip).pipe(cipher).pipe(dest, { end: false })
 
         cipher.on('end', () => {
+          logger.info(`Encrypted data hash digest ${hash.digest('hex')}`)
+          // get the generated Message Authentication Code
+          tag = cipher.getAuthTag()
+          dest.write('\n')
           // Append iv used to encrypt the file to end of file
           // write in format Crypter#iv#authTag#salt
-          dest.write(`Crypter#${iv.toString('hex')}#${cipher.getAuthTag().toString('hex')}#${dcreds.salt.toString('hex')}`)
+          dest.write(`Crypter#${iv.toString('hex')}#${tag.toString('hex')}#${dcreds.salt.toString('hex')}`)
           dest.end()
         })
 
@@ -95,8 +109,6 @@ exports.encrypt = function (origpath, destpath, mpkey) {
 
         // writestream finish handler
         dest.on('finish', () => {
-          // get the generated Message Authentication Code
-          const tag = cipher.getAuthTag()
           // return all the credentials and parameters used for encryption
           resolve({
             salt: dcreds.salt,
@@ -112,7 +124,7 @@ exports.encrypt = function (origpath, destpath, mpkey) {
   })
 }
 let readFile = function (path) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     fs.readFile(path, 'utf-8', function (err, data) {
       if (err) reject(err)
       resolve(data)
@@ -136,8 +148,14 @@ exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
           const iv = new Buffer(fields[1], 'hex')
           const authTag = new Buffer(fields[2], 'hex')
           const salt = new Buffer(fields[3], 'hex')
-          const mainData = lines.slice(0, -1).join()
+          const mainData = lines.slice(0, -1).join('\n')
+          // create mainData hash
+          const hash = scrypto.createHash('sha1')
+          hash.setEncoding('hex')
+          hash.update(mainData)
+
           logger.info(`mainData: ${mainData}`)
+          logger.info(`mainData hash digest ${hash.digest('hex')}`)
 
           // derive the original encryption key for the file
           exports.deriveKey(mpkey, salt, defaults.iterations)
