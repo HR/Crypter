@@ -29,6 +29,7 @@ exports.crypt = function (origpath, masterpass) {
     let destpath = `${origpath}.crypto`
     exports.encrypt(origpath, destpath, masterpass)
       .then((creds) => {
+        logger.info(JSON.stringify(creds))
         // create the file object
         var file = {}
         // extract file name from path
@@ -63,7 +64,7 @@ exports.encrypt = function (origpath, destpath, mpkey) {
         // readstream to read the (unencrypted) file
         const origin = fs.createReadStream(origpath)
         // create compressor
-        const zip = zlib.createGzip()
+        // const zip = zlib.createGzip()
         // writestream to write (encrypted) file
         const dest = fs.createWriteStream(destpath)
         // generate a cryptographically secure random iv
@@ -82,7 +83,8 @@ exports.encrypt = function (origpath, destpath, mpkey) {
 
         // Read file, apply tranformation (encryption) to stream and
         // then write stream to filesystem
-        origin.pipe(zip).pipe(cipher).pipe(dest, { end: false })
+        // origin.pipe(zip).pipe(cipher).pipe(dest, { end: false })
+        origin.pipe(cipher).pipe(dest, { end: false })
 
         cipher.on('end', () => {
           logger.info(`Encrypted data hash digest ${hash.digest('hex')}`)
@@ -91,8 +93,8 @@ exports.encrypt = function (origpath, destpath, mpkey) {
           dest.write('\n')
           // Append iv used to encrypt the file to end of file
           // write in format Crypter#iv#authTag#salt
-          dest.write(`Crypter#${iv.toString('hex')}#${tag.toString('hex')}#${dcreds.salt.toString('hex')}`)
-          dest.end()
+          dest.end(`Crypter#${iv.toString('hex')}#${tag.toString('hex')}#${dcreds.salt.toString('hex')}`)
+          logger.warn(`Crypter#${iv.toString('hex')}#${tag.toString('hex')}#${dcreds.salt.toString('hex')}`)
         })
 
         // readstream error handler
@@ -113,8 +115,9 @@ exports.encrypt = function (origpath, destpath, mpkey) {
           resolve({
             salt: dcreds.salt,
             key: dcreds.key,
+            tag,
             iv,
-          tag})
+          })
         })
       })
       .catch((err) => {
@@ -139,7 +142,8 @@ exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
       // extract from last line of file
 
       readFile(origpath).then((data) => {
-        let lines = data.trim().split('\n')
+        // let lines = data.trim().split('\n')
+        let lines = data.split('\n')
         let lastLine = lines.slice(-1)[0]
         let fields = lastLine.split('#')
         logger.info(`lines: ${lines}, lastLine: ${lastLine}, fields: ${fields}`)
@@ -166,7 +170,7 @@ exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
                 decipher.setAuthTag(authTag)
                 logger.info(`authTag: ${authTag.toString('hex')}`)
                 const dest = fs.createWriteStream(destpath)
-                const unzip = zlib.createGunzip()
+                // const unzip = zlib.createGunzip()
                 // let dec = decipher.update(mainData, 'utf8', 'utf8')
                 // dec += decipher.final('utf8')
                 // let origin = new Readable()
@@ -179,7 +183,8 @@ exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
                 origin.push(mainData)
                 origin.push(null)
 
-                origin.pipe(decipher).pipe(unzip).pipe(dest)
+                // origin.pipe(decipher).pipe(unzip).pipe(dest)
+                origin.pipe(decipher).pipe(dest)
 
                 decipher.on('error', (err) => {
                   reject(err)

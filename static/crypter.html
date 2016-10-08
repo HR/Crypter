@@ -84,6 +84,7 @@
       'use strict'
       var remote = require('electron').remote
       var dialog = remote.dialog
+      var BrowserWindow = remote.BrowserWindow
       var paths = remote.getGlobal('paths')
       var logger = require('../script/logger.js')
       var Handlebars = require('handlebars')
@@ -147,6 +148,9 @@
 
             if (fileExt.toLowerCase() === cryptoExt) {
               // Decrypt file
+              // dialog.showMessageBox(BrowserWindow.getCurrentWindow(), {type:"question", buttons: ["Cancel", "Decrypt"]}, function (res) {
+              //   logger.info(`showMessageBox res: ${res}`)
+              // })
               fileInputText.text(`Decrypting ${path.basename(file)}...`)
               ipcRenderer.send('decryptFile', file)
             } else {
