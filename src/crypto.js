@@ -10,7 +10,8 @@ const scrypto = require('crypto')
 const logger = require('../script/logger')
 const Readable = require('stream').Readable
 const zlib = require('zlib')
-const through2 = require('through2')
+const tar = require('tar-fs')
+// const through2 = require('through2')
 
 // Crypto default constants
 let defaults = {
@@ -26,18 +27,19 @@ let defaults = {
 exports.crypt = function (origpath, masterpass) {
   return new Promise(function (resolve, reject) {
     // Resolve the destination path for encrypted file
-    let destpath = `${origpath}.crypto`
-    exports.encrypt(origpath, destpath, masterpass)
+    exports.encrypt(origpath, masterpass)
       .then((creds) => {
-        logger.info(JSON.stringify(creds))
+        logger.info(`Encrypt creds: ${JSON.stringify(creds)}`)
         // create the file object
-        var file = {}
+        let file = {}
+        // Crypter operation
+        file.op = 'Encrypted'
         // extract file name from path
         file.name = path.basename(origpath)
         // Save the path of the (unencrypted) file
         file.path = origpath
         // Save the path of the encrypted file
-        file.cryptPath = destpath
+        file.cryptPath = creds.cryptpath
         // Convert salt used to derivekey to hex string
         file.salt = creds.salt.toString('hex')
         // Convert dervived key to hex string
@@ -54,69 +56,90 @@ exports.crypt = function (origpath, masterpass) {
   })
 }
 
-exports.encrypt = function (origpath, destpath, mpkey) {
+exports.encrypt = function (origpath, mpkey) {
   // Encrypts any arbitrary data passed with the pass
   return new Promise(function (resolve, reject) {
     // derive the encryption key
     exports.deriveKey(mpkey, null, defaults.iterations)
       .then((dcreds) => {
         let tag
-        // readstream to read the (unencrypted) file
-        const origin = fs.createReadStream(origpath)
-        // create compressor
-        // const zip = zlib.createGzip()
-        // writestream to write (encrypted) file
-        const dest = fs.createWriteStream(destpath)
-        // generate a cryptographically secure random iv
-        const iv = scrypto.randomBytes(defaults.ivLength)
-        // create the AES-256-GCM cipher with iv and derive encryption key
-        const cipher = scrypto.createCipheriv(defaults.algorithm, dcreds.key, iv)
-        // create hash
-        const hash = scrypto.createHash('sha1')
-        hash.setEncoding('hex')
+        let dname = '.crypting'
+        let tempd = `${path.dirname(origpath)}/${dname}`
+        let dataDestPath = `${tempd}/data`
+        let credsDestPath = `${tempd}/creds`
+        logger.info(`tempd: ${tempd}, dataDestPath: ${dataDestPath}, credsDestPath: ${credsDestPath}`)
+        fs.mkdirs(tempd, function (err) {
+          if (err)
+            reject(err)
+          logger.info(`Created ${tempd} successfully`)
+          // readstream to read the (unencrypted) file
+          const origin = fs.createReadStream(origpath)
+          // create compressor
+          // const zip = zlib.createGzip()
+          // writestream to write (encrypted) file
+          const dataDest = fs.createWriteStream(dataDestPath)
+          const credsDest = fs.createWriteStream(credsDestPath)
+          // generate a cryptographically secure random iv
+          const iv = scrypto.randomBytes(defaults.ivLength)
+          // create the AES-256-GCM cipher with iv and derive encryption key
+          const cipher = scrypto.createCipheriv(defaults.algorithm, dcreds.key, iv)
 
-        cipher.on('readable', () => {
-          var data = cipher.read()
-          if (data)
-            hash.update(data)
-        })
+          // Read file, apply tranformation (encryption) to stream and
+          // then write stream to filesystem
+          // origin.pipe(zip).pipe(cipher).pipe(dest, { end: false })
+          origin.pipe(cipher).pipe(dataDest)
 
-        // Read file, apply tranformation (encryption) to stream and
-        // then write stream to filesystem
-        // origin.pipe(zip).pipe(cipher).pipe(dest, { end: false })
-        origin.pipe(cipher).pipe(dest, { end: false })
+          cipher.on('end', () => {
+            // get the generated Message Authentication Code
+            tag = cipher.getAuthTag()
+            // Write crdentials used to encrypt in creds file
+            // write in format Crypter#iv#authTag#salt
+            credsDest.end(`Crypter#${iv.toString('hex')}#${tag.toString('hex')}#${dcreds.salt.toString('hex')}`)
+            logger.warn(`Crypter#${iv.toString('hex')}#${tag.toString('hex')}#${dcreds.salt.toString('hex')}`)
+          })
 
-        cipher.on('end', () => {
-          logger.info(`Encrypted data hash digest ${hash.digest('hex')}`)
-          // get the generated Message Authentication Code
-          tag = cipher.getAuthTag()
-          dest.write('\n')
-          // Append iv used to encrypt the file to end of file
-          // write in format Crypter#iv#authTag#salt
-          dest.end(`Crypter#${iv.toString('hex')}#${tag.toString('hex')}#${dcreds.salt.toString('hex')}`)
-          logger.warn(`Crypter#${iv.toString('hex')}#${tag.toString('hex')}#${dcreds.salt.toString('hex')}`)
-        })
+          // readstream error handler
+          origin.on('error', (err) => {
+            // reject on readstream error
+            reject(err)
+          })
 
-        // readstream error handler
-        origin.on('error', (err) => {
-          // reject on readstream error
-          reject(err)
-        })
+          // writestream error handler
+          dataDest.on('error', (err) => {
+            // reject on writestream
+            reject(err)
+          })
 
-        // writestream error handler
-        dest.on('error', (err) => {
-          // reject on writestream
-          reject(err)
-        })
+          credsDest.on('error', (err) => {
+            // reject on writestream
+            reject(err)
+          })
 
-        // writestream finish handler
-        dest.on('finish', () => {
-          // return all the credentials and parameters used for encryption
-          resolve({
-            salt: dcreds.salt,
-            key: dcreds.key,
-            tag,
-            iv,
+          // writestream finish handler
+          credsDest.on('finish', () => {
+            let tarDestPath = `${origpath}.crypto`
+            const tarDest = fs.createWriteStream(tarDestPath)
+            // Pack directory and zip into a .crypto file
+            tar.pack(tempd).pipe(tarDest)
+            tarDest.on('error', (err) => {
+              // reject on writestream
+              reject(err)
+            })
+            tarDest.on('finish', () => {
+              // Remove temporary dir tempd
+              fs.remove(tempd, function (err) {
+                if (err)
+                  reject(err)
+                // return all the credentials and parameters used for encryption
+                logger.info('Successfully deleted tempd!')
+                resolve({
+                  salt: dcreds.salt,
+                  key: dcreds.key,
+                  cryptpath: tarDestPath,
+                  tag,
+                iv})
+              })
+            })
           })
         })
       })
@@ -135,86 +158,97 @@ let readFile = function (path) {
   })
 }
 
-exports.decrypt = function (origpath, destpath, mpkey, iv, authTag) {
-  // Decrypts any arbitrary data passed with the pass
+/* NOTE: CHANGE destpath */
+exports.decrypt = function (origpath, mpkey) {
+  // Decrypts a crypto format file passed with the pass
   return new Promise(function (resolve, reject) {
-    if (!iv || !authTag) {
-      // extract from last line of file
+    // Extract a directory
+    let dname = '.decrypting'
+    let tempd = `${path.dirname(origpath)}/${dname}`
+    let dataOrigPath = `${tempd}/data`
+    let credsOrigPath = `${tempd}/creds`
+    let dataDestPath = origpath.replace('.crypto', '')
+    dataDestPath = dataDestPath.replace(path.basename(dataDestPath), `Decrypted ${path.basename(dataDestPath)}`)
+    let tarOrig = fs.createReadStream(origpath)
+    let tarExtr = tar.extract(tempd)
+    // Extract tar to dname directory
+    tarOrig.pipe(tarExtr)
 
-      readFile(origpath).then((data) => {
-        // let lines = data.trim().split('\n')
-        let lines = data.split('\n')
-        let lastLine = lines.slice(-1)[0]
-        let fields = lastLine.split('#')
-        logger.info(`lines: ${lines}, lastLine: ${lastLine}, fields: ${fields}`)
+    tarOrig.on('error', (err) => {
+      // reject on writestream
+      reject(err)
+    })
+    tarExtr.on('finish', () => {
+      // Now read creds and use to decrypt data
+      logger.info('Finished extracting')
+      readFile(credsOrigPath)
+        .then((data) => {
+          let lines = data.split('\n')
+          let lastLine = lines.slice(-1)[0]
+          let fields = lastLine.split('#')
+          logger.info(`lines: ${lines}, lastLine: ${lastLine}, fields: ${fields}`)
 
-        if (fields[0] === 'Crypter') {
-          const iv = new Buffer(fields[1], 'hex')
-          const authTag = new Buffer(fields[2], 'hex')
-          const salt = new Buffer(fields[3], 'hex')
-          const mainData = lines.slice(0, -1).join('\n')
-          // create mainData hash
-          const hash = scrypto.createHash('sha1')
-          hash.setEncoding('hex')
-          hash.update(mainData)
+          if (fields[0] === 'Crypter') {
+            const iv = new Buffer(fields[1], 'hex')
+            const authTag = new Buffer(fields[2], 'hex')
+            const salt = new Buffer(fields[3], 'hex')
+            logger.info(`iv: ${iv}, authTag: ${authTag}, salt: ${salt}`)
+            // Read encrypted data stream
+            const dataOrig = fs.createReadStream(dataOrigPath)
+            // derive the original encryption key for the file
+            exports.deriveKey(mpkey, salt, defaults.iterations)
+              .then((dcreds) => {
+                try {
+                  logger.info(`Derived encryption key ${dcreds.key.toString('hex')}`)
+                  let decipher = scrypto.createDecipheriv(defaults.algorithm, dcreds.key, iv)
+                  decipher.setAuthTag(authTag)
+                  logger.info(`authTag: ${authTag.toString('hex')}`)
+                  const dataDest = fs.createWriteStream(dataDestPath)
+                  // const unzip = zlib.createGunzip()
+                  // origin.pipe(decipher).pipe(unzip).pipe(dest)
+                  dataOrig.pipe(decipher).pipe(dataDest)
 
-          logger.info(`mainData: ${mainData}`)
-          logger.info(`mainData hash digest ${hash.digest('hex')}`)
+                  decipher.on('error', (err) => {
+                    reject(err)
+                  })
 
-          // derive the original encryption key for the file
-          exports.deriveKey(mpkey, salt, defaults.iterations)
-            .then((dcreds) => {
-              try {
-                logger.info(`Derived encryption key ${dcreds.key.toString('hex')}`)
-                let decipher = scrypto.createDecipheriv(defaults.algorithm, dcreds.key, iv)
-                decipher.setAuthTag(authTag)
-                logger.info(`authTag: ${authTag.toString('hex')}`)
-                const dest = fs.createWriteStream(destpath)
-                // const unzip = zlib.createGunzip()
-                // let dec = decipher.update(mainData, 'utf8', 'utf8')
-                // dec += decipher.final('utf8')
-                // let origin = new Readable()
-                // // read as stream
-                // origin.push(dec)
-                // origin.push(null)
+                  dataOrig.on('error', (err) => {
+                    reject(err)
+                  })
 
-                let origin = new Readable()
-                // read as stream
-                origin.push(mainData)
-                origin.push(null)
+                  dataDest.on('error', (err) => {
+                    reject(err)
+                  })
 
-                // origin.pipe(decipher).pipe(unzip).pipe(dest)
-                origin.pipe(decipher).pipe(dest)
-
-                decipher.on('error', (err) => {
+                  dataDest.on('finish', () => {
+                    logger.verbose(`Encrypted/written to ${dataDestPath}`)
+                    // Now delete tempd (temporary directory)
+                    fs.remove(tempd, function (err) {
+                      if (err)
+                        reject(err)
+                      let file = {}
+                      file.op = 'Decrypted'
+                      file.name = path.basename(origpath)
+                      file.path = origpath
+                      file.cryptPath = dataDestPath
+                      file.salt = salt.toString('hex')
+                      file.key = dcreds.key.toString('hex')
+                      file.iv = iv.toString('hex')
+                      file.authTag = authTag.toString('hex')
+                      resolve(file)
+                    })
+                  })
+                } catch (err) {
                   reject(err)
-                })
-
-                origin.on('error', (err) => {
-                  reject(err)
-                })
-
-                dest.on('error', (err) => {
-                  reject(err)
-                })
-
-                dest.on('finish', () => {
-                  logger.verbose(`Finished encrypted/written to ${destpath}`)
-                  resolve({iv, authTag})
-                })
-              } catch (err) {
-                reject(err)
-              }
-            })
-        } else {
-          reject(new Error('Not a Crypter file (can not get salt, iv and authTag)'))
-        }
-      }).catch((err) => {
+                }
+              })
+          } else {
+            reject(new Error('Not a Crypter file (can not get salt, iv and authTag)'))
+          }
+        }).catch((err) => {
         reject(err)
       })
-    } else {
-      // TODO: Implement normal flow
-    }
+    })
   })
 }
 

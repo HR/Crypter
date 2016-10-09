@@ -43,7 +43,7 @@
     </section>
 
     <script id="crypted-template" type="text/x-handlebars-template">
-      <h3>Encrypted {{name}}</h3>
+      <h3>{{op}} {{name}}</h3>
       <table>
         <tr>
           <td>Path</td>
@@ -119,11 +119,11 @@
       })
       ipcRenderer.on('decryptedFile', function(event, file) {
         logger.verbose(`IPCRENDER decryptedFile emitted`)
-        // var fileHTML = crypted_template(file)
-        // fileInfo.html(fileHTML)
-        // fileInputText.text(ifileInputText)
-        // navigate('crypted')
-        // fileInput.on('click', handler)
+        var fileHTML = crypted_template(file)
+        fileInfo.html(fileHTML)
+        fileInputText.text(ifileInputText)
+        navigate('crypted')
+        fileInput.on('click', handler)
       })
       ipcRenderer.on('cryptErr', function(event, err) {
         logger.verbose(`IPCRENDER cryptErr emitted`)

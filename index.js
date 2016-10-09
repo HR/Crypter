@@ -217,13 +217,12 @@ function CrypterWindow (callback) {
 
   // When user selects a file to decrypt in Crypter window
   ipc.on('decryptFile', function (event, filePath) {
-    logger.verbose('IPCMAIN: cryptFile emitted. Starting encryption...')
-    let destPath = filePath.replace('.crypto', '.decrypto')
-    crypto.decrypt(filePath, destPath, global.MasterPassKey.get())
-      .then((creds) => {
+    logger.verbose('IPCMAIN: decryptFile emitted. Starting decryption...')
+    // let destPath = filePath.replace('.crypto', '.decrypto')
+    crypto.decrypt(filePath, global.MasterPassKey.get())
+      .then((file) => {
         logger.info('decrypted')
-        return
-      // webContents.send('decryptedFile', file)
+        webContents.send('decryptedFile', file)
       })
       .catch((err) => {
         logger.error(err)
