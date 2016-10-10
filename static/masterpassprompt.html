@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>Verify the MasterPass</title>
@@ -23,31 +24,92 @@
           <div class="masterpass">
             <input type="password" name="masterpass" id="checkMasterPassInput" placeholder="********" />
             <label for="checkMasterPassInput" id="checkMasterPassLabel"></label>
+            <a href="#" id="resetMasterPassInput" class="navigationLink" data-target="reset">Forgot it?</a>
           </div>
           <button id="checkMasterPass">Verify</button>
         </form>
       </div>
+      <div id="panel-reset">
+        <header>
+          <h1>Reset the MasterPass</h1>
+          <p>Please enter a new secure MasterPass
+          </p>
+          <img class="info" src="images/icons/info.svg" alt=" " />
+          <p class="info ">The MasterPass is used to derive the data encryption keys. So any encrypted data using former MasterPass would not be decryptable.</p>
+        </header>
+        <form onsubmit="return false;">
+          <div class="masterpass">
+            <input type="password" name="name" id="setMasterPassInput" placeholder="********" required/>
+            <label for="setMasterPassInput" id="setMasterPassLabel"></label>
+          </div>
+          <button id="setMasterPass">Reset</button>
+        </form>
+        <p class="note">
+          NOTE: If lost, your former encrypted data will be inaccessible!
+        </p>
+        <footer>
+          <a href="#" class="back navigationLink" data-target="default">
+            <img src="images/icons/back.svg" alt="" />
+          </a>
+        </footer>
+      </div>
     </div>
+
   </section>
   <script type="text/javascript">
     'use strict'
     // Get error label element
     var errLabelCheckMP = $('#checkMasterPassLabel')
+    var errLabelSetMP = $('#setMasterPassLabel')
+    const DONE_TIMEOUT = 5000
 
-    $(window).on('load', function () {
+    $(window).on('load', function() {
       // When DOM has loaded...
+      /* Navigation */
+      // attach event listener to every element with class navigationLink
+      $('.navigationLink').each(function(index) {
+        $(this).click(function() {
+          // when the element is clicked
+          // call navigate() with the elements data-target value
+          navigate(this.getAttribute('data-target'))
+        })
+      })
 
+      navigate('default')
       // hide error label and make red
       errLabelCheckMP.hide().css('color', COLORS.bad)
 
       // attach event listener to checkMasterPass button
-      $('#checkMasterPass').click(function () {
-        validateMasterPass('checkMasterPass', errLabelCheckMP)
+      $('#checkMasterPass').click(function() {
+          validateMasterPass('checkMasterPass', errLabelCheckMP)
+        })
+      // attach click event listener to setMasterPass button
+      $('#setMasterPass').click(function() {
+        // Event handler function
+        validateMasterPass('setMasterPass', errLabelSetMP)
       })
     })
 
     /* Event listeners */
-    ipcRenderer.on('checkMasterPassResult', function (event, result) {
+    ipcRenderer.on('setMasterPassResult', function(event, err) {
+      if (err) {
+        // If error occured
+        // Display the error
+        errLabelSetMP.text(`ERROR: ${err}`.toUpperCase())
+        errLabelSetMP.show()
+      } else {
+        // Display the MasterPass set success
+        errLabelSetMP.text(RESPONSES.setSuccess).css('color', COLORS.good).show()
+        // Change note text to give further instruction and higlight it
+        $('p.note').html(RESPONSES.resetSuccess).css('color', COLORS.highlight)
+        // Close navigate back to chechMP after 5 seconds
+        setTimeout(function() {
+          navigate('default')
+        }, DONE_TIMEOUT)
+      }
+    })
+
+    ipcRenderer.on('checkMasterPassResult', function(event, result) {
       if (result.err) {
         errLabelCheckMP.text(`ERROR: ${err}`)
           .show()

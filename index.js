@@ -211,6 +211,7 @@ function CrypterWindow (callback) {
         webContents.send('cryptedFile', file)
       })
       .catch((err) => {
+        logger.info(`cryptFile error`)
         logger.error(err)
         webContents.send('cryptErr', err)
       })
@@ -226,8 +227,9 @@ function CrypterWindow (callback) {
         webContents.send('decryptedFile', file)
       })
       .catch((err) => {
+        logger.info(`decryptFile error`)
         logger.error(err)
-        webContents.send('cryptErr', err)
+        webContents.send('cryptErr', err.message)
       })
   })
 
@@ -314,7 +316,7 @@ function MasterPassPromptWindow (callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 300,
-    height: 435,
+    height: 450,
     center: true,
     titleBarStyle: 'hidden-inset',
     resizable: false
@@ -363,6 +365,32 @@ function MasterPassPromptWindow (callback) {
           // close window (invokes 'closed') event
           win.close()
         }, CLOSE_TIMEOUT)
+      })
+  })
+
+  ipc.on('setMasterPass', function (event, masterpass) {
+    // setMasterPass event triggered by render proces
+    logger.verbose('IPCMAIN: setMasterPass emitted Setting Masterpass...')
+    // derive MasterPassKey, genPassHash and set creds globally
+    MasterPass.set(masterpass)
+      .then((mpkey) => {
+        // set the derived MasterPassKey globally
+        global.MasterPassKey = new MasterPassKey(mpkey)
+        return
+      })
+      .then(() => {
+        // save the credentials used to derive the MasterPassKey
+        return global.mdb.saveGlobalObj('creds')
+      })
+      .then(() => {
+        // Inform user that the MasterPass has successfully been set
+        logger.verbose('IPCMAIN: Masterpass has been reset successfully')
+        webContents.send('setMasterPassResult', null)
+      })
+      .catch((err) => {
+        // Inform user of the error that occured while setting the MasterPass
+        webContents.send('setMasterPassResult', err)
+        error = err
       })
   })
 

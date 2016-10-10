@@ -28,6 +28,15 @@ a {
   text-decoration: none;
   outline        : none;
 }
+button#setMasterPass {
+  margin-top: 0.6rem;
+  margin-bottom: 0.4rem;
+  display: block !important;
+}
+button#checkMasterPass {
+  margin-top: 2rem;
+  display: block !important;
+}
 #masterpassprompt {
   height          : 100%;
   min-height      : 20rem;
@@ -79,9 +88,21 @@ img.info:hover + p.info {
   padding-top   : 0.5rem;
   padding-bottom: 0.5rem;
 }
-div.masterpass > input {
-  width: 98%;
+div.masterpass {
+  input {
+    width: 98%;
+  }
+  .navigationLink {
+    margin-top: 0.2rem;
+    float: right;
+  }
 }
+
+p.note {
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+}
+
 input[type=password] {
   margin-top   : 1rem;
   border       : none;

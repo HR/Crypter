@@ -16,6 +16,7 @@
             <h1>Crypter</h1>
             <p>Encrypt or decrypt any file.</p>
             <p class="intrfo">Crypter derives the encryption keys used to encrypt your data from your MasterPass.</p>
+            <p id="errLabel" style="display: none"></p>
           </header>
           <!-- TODO: Consider using <input class="fancy" type="file" name="name" value="selectfile"> -->
           <div id="fileInput" class="fancy">
@@ -23,7 +24,6 @@
               Select a file
             </p>
           </div>
-          <p id="errLabel"></p>
         </div>
         <div id="panel-crypted">
           <div id="crypted-container">
@@ -132,6 +132,8 @@
       ipcRenderer.on('cryptErr', function(event, err) {
         logger.verbose(`IPCRENDER cryptErr emitted`)
         errLabel.text(`ERROR: ${err}`).show()
+        fileInputText.text(ifileInputText)
+        fileInput.on('click', handler)
         return
       })
 
@@ -149,6 +151,7 @@
             let file = filePath[0]
             let fileExt = path.extname(file)
             fileInput.off('click',handler)
+            errLabel.hide()
 
             if (fileExt.toLowerCase() === cryptoExt) {
               // Decrypt file

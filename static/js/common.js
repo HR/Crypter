@@ -18,7 +18,8 @@ const RESPONSES = {
   incorrect: 'INCORRECT MASTERPASS',
   setSuccess: 'MASTERPASS SUCCESSFULLY SET',
   empty: 'PLEASE ENTER A MASTERPASS',
-  done: 'You have successfully completed the setup! <br/> Please relaunch the program to start encrypting after this window closes automatically'
+  done: 'You have successfully completed the setup! <br/> Please relaunch the program to start encrypting after this window closes automatically',
+  resetSuccess: 'You have successfully reset your MasterPass. You\'ll be redirected to verify it shortly.'
 }
 const COLORS = {
   bad: '#9F3A38',

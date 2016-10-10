@@ -181,6 +181,7 @@ exports.decrypt = function (origpath, mpkey) {
     tarExtr.on('finish', () => {
       // Now read creds and use to decrypt data
       logger.info('Finished extracting')
+
       readFile(credsOrigPath)
         .then((data) => {
           let lines = data.split('\n')
