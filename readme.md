@@ -69,7 +69,7 @@ your MasterPass.
 Authentication is used by default since the AES-256-GCM symmetric block cipher
 is used.
 
-```
+```js
 // Crypto defaults
 let defaults = {
   iterations: 50000, // file encryption key derivation iterations
@@ -80,6 +80,22 @@ let defaults = {
   hash_alg: 'sha256', // default hashing function
   mpk_iterations: 100000 // MasterPassKey derivation iterations
 }
+```
+### Encryption process
+When encrypting a file, Crypter first creates a temporary hidden directory, namely '.crypting'. It then encrypts the user selected file with the crypto defaults and flushes the encrypted data it to file in the directory, namely 'data'. Furthermore, it writes the public credentials to a file within the same directory, namely 'creds'. Finally, Crypter compresses the directory to a tar archive with then name of the user selected file and the '.crypto' extension appended to it.
+### Decryption process
+The decryption process is essentially the inverse of the encryption process where the temporary hidden directory is named '.decrypting'. The credentials are read from the creds file and used to decrypt the data file to the original user file (with its original extension).
+### Crypto format
+A .crypto file is the product of the Crypter encryption process. It is stores both the encrypted version of the user selected file and the public credentials used to encrypt it (and needed to decrypt it). The file itself it is a tar archive with the following structure:
+```c
+someFile.crypto
+├── data // the encrypted version of the user selected file
+└── creds // the public credentials used to encrypt it
+```
+### Public credentials
+Certain credentials are necessarily required to decrypt the encrypted data as they are needed to reconstruct the particular encryption key and verify data integrity. These can be stored publicly without compromising security as it is fairly impossible to reconstruct the encryption key without the MasterPass and its credentials. The credentials are stored in the creds file of the .crypto archive (as delineated above) in the following format:
+```
+Crypter#iv#authTag#salt
 ```
 
 ## Security
