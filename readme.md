@@ -52,7 +52,7 @@ releases. If you have any suggestions for features then please let me know!
 </p>
 
 ## Crypto
-> One key to to derive them all!
+> One key to derive them all!
 
 Crypter uses a MasterPass (obtained at setup) to derive a MasterPassKey using
 the PBKDF2 key derivation algorithm from the MasterPass (see below for spec). It
@@ -86,14 +86,14 @@ When encrypting a file, Crypter first creates a temporary hidden directory, name
 ### Decryption process
 The decryption process is essentially the inverse of the encryption process where the temporary hidden directory is named '.decrypting'. The credentials are read from the creds file and used to decrypt the data file to the original user file (with its original extension).
 ### Crypto format
-A .crypto file is the product of the Crypter encryption process. It is stores both the encrypted version of the user selected file and the public credentials used to encrypt it (and needed to decrypt it). The file itself it is a tar archive with the following structure:
+A .crypto file is the product of the Crypter encryption process. It stores both the encrypted version of the user selected file and the public credentials used to encrypt it (and needed to decrypt it). The file itself it is a tar archive with the following structure:
 ```c
 someFile.crypto
 ├── data // the encrypted version of the user selected file
 └── creds // the public credentials used to encrypt it
 ```
 ### Public credentials
-Certain credentials are necessarily required to decrypt the encrypted data as they are needed to reconstruct the particular encryption key and verify data integrity. These can be stored publicly without compromising security as it is fairly impossible to reconstruct the encryption key without the MasterPass and its credentials. The credentials are stored in the creds file of the .crypto archive (as delineated above) in the following format:
+Certain credentials are required to decrypt the encrypted data as they are needed to reconstruct the particular encryption key and verify data integrity. These can be stored publicly without compromising security as it is fairly impossible (by current standards) to reconstruct the encryption key without the MasterPass and its credentials. The credentials are stored in the creds file of the .crypto archive (as delineated above) in the following format:
 ```
 Crypter#iv#authTag#salt
 ```
