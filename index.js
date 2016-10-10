@@ -12,6 +12,7 @@ const _ = require('lodash')
 const logger = require('./script/logger')
 // change exec path
 logger.info(`AppPath: ${app.getAppPath()}`)
+logger.info(`UseData Path: ${app.getPath('userData')}`)
 process.chdir(app.getAppPath())
 logger.info(`Changed cwd to: ${process.cwd()}`)
 logger.info(`Electron node v${process.versions.node}`)
@@ -289,6 +290,9 @@ function SetupWindow (callback) {
     // Setup successfully finished
     // therefore set error to nothing
     error = null
+    // Upgrade to electron >= v1.2.2
+    // app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
+    // app.exit(0)
     // close window (invokes 'closed') event
     win.close()
   })

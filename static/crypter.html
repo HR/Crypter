@@ -26,16 +26,15 @@
           <p id="errLabel"></p>
         </div>
         <div id="panel-crypted">
-          <header>
-            <img src="images/icons/crypted.svg" alt="some" class="crypto"/>
-          </header>
-          <div id="finfo"></div>
+          <div id="crypted-container">
+            <!-- Dynamically load file info here -->
+          </div>
           <p class="intrfo">
             Note these details down! They may be erased when you navigate back
           </p>
           <footer>
             <a href="#" class="back navigationLink" data-target="crypt">
-              <img src="images/icons/back.svg" alt=""/>
+              <img src="images/icons/back.svg" alt="" />
             </a>
           </footer>
         </div>
@@ -43,41 +42,46 @@
     </section>
 
     <script id="crypted-template" type="text/x-handlebars-template">
-      <h3>{{op}} {{name}}</h3>
-      <table>
-        <tr>
-          <td>Path</td>
-          <td>{{path}}</td>
-        </tr>
-        <tr>
-          <td>Crypted to</td>
-          <td>{{cryptPath}}</td>
-        </tr>
-        <tr>
-          <td>Initialisation Vector</td>
-          <td>
-            <input type="text" value="{{iv}}"/>
-          </td>
-        </tr>
-        <tr>
-          <td>Authentication Tag</td>
-          <td>
-            <input type="text" value="{{authTag}}"/>
-          </td>
-        </tr>
-        <tr>
-          <td>Salt (for key derivation)</td>
-          <td>
-            <input type="text" value="{{salt}}"/>
-          </td>
-        </tr>
-        <tr>
-          <td>Encryption Key</td>
-          <td>
-            <input type="text" value="{{key}}"/>
-          </td>
-        </tr>
-      </table>
+      <header>
+        <img src="images/icons/{{op}}.svg" alt="some" class="crypto" />
+      </header>
+      <div id="finfo">
+        <h3>{{op}} {{name}}</h3>
+        <table>
+          <tr>
+            <td>Path</td>
+            <td>{{path}}</td>
+          </tr>
+          <tr>
+            <td>Crypted to</td>
+            <td>{{cryptPath}}</td>
+          </tr>
+          <tr>
+            <td>Initialisation Vector</td>
+            <td>
+              <input type="text" value="{{iv}}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Authentication Tag</td>
+            <td>
+              <input type="text" value="{{authTag}}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Salt (for key derivation)</td>
+            <td>
+              <input type="text" value="{{salt}}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Encryption Key</td>
+            <td>
+              <input type="text" value="{{key}}" />
+            </td>
+          </tr>
+        </table>
+      </div>
     </script>
 
     <script type="text/javascript">
@@ -91,7 +95,7 @@
       var path = require('path')
       var errLabel = $('#errLabel')
       var fileInput = $('#fileInput')
-      var fileInfo = $('#finfo')
+      var cryptedContainer = $('#crypted-container')
       var fileInputText = fileInput.find('#fileInputText')
       var ifileInputText = fileInputText.text()
       // compile the crypted template
@@ -112,7 +116,7 @@
       ipcRenderer.on('cryptedFile', function(event, file) {
         logger.verbose(`IPCRENDER cryptedFile emitted`)
         var fileHTML = crypted_template(file)
-        fileInfo.html(fileHTML)
+        cryptedContainer.html(fileHTML)
         fileInputText.text(ifileInputText)
         navigate('crypted')
         fileInput.on('click', handler)
@@ -120,7 +124,7 @@
       ipcRenderer.on('decryptedFile', function(event, file) {
         logger.verbose(`IPCRENDER decryptedFile emitted`)
         var fileHTML = crypted_template(file)
-        fileInfo.html(fileHTML)
+        cryptedContainer.html(fileHTML)
         fileInputText.text(ifileInputText)
         navigate('crypted')
         fileInput.on('click', handler)
@@ -148,9 +152,6 @@
 
             if (fileExt.toLowerCase() === cryptoExt) {
               // Decrypt file
-              // dialog.showMessageBox(BrowserWindow.getCurrentWindow(), {type:"question", buttons: ["Cancel", "Decrypt"]}, function (res) {
-              //   logger.info(`showMessageBox res: ${res}`)
-              // })
               fileInputText.text(`Decrypting ${path.basename(file)}...`)
               ipcRenderer.send('decryptFile', file)
             } else {
