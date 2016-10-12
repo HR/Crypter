@@ -84,7 +84,6 @@ exports.encrypt = function (origpath, mpkey) {
             // Write crdentials used to encrypt in creds file
             // write in format Crypter#iv#authTag#salt
             credsDest.end(`Crypter#${iv.toString('hex')}#${tag.toString('hex')}#${dcreds.salt.toString('hex')}`)
-            logger.warn(`Crypter#${iv.toString('hex')}#${tag.toString('hex')}#${dcreds.salt.toString('hex')}`)
           })
 
           // readstream error handler
@@ -148,7 +147,6 @@ let readFile = function (path) {
   })
 }
 
-/* NOTE: CHANGE destpath */
 exports.decrypt = function (origpath, mpkey) {
   // Decrypts a crypto format file passed with the pass
   return new Promise(function (resolve, reject) {
