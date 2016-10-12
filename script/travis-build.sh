@@ -2,6 +2,7 @@
 
 echo $CC
 echo $CXX
+echo "OS Name: $TRAVIS_OS_NAME"
 # export CXX=g++-4.8
 export TEST_RUN=true
 
@@ -13,8 +14,11 @@ nvm use "$NODE_VERSION"
 node --version
 npm --version
 
-npm install electron-packager -g
-npm install --no-optional
+if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+  npm install --ignore-scripts --no-optional
+else
+  npm install --no-optional
+fi
 
 npm test
 
