@@ -9,9 +9,8 @@ const path = require('path')
 const scrypto = require('crypto')
 const logger = require('../script/logger')
 const Readable = require('stream').Readable
-const zlib = require('zlib')
 const tar = require('tar-fs')
-// const through2 = require('through2')
+const CRYPTER_REGEX = /^Crypter(.*)$/igm
 
 // Crypto default constants
 let defaults = {
@@ -30,25 +29,16 @@ exports.crypt = function (origpath, masterpass) {
     exports.encrypt(origpath, masterpass)
       .then((creds) => {
         logger.info(`Encrypt creds: ${JSON.stringify(creds)}`)
-        // create the file object
-        let file = {}
-        // Crypter operation
-        file.op = 'Encrypted'
-        // extract file name from path
-        file.name = path.basename(origpath)
-        // Save the path of the (unencrypted) file
-        file.path = origpath
-        // Save the path of the encrypted file
-        file.cryptPath = creds.cryptpath
-        // Convert salt used to derivekey to hex string
-        file.salt = creds.salt.toString('hex')
-        // Convert dervived key to hex string
-        file.key = creds.key.toString('hex')
-        // Convert iv to hex string
-        file.iv = creds.iv.toString('hex')
-        // Convert authTag to hex string
-        file.authTag = creds.tag.toString('hex')
-        resolve(file)
+        resolve({
+          op: 'Encrypted', // Crypter operation
+          name: path.basename(origpath), // filename
+          path: origpath, // path of the (unencrypted) file
+          cryptPath: creds.cryptpath, // path of the encrypted file
+          salt: creds.salt.toString('hex'), // salt used to derivekey in hex
+          key: creds.key.toString('hex'), // dervived key in hex
+          iv: creds.iv.toString('hex'), // iv in hex
+          authTag: creds.tag.toString('hex') // authTag in hex
+        })
       })
       .catch((err) => {
         reject(err)
@@ -67,16 +57,15 @@ exports.encrypt = function (origpath, mpkey) {
         let tempd = `${path.dirname(origpath)}/${dname}`
         let dataDestPath = `${tempd}/data`
         let credsDestPath = `${tempd}/creds`
-        logger.info(`tempd: ${tempd}, dataDestPath: ${dataDestPath}, credsDestPath: ${credsDestPath}`)
+        logger.verbose(`tempd: ${tempd}, dataDestPath: ${dataDestPath}, credsDestPath: ${credsDestPath}`)
+        // create tempd temporary directory
         fs.mkdirs(tempd, function (err) {
           if (err)
             reject(err)
           logger.info(`Created ${tempd} successfully`)
           // readstream to read the (unencrypted) file
           const origin = fs.createReadStream(origpath)
-          // create compressor
-          // const zip = zlib.createGzip()
-          // writestream to write (encrypted) file
+          // create data and creds file
           const dataDest = fs.createWriteStream(dataDestPath)
           const credsDest = fs.createWriteStream(credsDestPath)
           // generate a cryptographically secure random iv
@@ -136,8 +125,9 @@ exports.encrypt = function (origpath, mpkey) {
                   salt: dcreds.salt,
                   key: dcreds.key,
                   cryptpath: tarDestPath,
-                  tag,
-                iv})
+                  tag: tag,
+                  iv: iv
+                })
               })
             })
           })
@@ -183,16 +173,16 @@ exports.decrypt = function (origpath, mpkey) {
       logger.verbose('Finished extracting')
 
       readFile(credsOrigPath)
-        .then((data) => {
-          let lines = data.split('\n')
-          let lastLine = lines.slice(-1)[0]
-          let fields = lastLine.split('#')
-          logger.info(`lines: ${lines}, lastLine: ${lastLine}, fields: ${fields}`)
+        .then((credsLines) => {
+          let credsLine = credsLines.trim().match(CRYPTER_REGEX)
 
-          if (fields[0] === 'Crypter') {
-            const iv = new Buffer(fields[1], 'hex')
-            const authTag = new Buffer(fields[2], 'hex')
-            const salt = new Buffer(fields[3], 'hex')
+          if (credsLine) {
+            let creds = credsLine[0].split('#')
+            logger.verbose(`creds: ${creds}, credsLine: ${credsLine}`)
+
+            const iv = new Buffer(creds[1], 'hex')
+            const authTag = new Buffer(creds[2], 'hex')
+            const salt = new Buffer(creds[3], 'hex')
             logger.info(`iv: ${iv}, authTag: ${authTag}, salt: ${salt}`)
             // Read encrypted data stream
             const dataOrig = fs.createReadStream(dataOrigPath)
@@ -205,8 +195,6 @@ exports.decrypt = function (origpath, mpkey) {
                   decipher.setAuthTag(authTag)
                   logger.info(`authTag: ${authTag.toString('hex')}`)
                   const dataDest = fs.createWriteStream(dataDestPath)
-                  // const unzip = zlib.createGunzip()
-                  // origin.pipe(decipher).pipe(unzip).pipe(dest)
                   dataOrig.pipe(decipher).pipe(dataDest)
 
                   decipher.on('error', (err) => {
@@ -222,21 +210,22 @@ exports.decrypt = function (origpath, mpkey) {
                   })
 
                   dataDest.on('finish', () => {
-                    logger.verbose(`Encrypted/written to ${dataDestPath}`)
+                    logger.verbose(`Encrypted to ${dataDestPath}`)
                     // Now delete tempd (temporary directory)
                     fs.remove(tempd, function (err) {
                       if (err)
                         reject(err)
-                      let file = {}
-                      file.op = 'Decrypted'
-                      file.name = path.basename(origpath)
-                      file.path = origpath
-                      file.cryptPath = dataDestPath
-                      file.salt = salt.toString('hex')
-                      file.key = dcreds.key.toString('hex')
-                      file.iv = iv.toString('hex')
-                      file.authTag = authTag.toString('hex')
-                      resolve(file)
+                      logger.verbose(`Removed temp dir ${tempd}`)
+                      resolve({
+                        op: 'Decrypted',
+                        name: path.basename(origpath),
+                        path: origpath,
+                        cryptPath: dataDestPath,
+                        salt: salt.toString('hex'),
+                        key: dcreds.key.toString('hex'),
+                        iv: iv.toString('hex'),
+                        authTag: authTag.toString('hex')
+                      })
                     })
                   })
                 } catch (err) {

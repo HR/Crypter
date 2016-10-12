@@ -103,7 +103,7 @@
       const cryptoExt = '.crypto'
 
       $(window).on('load', function() {
-        // attach click event
+        // attach  event
         fileInput.on('click', handler)
         $('.navigationLink').each(function (index) {
           $(this).click(function () {
@@ -139,6 +139,8 @@
 
       /* Helper functions */
       function handler() {
+        // Prevent multiple input dialog
+        fileInput.off('click',handler)
         // Create file input dialog
         dialog.showOpenDialog({
           title: 'Choose a file to Encrypt',
@@ -156,6 +158,7 @@
             if (fileExt.toLowerCase() === cryptoExt) {
               // Decrypt file
               fileInputText.text(`Decrypting ${path.basename(file)}...`)
+              // send file to decryptFile controller function
               ipcRenderer.send('decryptFile', file)
             } else {
               // Encrypt file
@@ -164,6 +167,8 @@
               ipcRenderer.send('cryptFile', file)
             }
             logger.info(require('util').inspect(filePath, {depth: null}))
+          } else {
+            fileInput.on('click',handler)
           }
         })
         return false
