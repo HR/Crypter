@@ -21,17 +21,13 @@
       "category": "public.app-category.utilities",
     },
     "win": {
-      "iconUrl": "(windows-only) https link to icon"
+      "iconUrl": "https://dl.dropboxusercontent.com/s/oh66258p4pgwwpq/Crypter.ico"
     }
   },
-  "keywords": [
-    "encryption",
-    "decryption",
-    "crypto",
-    "end-to-end",
-    "client",
-    "electron"
-  ],
+  "scripts": {
+    "pack": "build --dir",
+    "dist": "build"
+  },
   "dependencies": {
     "electron-debug": "*",
     "electron-prebuilt": "1.1.3",
