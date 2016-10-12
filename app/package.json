@@ -17,8 +17,24 @@
   },
   "build": {
     "appId": "com.github.hr.crypter",
+    "files": [
+      "**/*",
+      "!**/node_modules/*/{README.md,README,readme.md,readme,test}",
+      "!**/node_modules/.bin",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,__pycache__,thumbs.db,.gitignore,.gitattributes,.editorconfig,.idea,appveyor.yml,.travis.yml,circle.yml,*.yml}",
+      "!github${/*}",
+      "!test${/*}"
+    ],
+    "compression": "normal",
     "mac": {
       "category": "public.app-category.utilities",
+    },
+    "dmg": {
+      "window": {
+        "width": "480",
+        "height": "540"
+      }
     },
     "win": {
       "iconUrl": "https://dl.dropboxusercontent.com/s/oh66258p4pgwwpq/Crypter.ico"

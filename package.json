@@ -17,7 +17,7 @@
   },
   "scripts": {
     "electronVersion": "node_modules/.bin/electron -v | sed s/\\v//g",
-    "postinstall": "./node_modules/.bin/electron-rebuild",
+    "postinstall": "if [[ \"$TRAVIS_OS_NAME\" != \"linux\" ]]; then ./node_modules/.bin/electron-rebuild; fi",
     "test": "TEST_RUN=true mocha --compilers js:babel-core/register test/test.js",
     "xltest": "unset TEST_RUN && rm -rf ~/Library/Application\\ Support/CrypterTest/ && mocha --compilers js:babel-core/register ./test/ui/*.js",
     "xtest": "npm run xtestbuild && npm run xltest",
