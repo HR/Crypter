@@ -16,16 +16,13 @@ matrix:
       env:
         - NODE_VERSION=6.3.0
         - BUILD_OS_NAME=darwin
-  exclude:
-    - os: linux
 
 before_script:
  - chmod +x ./script/travis-build.sh
- - export NODE_VERSION=5.8.0
+ - export NODE_VERSION=6.3.0
  - export TEST_RUN=true
 
-script:
-  - ./script/travis-build.sh
+script: ./script/travis-build.sh
 
 after_success:
   - node_modules/.bin/gulp coverage
