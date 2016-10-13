@@ -15,12 +15,14 @@ nvm use "$NODE_VERSION"
 node --version
 npm --version
 
-if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-  echo 'OSisLinux'
-  npm install --ignore-scripts --no-optional
-else
-  npm install --no-optional
-fi
+npm install --no-optional
+
+# if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+#   echo 'OSisLinux'
+#   npm install --ignore-scripts --no-optional
+# else
+#   npm install --no-optional
+# fi
 
 npm test
 

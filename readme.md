@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://github.com/HR/Crypter"><img src="/res/app-icons/Crypter256.png" alt="Crypter" width="180" style= "margin-bottom: 1rem"></a>
+  <a href="https://github.com/HR/Crypter"><img src="/app/icons/Crypter256.png" alt="Crypter" width="180" style= "margin-bottom: 1rem"></a>
   <br>
   Crypter
   <br>
@@ -14,11 +14,11 @@
         <img src="https://travis-ci.org/HR/Crypter.svg?branch=dev"
              alt="Travis Build">
     </a>
-    <a href="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=dev">
+    <a href="https://coveralls.io/github/HR/Crypter?branch=dev">
         <img src="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=dev"
              alt="Test Coverage">
     </a>
-    <a href="https://coveralls.io/github/HR/Crypter?branch=dev">
+    <a href="https://codeclimate.com/github/HR/Crypter?branch=dev">
         <img src="https://codeclimate.com/github/HR/Crypter/badges/gpa.svg"
              alt="Codeclimate GPA">
     </a>
