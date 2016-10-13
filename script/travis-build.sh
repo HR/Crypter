@@ -5,7 +5,7 @@ set -ev
 echo $CC
 echo $CXX
 echo "OS Name: $TRAVIS_OS_NAME"
-# export CXX=g++-4.8
+export CXX=g++-4.8
 export TEST_RUN=true
 git clone https://github.com/creationix/nvm.git /tmp/.nvm
 source /tmp/.nvm/nvm.sh
@@ -16,13 +16,6 @@ node --version
 npm --version
 
 npm install --no-optional
-
-# if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-#   echo 'OSisLinux'
-#   npm install --ignore-scripts --no-optional
-# else
-#   npm install --no-optional
-# fi
 
 npm test
 

@@ -7,46 +7,15 @@
   "repository": "https://github.com/HR/Crypter",
   "homepage": "https://github.com/HR/Crypter",
   "bugs": "https://github.com/HR/Crypter/issues",
+  "private": true,
+  "main": "./index.js",
   "author": {
     "name": "Habib Rehman",
     "email": "Habib.R@outlook.com",
     "url": "https://git.io/HR"
   },
-  "engines": {
-    "node": ">=4"
-  },
-  "build": {
-    "appId": "com.github.hr.crypter",
-    "files": [
-      "**/*",
-      "!**/node_modules/*/{README.md,README,readme.md,readme,test}",
-      "!**/node_modules/.bin",
-      "!**/._*",
-      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,__pycache__,thumbs.db,.gitignore,.gitattributes,.editorconfig,.idea,appveyor.yml,.travis.yml,circle.yml,*.yml}",
-      "!github${/*}",
-      "!test${/*}"
-    ],
-    "compression": "normal",
-    "mac": {
-      "category": "public.app-category.utilities",
-    },
-    "dmg": {
-      "window": {
-        "width": "480",
-        "height": "540"
-      }
-    },
-    "win": {
-      "iconUrl": "https://dl.dropboxusercontent.com/s/oh66258p4pgwwpq/Crypter.ico"
-    }
-  },
-  "scripts": {
-    "pack": "build --dir",
-    "dist": "build"
-  },
   "dependencies": {
     "electron-debug": "*",
-    "electron-prebuilt": "1.1.3",
     "estraverse": "^4.2.0",
     "fs-extra": "^0.30.0",
     "handlebars": "*",
