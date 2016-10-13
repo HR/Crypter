@@ -1,6 +1,6 @@
 {
   "name": "Crypter",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "homepage": "https://github.com/HR/Crypter",
   "authors": [
     "Habib Rehman <Habib.R@outlook.com>"
@@ -22,8 +22,8 @@
     "test",
     "tests"
   ],
+  "directory": "app/",
   "dependencies": {
-    "normalize-css": "normalize.css#~3.0.3",
-    "jquery": "~2.1.4"
+    "normalize-css": "normalize.css#~3.0.3"
   }
 }

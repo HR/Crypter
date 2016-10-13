@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://github.com/HR/Crypter"><img src="/app/icons/Crypter256.png" alt="Crypter" width="180" style= "margin-bottom: 1rem"></a>
+  <a href="https://github.com/HR/Crypter"><img src="./build/icons/256x256.png" alt="Crypter" width="180" style= "margin-bottom: 1rem"></a>
   <br>
   Crypter
   <br>
@@ -113,7 +113,7 @@ the MasterPassKey to mitigate brute-force attacks. A good amount of iterations
 are used for the derivation of the encryption keys from the MasterPasKey this is
 so that performance and speed is not significantly compromised. For critical
 application, you may choose to select 10,000,000 iterations instead (in
-src/crypto.js). Refer to
+app/src/crypto.js). Refer to
 http://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf for
 more info
 

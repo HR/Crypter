@@ -264,7 +264,6 @@ function SetupWindow (callback) {
   let error
   // loads setup.html view into the SetupWindow
   win.loadURL(global.views.setup)
-  webContents.openDevTools()
 
   ipc.on('setMasterPass', function (event, masterpass) {
     // setMasterPass event triggered by render proces

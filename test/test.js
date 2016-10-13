@@ -2,10 +2,10 @@
 const assert = require('assert')
 const path = require('path')
 const expect = require('chai').expect
-const crypto = require('../src/crypto.js')
-const Db = require('../src/Db')
-const MasterPassKey = require('../src/MasterPassKey')
-const MasterPass = require('../src/MasterPass')
+const crypto = require('../app/src/crypto.js')
+const Db = require('../app/src/Db')
+const MasterPassKey = require('../app/src/MasterPassKey')
+const MasterPass = require('../app/src/MasterPass')
 const scrypto = require('crypto')
 const _ = require('lodash')
 const fs = require('fs-extra')
@@ -106,7 +106,7 @@ describe("Crypter Core Modules' tests", function () {
       })
       describe('encrypt promise', function () {
         it('should encrypt file with pass without errors & have all expected creds', function () {
-          return crypto.encrypt(TEST_FILE_PATH, ENCRYTED_TEST_FILE_PATH, global.MasterPassKey.get())
+          return crypto.encrypt(TEST_FILE_PATH, global.MasterPassKey.get())
             .then((creds) => {
               // The encrypted file should exist at the ENCRYTED_TEST_FILE_PATH
               expect(checkFileSync(ENCRYTED_TEST_FILE_PATH)).to.be.true

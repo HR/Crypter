@@ -8,7 +8,7 @@
   "homepage": "https://github.com/HR/Crypter",
   "bugs": "https://github.com/HR/Crypter/issues",
   "private": true,
-  "main": "./index.js",
+  "main": "index.js",
   "author": {
     "name": "Habib Rehman",
     "email": "Habib.R@outlook.com",
