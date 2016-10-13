@@ -39,6 +39,9 @@ notifications:
     on_success: never
     on_failure: change
 
+env:
+  - CXX=g++-4.8
+
 addons:
   apt:
     sources:
