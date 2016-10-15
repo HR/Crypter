@@ -2,7 +2,7 @@
   "name": "Crypter",
   "productName": "Crypter",
   "version": "2.0.0",
-  "description": "A simple, convenient and secure encryption client.",
+  "description": "A simple, convenient and secure cross-platform crypto app",
   "license": "MIT",
   "repository": "https://github.com/HR/Crypter",
   "homepage": "https://github.com/HR/Crypter",

@@ -7,7 +7,7 @@
   <br>
 </h1>
 
-<h4 align="center">A simple, convenient and secure encryption client.</h4>
+<h4 align="center">A simple, convenient and secure crypto app.</h4>
 
 <p align="center">
     <a href="https://travis-ci.org/HR/Crypter">
@@ -29,12 +29,17 @@
 </p>
 <br>
 
-**Crypter** is a simple, convenient and secure encryption client.
-It simplifies password generation by deriving it using your MasterPassKey (see Crypto).
+> Securely encrypt unlimited bits; remember only a bit.
+
+**Crypter** is a simple, convenient and secure cross-platform crypto app that
+simplifies password generation and management by requiring you to only
+remember one bit, the MasterPass. It uses electron which makes it cross
 
 This is based on [Crypto.Sync](https://github.com/HR/CryptoSync) (an end-to-end
 cloud encryption client) which is a more elaborate implementation of the idea.
-So check it out as well!
+So please check it out as well!
+
+Short link for this page: https://git.io/Crypter.info
 
 ## Status
 All of the UI and functionality has been implemented. All internal modules are
@@ -82,18 +87,35 @@ let defaults = {
 }
 ```
 ### Encryption process
-When encrypting a file, Crypter first creates a temporary hidden directory, namely '.crypting'. It then encrypts the user selected file with the crypto defaults and flushes the encrypted data it to file in the directory, namely 'data'. Furthermore, it writes the public credentials to a file within the same directory, namely 'creds'. Finally, Crypter compresses the directory to a tar archive with then name of the user selected file and the '.crypto' extension appended to it.
+When encrypting a file, Crypter first creates a temporary hidden directory,
+namely '.crypting'. It then encrypts the user selected file with the crypto
+defaults and flushes the encrypted data it to file in the directory, namely
+'data'. Furthermore, it writes the public credentials to a file within the same
+directory, namely 'creds'. Finally, Crypter compresses the directory to a tar
+archive with then name of the user selected file and the '.crypto' extension
+appended to it.
 ### Decryption process
-The decryption process is essentially the inverse of the encryption process where the temporary hidden directory is named '.decrypting'. The credentials are read from the creds file and used to decrypt the data file to the original user file (with its original extension).
+The decryption process is essentially the inverse of the encryption process
+where the temporary hidden directory is named '.decrypting'. The credentials are
+read from the creds file and used to decrypt the data file to the original user
+file (with its original extension).
 ### Crypto format
-A .crypto file is the product of the Crypter encryption process. It stores both the encrypted version of the user selected file and the public credentials used to encrypt it (and needed to decrypt it). The file itself it is a tar archive with the following structure:
+A .crypto file is the product of the Crypter encryption process. It stores both
+the encrypted version of the user selected file and the public credentials used
+to encrypt it (and needed to decrypt it). The file itself it is a tar archive
+with the following structure:
 ```c
 someFile.crypto
 ├── data // the encrypted version of the user selected file
 └── creds // the public credentials used to encrypt it
 ```
 ### Public credentials
-Certain credentials are required to decrypt the encrypted data as they are needed to reconstruct the particular encryption key and verify data integrity. These can be stored publicly without compromising security as it is fairly impossible (by current standards) to reconstruct the encryption key without the MasterPass and its credentials. The credentials are stored in the creds file of the .crypto archive (as delineated above) in the following format:
+Certain credentials are required to decrypt the encrypted data as they are
+needed to reconstruct the particular encryption key and verify data integrity.
+These can be stored publicly without compromising security as it is fairly
+impossible (by current standards) to reconstruct the encryption key without the
+MasterPass and its credentials. The credentials are stored in the creds file of
+the .crypto archive (as delineated above) in the following format:
 ```
 Crypter#iv#authTag#salt
 ```

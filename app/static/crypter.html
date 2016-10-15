@@ -15,7 +15,7 @@
             <img src="images/icons/Crypter.svg" alt="some" class="crypto"/>
             <h1>Crypter</h1>
             <p>Encrypt or decrypt any file.</p>
-            <p class="intrfo">Crypter derives the encryption keys used to encrypt your data from your MasterPass.</p>
+            <p class="intrfo">All you have to remember is your MasterPass. All you need to encrypt/decrypt is it and a crypto file.</p>
             <p id="errLabel" style="display: none"></p>
           </header>
           <!-- TODO: Consider using <input class="fancy" type="file" name="name" value="selectfile"> -->
@@ -95,6 +95,7 @@
       var path = require('path')
       var errLabel = $('#errLabel')
       var fileInput = $('#fileInput')
+      var fileInputD = document.getElementById('fileInput')
       var cryptedContainer = $('#crypted-container')
       var fileInputText = fileInput.find('#fileInputText')
       var ifileInputText = fileInputText.text()
@@ -104,7 +105,13 @@
 
       $(window).on('load', function() {
         // attach  event
-        fileInput.on('click', handler)
+        fileInputD.ondragover = function () {
+          return false
+        }
+        fileInputD.ondragleave = fileInputD.ondragend = function () {
+          return false
+        }
+        turnFileInputOn ()
         $('.navigationLink').each(function (index) {
           $(this).click(function () {
             navigate(this.getAttribute('data-target'))
@@ -119,7 +126,7 @@
         cryptedContainer.html(fileHTML)
         fileInputText.text(ifileInputText)
         navigate('crypted')
-        fileInput.on('click', handler)
+        turnFileInputOn()
       })
       ipcRenderer.on('decryptedFile', function(event, file) {
         logger.verbose(`IPCRENDER decryptedFile emitted`)
@@ -127,17 +134,52 @@
         cryptedContainer.html(fileHTML)
         fileInputText.text(ifileInputText)
         navigate('crypted')
-        fileInput.on('click', handler)
+        turnFileInputOn()
       })
       ipcRenderer.on('cryptErr', function(event, err) {
         logger.verbose(`IPCRENDER cryptErr emitted`)
         errLabel.text(`ERROR: ${err}`).show()
         fileInputText.text(ifileInputText)
-        fileInput.on('click', handler)
-        return
+        turnFileInputOn()
       })
 
       /* Helper functions */
+      function turnFileInputOff () {
+        fileInput.off('click', handler)
+        fileInput.ondrop = function () {
+          return false
+        }
+      }
+      function turnFileInputOn () {
+        fileInput.on('click', handler)
+        fileInputD.ondrop = function (e) {
+          e.preventDefault()
+          logger.info(`ONDROP fired!`)
+          if (e.dataTransfer.files[0].path) {
+            logger.info(`Got file: ${e.dataTransfer.files[0].path}`)
+            handleFile(e.dataTransfer.files[0].path)
+          }
+          return false
+        }
+      }
+      function handleFile(file) {
+        let fileExt = path.extname(file)
+        turnFileInputOff()
+        errLabel.hide()
+
+        if (fileExt.toLowerCase() === cryptoExt) {
+          // Decrypt file
+          fileInputText.text(`Decrypting ${path.basename(file)}...`)
+          // send file to decryptFile controller function
+          ipcRenderer.send('decryptFile', file)
+        } else {
+          // Encrypt file
+          fileInputText.text(`Encrypting ${path.basename(file)}...`)
+          // send file to crypter controller function
+          ipcRenderer.send('cryptFile', file)
+        }
+      }
+
       function handler() {
         // Prevent multiple input dialog
         fileInput.off('click',handler)
@@ -150,23 +192,7 @@
           // callback for selected file
           // returns undefined if file not selected by user
           if (filePath && filePath.length === 1) {
-            let file = filePath[0]
-            let fileExt = path.extname(file)
-            fileInput.off('click',handler)
-            errLabel.hide()
-
-            if (fileExt.toLowerCase() === cryptoExt) {
-              // Decrypt file
-              fileInputText.text(`Decrypting ${path.basename(file)}...`)
-              // send file to decryptFile controller function
-              ipcRenderer.send('decryptFile', file)
-            } else {
-              // Encrypt file
-              fileInputText.text(`Encrypting ${path.basename(file)}...`)
-              // send file to crypter controller function
-              ipcRenderer.send('cryptFile', file)
-            }
-            logger.info(require('util').inspect(filePath, {depth: null}))
+            handleFile(filePath[0])
           } else {
             fileInput.on('click',handler)
           }
