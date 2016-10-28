@@ -24,6 +24,6 @@ install:
 build_script:
   - node --version
   - npm --version
-  - node_modules/.bin/build -w --x64 --ia32
+  - node_modules\.bin\build.exe -w --x64 --ia32
 
 test: off
