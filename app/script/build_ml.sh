@@ -2,8 +2,6 @@
 
 echo "Building for: "$TRAVIS_OS_NAME
 echo "cwd: "$PWD
-cd ../../
-echo "have cd to: "$PWD
 # remove any existing distribution
 rm -rf dest
 unset TEST_RUN

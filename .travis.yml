@@ -18,6 +18,9 @@ matrix:
       compiler: clang
     - os: osx
       env:
+        - CC=clang
+        - CXX=clang++
+        - npm_config_clang=1
         - NODE_VERSION=6.3.0
         - BUILD_OS_NAME=darwin
 
