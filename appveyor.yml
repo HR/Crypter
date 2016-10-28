@@ -13,7 +13,8 @@ init:
   - git config --global core.autocrlf input
 
 install:
-  - export NODE_ENV=production
+  - set NODE_ENV=production
+  - unset TEST_RUN
   - ps: Install-Product node 6.3.0 x64
   - git reset --hard HEAD
   - npm install npm -g
