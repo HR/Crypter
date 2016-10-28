@@ -23,6 +23,7 @@ matrix:
         - npm_config_clang=1
         - NODE_VERSION=6.3.0
         - BUILD_OS_NAME=darwin
+      compiler: clang
 
 before_script:
  - chmod +x ./app/script/travis-build.sh
