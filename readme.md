@@ -7,7 +7,14 @@
   <br>
 </h1>
 
+
 <h4 align="center">A simple, convenient and secure crypto app.</h4>
+<p align="center">
+    <a href="https://github.com/HR/Crypter/releases/tag/v2.0.0">
+        <img src="https://img.shields.io/badge/Download-2.0-red.svg"
+            alt="Download latest release" style= "margin-bottom: 0.5rem">
+    </a>
+</p>
 
 <p align="center">
     <a href="https://travis-ci.org/HR/Crypter">
@@ -29,12 +36,6 @@
     <a href="http://standardjs.com/">
         <img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg"
              alt="Standard JS Code Style">
-    </a>
-</p>
-<p align="center">
-    <a href="https://github.com/HR/Crypter/releases/tag/v2.0.0">
-        <img src="https://img.shields.io/badge/Download-2.0-red.svg"
-            alt="Download latest release">
     </a>
 </p>
 <br>
