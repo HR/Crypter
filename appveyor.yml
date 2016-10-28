@@ -2,7 +2,6 @@ version: 2.0.{build}
 
 platform:
   - x64
-  - x86
 
 cache:
   - node_modules
@@ -25,6 +24,6 @@ install:
 build_script:
   - node --version
   - npm --version
-  - npm run windist
+  - node_modules/.bin/build -w --x64 --ia32
 
 test: off
