@@ -24,5 +24,6 @@ install:
 build_script:
   - node --version
   - npm --version
+  - build -w --x64 --ia32
 
 test: off
