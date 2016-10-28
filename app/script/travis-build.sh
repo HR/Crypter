@@ -1,11 +1,12 @@
 #!/bin/bash
 
-set -ev
+# set -ev
+# Just exit when fail dont print code to be exec
+set -e
 
 echo $CC
 echo $CXX
 echo "OS Name: $TRAVIS_OS_NAME"
-export CXX=g++-4.8
 export TEST_RUN=true
 git clone https://github.com/creationix/nvm.git /tmp/.nvm
 source /tmp/.nvm/nvm.sh
@@ -16,7 +17,7 @@ node --version
 npm --version
 
 npm install --no-optional
-
+npm prune
 npm test
 
 # if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then

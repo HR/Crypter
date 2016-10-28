@@ -33,11 +33,11 @@
     "compression": "normal",
     "fileAssociations": {
       "ext": "crypto",
-      "name": "CRYPTO",
-      "icon": "crypto"
+      "name": "CRYPTO"
     },
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "publish": "github"
     },
     "dmg": {
       "background": "build/background.tif",
@@ -61,13 +61,17 @@
         "height": "540"
       }
     },
+    "linux": {
+      "category": "Utility",
+      "publish": "github"
+    },
     "win": {
       "iconUrl": "https://dl.dropboxusercontent.com/s/oh66258p4pgwwpq/Crypter.ico"
     }
   },
   "scripts": {
     "pack": "build --dir",
-    "dist": "build",
+    "dist": "build -ml --x64 --ia32",
     "electronVersion": "node_modules/.bin/electron -v | sed s/\\v//g",
     "postinstall": "install-app-deps",
     "nodeGypReBuild": "./node_modules/.bin/electron-rebuild .",

@@ -80,7 +80,7 @@ bower_components
 .bower-tmp
 
 # Other stuff to ignore
-/dist
+dist/
 *.log
 .editorconfig
 .Debug
