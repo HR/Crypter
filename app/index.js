@@ -199,8 +199,10 @@ function CrypterWindow (callback) {
     width: 350,
     height: 450,
     center: true,
+    show: true,
     titleBarStyle: 'hidden-inset',
-    resizable: false
+    resizable: false,
+    movable: true
   })
 
   let webContents = win.webContents
@@ -257,7 +259,8 @@ function SetupWindow (callback) {
     center: true,
     show: true,
     titleBarStyle: 'hidden-inset',
-    resizable: false
+    resizable: false,
+    movable: true
   })
 
   let webContents = win.webContents
@@ -322,8 +325,10 @@ function MasterPassPromptWindow (callback) {
     width: 300,
     height: 450,
     center: true,
+    show: true,
     titleBarStyle: 'hidden-inset',
-    resizable: false
+    resizable: false,
+    movable: true
   })
   let webContents = win.webContents
 
