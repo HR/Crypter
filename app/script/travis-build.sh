@@ -5,7 +5,6 @@
 set -e
 
 export TEST_RUN=true
-export CC=clang
 echo "CC: $CC"
 echo "CXX: $CXX"
 echo "OS Name: $TRAVIS_OS_NAME"
