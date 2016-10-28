@@ -4,10 +4,11 @@
 # Just exit when fail dont print code to be exec
 set -e
 
-echo $CC
-echo $CXX
-echo "OS Name: $TRAVIS_OS_NAME"
 export TEST_RUN=true
+export CC=clang
+echo "CC: $CC"
+echo "CXX: $CXX"
+echo "OS Name: $TRAVIS_OS_NAME"
 git clone https://github.com/creationix/nvm.git /tmp/.nvm
 source /tmp/.nvm/nvm.sh
 nvm install "$NODE_VERSION"

@@ -8,6 +8,7 @@ unset TEST_RUN
 export NODE_ENV=production
 npm install --production
 npm prune
+npm install electron-builder@next
 
 if [ "$TRAVIS_OS_NAME" == "linux" ]; then
   # to build for linux
