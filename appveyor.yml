@@ -2,6 +2,7 @@ version: 2.0.{build}
 
 platform:
   - x64
+  - x86
 
 cache:
   - node_modules
