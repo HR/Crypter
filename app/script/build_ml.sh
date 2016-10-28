@@ -3,7 +3,8 @@
 echo "Building for: "$TRAVIS_OS_NAME
 echo "cwd: "$PWD
 # remove any existing distribution
-rm -rf dest
+rm -rf dist
+# make for production
 unset TEST_RUN
 export NODE_ENV=production
 npm install --production

@@ -20,6 +20,7 @@ npm install --no-optional
 npm prune
 npm test
 
+# End-to-end OSX testing
 # if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
 #   export DISPLAY=:99.0
 #   sh -e /etc/init.d/xvfb start
