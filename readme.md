@@ -14,6 +14,10 @@
         <img src="https://travis-ci.org/HR/Crypter.svg?branch=dev"
              alt="Travis Build">
     </a>
+    <a href="https://ci.appveyor.com/project/HR/crypter">
+        <img src="https://ci.appveyor.com/api/projects/status/4pa8cnlb1qnyj1xd?svg=true"
+             alt="AppVeyor Build">
+    </a>
     <a href="https://coveralls.io/github/HR/Crypter?branch=dev">
         <img src="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=dev"
              alt="Test Coverage">
