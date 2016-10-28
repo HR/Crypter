@@ -34,7 +34,8 @@
 <p align="center">
     <a href="https://github.com/HR/Crypter/releases/tag/v2.0.0">
         <img src="https://img.shields.io/badge/Download-2.0-red.svg"
-             alt="Download latest release">
+            alt="Download latest release">
+    </a>
 </p>
 <br>
 
