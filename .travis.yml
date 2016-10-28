@@ -18,7 +18,6 @@ matrix:
       env: CC=clang CXX=clang++ npm_config_clang=1
       compiler: clang
     - os: osx
-      env: CXX=g++-4.8
 
 before_script:
  - chmod +x ./app/script/travis-build.sh
@@ -52,7 +51,6 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-4.8
       - libgnome-keyring-dev
       - icnsutils
       - xvfb

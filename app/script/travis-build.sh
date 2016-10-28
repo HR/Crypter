@@ -2,7 +2,7 @@
 
 # set -ev
 # Just exit when fail dont print code to be exec
-set -e
+set +e
 
 export TEST_RUN=true
 echo "CC: $CC"
