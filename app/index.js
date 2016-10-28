@@ -201,7 +201,7 @@ function CrypterWindow (callback) {
     center: true,
     show: true,
     titleBarStyle: 'hidden-inset',
-    // resizable: false,
+    resizable: false,
     movable: true
   })
 
