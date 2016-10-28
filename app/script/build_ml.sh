@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "Building for: "$TRAVIS_OS_NAME
-echo "cwd: "$PWD
+echo "Building for: $TRAVIS_OS_NAME"
+echo "cwd: $PWD"
 # remove any existing distribution
 rm -rf dist
 # make for production
