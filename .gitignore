@@ -14,7 +14,7 @@ deprecated/
 screens/
 
 
-# Icon must end with two \r
+# Icon must end with two
 Icon
 
 # Thumbnails
@@ -63,6 +63,7 @@ coverage
 build/Release
 
 # Dependency directories
+app/node_modules
 node_modules
 jspm_packages
 
@@ -79,7 +80,7 @@ bower_components
 .bower-tmp
 
 # Other stuff to ignore
-/dist
+dist/
 *.log
 .editorconfig
 .Debug

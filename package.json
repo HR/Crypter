@@ -1,12 +1,13 @@
 {
   "name": "Crypter",
   "productName": "Crypter",
-  "version": "1.0.0",
-  "description": "A cross-platform end-to-end encryption cloud sync client",
+  "version": "2.0.0",
+  "description": "A simple, convenient and secure cross-platform crypto app",
   "license": "MIT",
   "repository": "https://github.com/HR/Crypter",
   "homepage": "https://github.com/HR/Crypter",
   "bugs": "https://github.com/HR/Crypter/issues",
+  "main": "./app/index.js",
   "author": {
     "name": "Habib Rehman",
     "email": "Habib.R@outlook.com",
@@ -15,13 +16,72 @@
   "engines": {
     "node": ">=4"
   },
+  "build": {
+    "appId": "com.github.hr.crypter",
+    "asar": false,
+    "files": [
+      "**/*",
+      "!**/node_modules/*/{README.md,README,readme.md,readme,test}",
+      "!**/node_modules/.bin",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,__pycache__,thumbs.db,.gitignore,.gitattributes,.editorconfig,.idea,appveyor.yml,.travis.yml,circle.yml,*.yml}",
+      "!script/*.sh",
+      "!script/debug",
+      "!static/styles/*.less",
+      "!test${/*}"
+    ],
+    "compression": "normal",
+    "fileAssociations": {
+      "ext": "crypto",
+      "name": "CRYPTO"
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "publish": "github"
+    },
+    "dmg": {
+      "background": "build/background.tif",
+      "icon": "build/vicon.icns",
+      "iconSize": 116,
+      "iconTextSize": 13,
+      "contents": [
+        {
+          "x": 240,
+          "y": 135
+        },
+        {
+          "x": 240,
+          "y": 400,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "window": {
+        "width": "480",
+        "height": "540"
+      }
+    },
+    "linux": {
+      "category": "Utility",
+      "publish": "github"
+    },
+    "win": {
+      "iconUrl": "https://dl.dropboxusercontent.com/s/oh66258p4pgwwpq/Crypter.ico",
+      "publish": "github"
+    }
+  },
   "scripts": {
+    "pack": "build --dir",
+    "dist": "build -m",
+    "windist": "node_modules/.bin/build -w --x64 --ia32",
     "electronVersion": "node_modules/.bin/electron -v | sed s/\\v//g",
+    "postinstall": "install-app-deps",
+    "nodeGypReBuild": "./node_modules/.bin/electron-rebuild .",
     "test": "TEST_RUN=true mocha --compilers js:babel-core/register test/test.js",
-    "xltest": "unset TEST_RUN && rm -rf ~/Library/Application\\ Support/CrypterTest && mocha --compilers js:babel-core/register ./test/ui/*.js",
-    "xtest": "unset TEST_RUN && npm run xtestbuild && mocha --compilers js:babel-core/register ./test/ui/*.js",
-    "xtestbuild": "npm_package_productName=CrypterTest && electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage|backups|github)' --asar=false --platform=darwin --arch=x64 --version=$(npm run electronVersion) --icon=res/app-icons/Crypter.icns --app-copyright=HR --overwrite && npm run productNameChange",
-    "xbuild": "electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage|backups|github)' --asar=false --platform=darwin --arch=x64 --version=$(npm run electronVersion) --icon=res/app-icons/Crypter.icns --app-copyright=Habib_Rehman --overwrite",
+    "xltest": "unset TEST_RUN && rm -rf ~/Library/Application\\ Support/CrypterTest/ && mocha --compilers js:babel-core/register ./test/ui/*.js",
+    "xtest": "npm run xtestbuild && npm run xltest",
+    "xtestbuild": "npm_package_productName=CrypterTest && electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage|backups|github)' --asar=false --platform=darwin --arch=x64 --version=$(npm run electronVersion) --icon=app/icons/Crypter.icns --app-copyright=HR --overwrite && npm run productNameChange",
+    "xbuild": "electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage|github)' --asar=false --platform=darwin --arch=x64 --version=$(npm run electronVersion) --icon=app/icons/Crypter.icns --app-copyright=Habib_Rehman --overwrite",
     "coverage": "TEST_RUN=true ./node_modules/.bin/babel-node ./node_modules/.bin/isparta cover --root src/ ./node_modules/.bin/_mocha -- test/test.js --reporter mocha-lcov-reporter",
     "coveralls": "node ./node_modules/.bin/coveralls < coverage/lcov.info",
     "codeclimate": "node ./node_modules/.bin/codeclimate-test-reporter < coverage/lcov.info",
@@ -32,52 +92,42 @@
   },
   "keywords": [
     "encryption",
+    "decryption",
     "crypto",
     "end-to-end",
     "client",
     "electron"
   ],
-  "dependencies": {
-    "babel-core": "*",
-    "electron-debug": "*",
-    "electron-prebuilt": "^1.0.2",
-    "estraverse": "^4.2.0",
-    "fs-extra": "*",
-    "handlebars": "*",
-    "jquery": "*",
-    "level-js": "*",
-    "leveldown": "*",
-    "levelup": "*",
-    "lodash": "*",
-    "moment": "*",
-    "winston": "^2.2.0"
-  },
   "devDependencies": {
-    "babel-cli": "^6.6.5",
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.17.0",
     "babel-eslint": "*",
     "babel-preset-es2015": "*",
     "chai": "*",
     "chai-as-promised": "^5.3.0",
-    "codeclimate-test-reporter": "^0.3.1",
-    "coveralls": "^2.11.9",
-    "devtron": "^1.1.0",
+    "codeclimate-test-reporter": "^0.3.3",
+    "coveralls": "^2.11.12",
+    "devtron": "^1.3.0",
+    "electron-builder": "^7.14.2",
     "electron-packager": "*",
-    "eslint": "*",
+    "electron-prebuilt": "1.1.3",
+    "electron-rebuild": "^1.1.5",
+    "eslint": "^2.0.0-rc.0",
     "eslint-plugin-html": "*",
     "gulp": "*",
     "gulp-babel": "^6.1.2",
-    "gulp-babel-istanbul": "^1.0.0",
+    "gulp-babel-istanbul": "^1.4.0",
     "gulp-env": "^0.4.0",
-    "gulp-inject-modules": "^0.2.0",
+    "gulp-inject-modules": "^1.0.0",
     "gulp-json-editor": "^2.2.1",
-    "gulp-less": "^3.0.5",
-    "gulp-mocha": "^2.2.0",
+    "gulp-less": "^3.1.0",
+    "gulp-mocha": "^3.0.0",
     "gulp-shell": "*",
     "isparta": "^4.0.0",
     "less-plugin-clean-css": "^1.5.1",
-    "mocha": "^2.4.5",
+    "mocha": "^3.1.2",
     "mocha-lcov-reporter": "^1.2.0",
-    "spectron": "^3.0.0",
-    "standard": "^7.0.1"
+    "spectron": "^3.3.0",
+    "standard": "^7.1.2"
   }
 }

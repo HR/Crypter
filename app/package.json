@@ -1,0 +1,30 @@
+{
+  "name": "Crypter",
+  "productName": "Crypter",
+  "version": "2.0.0",
+  "description": "A simple, convenient and secure cross-platform crypto app",
+  "license": "MIT",
+  "repository": "https://github.com/HR/Crypter",
+  "homepage": "https://github.com/HR/Crypter",
+  "bugs": "https://github.com/HR/Crypter/issues",
+  "private": true,
+  "main": "index.js",
+  "author": {
+    "name": "Habib Rehman",
+    "email": "Habib.R@outlook.com",
+    "url": "https://git.io/HR"
+  },
+  "dependencies": {
+    "electron-debug": "*",
+    "estraverse": "^4.2.0",
+    "fs-extra": "^0.30.0",
+    "handlebars": "*",
+    "jquery": "*",
+    "leveldown": "^1.4.6",
+    "levelup": "^1.3.3",
+    "lodash": "*",
+    "moment": "*",
+    "tar-fs": "^1.13.2",
+    "winston": "^2.2.0"
+  }
+}

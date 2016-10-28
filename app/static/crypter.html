@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Crypter</title>
+    <link rel="stylesheet" href="styles/crypter.css" charset="utf-8">
+    <script src="js/common.js" charset="utf-8"></script>
+  </head>
+
+  <body>
+    <section id="crypt">
+      <div class="panel-container">
+        <div id="panel-crypt" class="current">
+          <header>
+            <img src="images/icons/Crypter.svg" alt="some" class="crypto"/>
+            <h1>Crypter</h1>
+            <p>Encrypt or decrypt any file.</p>
+            <p class="intrfo">All you have to remember is your MasterPass. All you need to encrypt/decrypt is it and a crypto file.</p>
+            <p id="errLabel" style="display: none"></p>
+          </header>
+          <!-- TODO: Consider using <input class="fancy" type="file" name="name" value="selectfile"> -->
+          <div id="fileInput" class="fancy">
+            <p id="fileInputText">
+              Select a file
+            </p>
+          </div>
+        </div>
+        <div id="panel-crypted">
+          <div id="crypted-container">
+            <!-- Dynamically load file info here -->
+          </div>
+          <p class="intrfo">
+            Note these details down! They may be erased when you navigate back
+          </p>
+          <footer>
+            <a href="#" class="back navigationLink" data-target="crypt">
+              <img src="images/icons/back.svg" alt="" />
+            </a>
+          </footer>
+        </div>
+      </div>
+    </section>
+
+    <script id="crypted-template" type="text/x-handlebars-template">
+      <header>
+        <img src="images/icons/{{op}}.svg" alt="some" class="crypto" />
+      </header>
+      <div id="finfo">
+        <h3>{{op}} {{name}}</h3>
+        <table>
+          <tr>
+            <td>Path</td>
+            <td>{{path}}</td>
+          </tr>
+          <tr>
+            <td>Crypted to</td>
+            <td>{{cryptPath}}</td>
+          </tr>
+          <tr>
+            <td>Initialisation Vector</td>
+            <td>
+              <input type="text" value="{{iv}}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Authentication Tag</td>
+            <td>
+              <input type="text" value="{{authTag}}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Salt (for key derivation)</td>
+            <td>
+              <input type="text" value="{{salt}}" />
+            </td>
+          </tr>
+          <tr>
+            <td>Encryption Key</td>
+            <td>
+              <input type="text" value="{{key}}" />
+            </td>
+          </tr>
+        </table>
+      </div>
+    </script>
+
+    <script type="text/javascript">
+      'use strict'
+      var remote = require('electron').remote
+      var dialog = remote.dialog
+      var BrowserWindow = remote.BrowserWindow
+      var paths = remote.getGlobal('paths')
+      var logger = require('../script/logger.js')
+      var Handlebars = require('handlebars')
+      var path = require('path')
+      var errLabel = $('#errLabel')
+      var fileInput = $('#fileInput')
+      var fileInputD = document.getElementById('fileInput')
+      var cryptedContainer = $('#crypted-container')
+      var fileInputText = fileInput.find('#fileInputText')
+      var ifileInputText = fileInputText.text()
+      // compile the crypted template
+      var crypted_template = Handlebars.compile($('#crypted-template').html())
+      const cryptoExt = '.crypto'
+
+      $(window).on('load', function() {
+        // attach  event
+        fileInputD.ondragover = function () {
+          return false
+        }
+        fileInputD.ondragleave = fileInputD.ondragend = function () {
+          return false
+        }
+        turnFileInputOn ()
+        $('.navigationLink').each(function (index) {
+          $(this).click(function () {
+            navigate(this.getAttribute('data-target'))
+          })
+        })
+      })
+
+      /* Event listeners */
+      ipcRenderer.on('cryptedFile', function(event, file) {
+        logger.verbose(`IPCRENDER cryptedFile emitted`)
+        var fileHTML = crypted_template(file)
+        cryptedContainer.html(fileHTML)
+        fileInputText.text(ifileInputText)
+        navigate('crypted')
+        turnFileInputOn()
+      })
+      ipcRenderer.on('decryptedFile', function(event, file) {
+        logger.verbose(`IPCRENDER decryptedFile emitted`)
+        var fileHTML = crypted_template(file)
+        cryptedContainer.html(fileHTML)
+        fileInputText.text(ifileInputText)
+        navigate('crypted')
+        turnFileInputOn()
+      })
+      ipcRenderer.on('cryptErr', function(event, err) {
+        logger.verbose(`IPCRENDER cryptErr emitted`)
+        errLabel.text(`ERROR: ${err}`).show()
+        fileInputText.text(ifileInputText)
+        turnFileInputOn()
+      })
+
+      /* Helper functions */
+      function turnFileInputOff () {
+        fileInput.off('click', handler)
+        fileInput.ondrop = function () {
+          return false
+        }
+      }
+      function turnFileInputOn () {
+        fileInput.on('click', handler)
+        fileInputD.ondrop = function (e) {
+          e.preventDefault()
+          logger.info(`ONDROP fired!`)
+          if (e.dataTransfer.files[0].path) {
+            logger.info(`Got file: ${e.dataTransfer.files[0].path}`)
+            handleFile(e.dataTransfer.files[0].path)
+          }
+          return false
+        }
+      }
+      function handleFile(file) {
+        let fileExt = path.extname(file)
+        turnFileInputOff()
+        errLabel.hide()
+
+        if (fileExt.toLowerCase() === cryptoExt) {
+          // Decrypt file
+          fileInputText.text(`Decrypting ${path.basename(file)}...`)
+          // send file to decryptFile controller function
+          ipcRenderer.send('decryptFile', file)
+        } else {
+          // Encrypt file
+          fileInputText.text(`Encrypting ${path.basename(file)}...`)
+          // send file to crypter controller function
+          ipcRenderer.send('cryptFile', file)
+        }
+      }
+
+      function handler() {
+        // Prevent multiple input dialog
+        fileInput.off('click',handler)
+        // Create file input dialog
+        dialog.showOpenDialog({
+          title: 'Choose a file to Encrypt',
+          defaultPath: paths.documents, // open dialog at home directory
+          properties: ['openFile']
+        }, function(filePath) {
+          // callback for selected file
+          // returns undefined if file not selected by user
+          if (filePath && filePath.length === 1) {
+            handleFile(filePath[0])
+          } else {
+            fileInput.on('click',handler)
+          }
+        })
+        return false
+      }
+    </script>
+  </body>
+
+</html>

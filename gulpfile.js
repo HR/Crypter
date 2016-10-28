@@ -22,7 +22,7 @@ gulp.task('coverage', function (cb) {
   const envs = env.set({
     TEST_RUN: true
   })
-  gulp.src('src/**/*.js')
+  gulp.src('./app/src/**/*.js')
     .pipe(envs)
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())
@@ -37,12 +37,12 @@ gulp.task('coverage', function (cb) {
 })
 
 gulp.task('less', function () {
-  return gulp.src('./static/styles/*.less')
+  return gulp.src('./app/static/styles/*.less')
     .pipe(less({
       paths: [ path.join(__dirname, 'less', 'includes') ],
       plugins: [cleancss]
     }))
-    .pipe(gulp.dest('./static/styles/'))
+    .pipe(gulp.dest('./app/static/styles/'))
 })
 
 gulp.task('test', shell.task([
@@ -51,7 +51,7 @@ gulp.task('test', shell.task([
 ]))
 
 gulp.task('watch', function () {
-  gulp.watch(['./static/**/*', './*.js'], ['run'])
+  gulp.watch(['./app/static/**/*', './*.js'], ['run'])
 })
 
 gulp.task('run', function () {
