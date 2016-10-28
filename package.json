@@ -72,7 +72,7 @@
   "scripts": {
     "pack": "build --dir",
     "dist": "build -m",
-    "windist": "build -w --x64 --ia32",
+    "windist": "node_modules/.bin/build -w --x64 --ia32",
     "electronVersion": "node_modules/.bin/electron -v | sed s/\\v//g",
     "postinstall": "install-app-deps",
     "nodeGypReBuild": "./node_modules/.bin/electron-rebuild .",
