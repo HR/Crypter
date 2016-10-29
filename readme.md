@@ -40,7 +40,7 @@
 </p>
 <br>
 
-> Securely encrypt unlimited bits; remember only a bit.
+> Encrypt unlimited bits; remember only a bit.
 
 **Crypter** is an innovative, convenient and secure cross-platform crypto app that
 simplifies password generation and management by requiring you to only
