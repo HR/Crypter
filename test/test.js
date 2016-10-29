@@ -35,7 +35,10 @@ describe("Crypter Core Modules' tests", function () {
   const KEY_LENGTH = 32 // 32 bytes
   const TEST_FILE_PATH = `${global.paths.tmp}/test.txt`
   const ENCRYTED_TEST_FILE_PATH = `${TEST_FILE_PATH}.crypto`
+  const DECRYTED_TEST_FILE_PATH = `${global.paths.tmp}/Decrypted test.txt`
   const TEST_FILE_CONTENTS = '#Crypter'
+  const DECRYTING_TEMP_DIR_PATH = `${path.dirname(ENCRYTED_TEST_FILE_PATH)}/.decrypting`
+  const ENCRYTING_TEMP_DIR_PATH = `${path.dirname(ENCRYTED_TEST_FILE_PATH)}/.crypting`
 
   // Before all tests have run
   before(() => {
@@ -110,6 +113,7 @@ describe("Crypter Core Modules' tests", function () {
             .then((creds) => {
               // The encrypted file should exist at the ENCRYTED_TEST_FILE_PATH
               expect(checkFileSync(ENCRYTED_TEST_FILE_PATH)).to.be.true
+              expect(checkFileSync(ENCRYTING_TEMP_DIR_PATH)).to.be.false
               // Creds should have all the expected properties
               expect(creds).not.be.empty
               expect(creds.iv).not.be.empty
@@ -157,7 +161,40 @@ describe("Crypter Core Modules' tests", function () {
             })
         })
       })
+    })
 
+    describe('Decryption', function () {
+      // Before any tests are run in this suite
+      before(function () {
+        // create a test file (for encryption)
+        expect(checkFileSync(ENCRYTED_TEST_FILE_PATH)).to.be.true
+      })
+      describe('decrypt promise', function () {
+        it('should decrypt file with pass without errors & have all expected creds', function () {
+          return crypto.decrypt(ENCRYTED_TEST_FILE_PATH, global.MasterPassKey.get())
+            .then((file) => {
+              // The encrypted file should exist at the ENCRYTED_TEST_FILE_PATH
+              expect(checkFileSync(DECRYTED_TEST_FILE_PATH)).to.be.true
+              // Creds should have all the expected properties
+              expect(file.op).to.equal('Decrypted')
+              expect(file.cryptPath).to.equal(DECRYTED_TEST_FILE_PATH)
+              expect(file.salt).not.be.empty
+              expect(file.key).not.be.empty
+              expect(file.authTag).not.be.empty
+              expect(checkFileSync(DECRYTING_TEMP_DIR_PATH)).to.be.false
+            })
+            .catch((err) => {
+              throw err
+            })
+        })
+        it('should throw origin error when empty filepath to encrypt is passed', function () {
+          return crypto.decrypt('', global.MasterPassKey.get())
+            .catch((err) => {
+              expect(err).to.be.an('error')
+              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
+            })
+        })
+      })
     })
   })
   /**
