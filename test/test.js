@@ -107,6 +107,9 @@ describe("Crypter Core Modules' tests", function () {
         // create a test file (for encryption)
         fs.writeFileSync(TEST_FILE_PATH, TEST_FILE_CONTENTS, 'utf8')
       })
+      after(function () {
+        fs.removeSync(ENCRYTING_TEMP_DIR_PATH)
+      })
       describe('encrypt promise', function () {
         it('should encrypt file with pass without errors & have all expected creds', function () {
           return crypto.encrypt(TEST_FILE_PATH, global.MasterPassKey.get())
@@ -168,6 +171,9 @@ describe("Crypter Core Modules' tests", function () {
       before(function () {
         // create a test file (for encryption)
         expect(checkFileSync(ENCRYTED_TEST_FILE_PATH)).to.be.true
+      })
+      after(function () {
+        fs.removeSync(DECRYTING_TEMP_DIR_PATH)
       })
       describe('decrypt promise', function () {
         it('should decrypt file with pass without errors & have all expected creds', function () {

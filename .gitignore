@@ -12,6 +12,8 @@ test/render.js
 spec/
 deprecated/
 screens/
+.crypting/
+.decrypting
 
 
 # Icon must end with two
