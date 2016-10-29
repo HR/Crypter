@@ -67,7 +67,7 @@
     },
     "win": {
       "iconUrl": "https://dl.dropboxusercontent.com/s/oh66258p4pgwwpq/Crypter.ico",
-      "target": [ "nsis", "squirrel" ],
+      "target": [ "nsis" ],
       "publish": "github"
     },
     "nsis": {
