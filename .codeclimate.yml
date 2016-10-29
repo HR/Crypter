@@ -15,6 +15,7 @@ engines:
       - fcc5dd7fd381cab75901402345e66511
       - 144b552ca7471e150abb4ece59240e71
       - 63a2186b2e759c9b5f6afb31965ab290
+      - e7795d9006a3f6c7ee2fa04ead8a36c2
   eslint:
     enabled: true
   fixme:
