@@ -8,7 +8,7 @@
 </h1>
 
 
-<h4 align="center">A simple, convenient and secure crypto app.</h4>
+<h4 align="center">An innovative, convenient and secure crypto app.</h4>
 <p align="center">
     <a href="https://github.com/HR/Crypter/releases/latest">
         <img src="https://img.shields.io/badge/Download-2.0-red.svg"
@@ -42,7 +42,7 @@
 
 > Securely encrypt unlimited bits; remember only a bit.
 
-**Crypter** is a simple, convenient and secure cross-platform crypto app that
+**Crypter** is an innovative, convenient and secure cross-platform crypto app that
 simplifies password generation and management by requiring you to only
 remember one bit, the MasterPass. It uses electron which makes it cross
 
@@ -53,15 +53,18 @@ So please check it out as well!
 Short link for this page: https://git.io/Crypter.info
 
 ## Status
-The decryption functionality is being implemented for the next major release
-[v2.0](https://github.com/HR/Crypter/milestones/v2.0) in the "dev" branch. Feel
-free to send PRs to speed this up!
+[Crypter v2.0](https://github.com/HR/Crypter/releases/tag/v2.0.0) is a fully
+fledged crypto app that can decrypt and encrypt any arbitrary data. This version
+has been released and fully tested for macOS (OSX), Linux (for all distros via
+[AppImage](http://appimage.org/)) and Windows (32 & 64 bit). All internal
+modules are fully tested (90%+ coverage). Some end-to-end tests have been
+written (see test/ui/test.js) but end-to-end testing is still mostly a WIP.
 
-For the first release [v1.0](https://github.com/HR/Crypter/releases/tag/v1.0)
-(on master branch), all of the UI and the encryption functionality has been
-implemented.  All internal modules are fully tested (100% coverage). Some
-end-to-end tests have been written (see test/ui/test.js) but end-to-end testing
-is still mostly a WIP.
+The next the next major release is
+[v3.0](https://github.com/HR/Crypter/milestones/v3.0) and any work for it is
+done on the "dev" branch. All features to be implemented for the next major
+version can be found at https://github.com/HR/Crypter/milestones/v3.0. Feel free
+to send PRs to speed this up!
 
 If you have any suggestions then please open an issue!
 
@@ -183,16 +186,34 @@ $ gulp coverage
 ```
 
 ### Build
-To build the app for your OSX (darwin)
+Binaries (available under releases) have been build using the following config
 ```
-$ npm run xbuild
+Node 6.3.0
+NPM 3.10.3
+Electron v1.1.3
+Compiler clang
 ```
-To build the app for your Windows x84 and x64 (win32) run the win-build script
+Crypter uses electron-builder to build binaries so install it globally first
+prior to any build
 ```
-$ ./script/win-build.sh
+$ npm install electron-builder@next -g
 ```
-Since it is an Electron app, it can be built for OS X, Linux, and Windows but
-has currently only been tested on OSX.
+The following instructions are for building Crypter on and for the respective
+platform stated
+
+To build the app for your **macOS**
+```
+$ build -m
+```
+To build the app for your **Linux**
+```
+$ sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
+$ build -l --x64 --ia32
+```
+To build the app for your **Windows** x84 and/or x64
+```
+$ build -w --x64 --ia32
+```
 
 ## License
 The MIT License (MIT)
