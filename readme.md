@@ -60,11 +60,11 @@ has been released and fully tested for macOS (OSX), Linux (for all distros via
 modules are fully tested (90%+ coverage). Some end-to-end tests have been
 written (see test/ui/test.js) but end-to-end testing is still mostly a WIP.
 
-The next the next major release is
-[v3.0](https://github.com/HR/Crypter/milestones/v3.0) and any work for it is
-done on the "dev" branch. All features to be implemented for the next major
-version can be found at https://github.com/HR/Crypter/milestones/v3.0. Feel free
-to send PRs to speed this up!
+The next major release is [v3.0](https://github.com/HR/Crypter/milestones/v3.0)
+and any work for it is done on the "dev" branch. All features to be implemented
+for the next major version can be found at
+https://github.com/HR/Crypter/milestones/v3.0. Feel free to send PRs to speed
+this up!
 
 If you have any suggestions then please open an issue!
 
