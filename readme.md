@@ -31,7 +31,7 @@
     </a>
     <a href="https://codeclimate.com/github/HR/Crypter?branch=master">
         <img src="https://codeclimate.com/github/HR/Crypter/badges/gpa.svg"
-             alt="Codeclimate GPA">
+             alt="CodeClimate GPA">
     </a>
     <a href="http://standardjs.com/">
         <img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg"
