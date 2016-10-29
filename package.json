@@ -68,6 +68,9 @@
     "win": {
       "iconUrl": "https://dl.dropboxusercontent.com/s/oh66258p4pgwwpq/Crypter.ico",
       "publish": "github"
+    },
+    "nsis": {
+      "publish": "github"
     }
   },
   "scripts": {
