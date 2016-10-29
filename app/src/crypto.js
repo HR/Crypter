@@ -7,7 +7,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const scrypto = require('crypto')
-const logger = require('../script/logger')
+const logger = require('winston')
 const Readable = require('stream').Readable
 const tar = require('tar-fs')
 const CRYPTER_REGEX = /^Crypter(.*)$/igm
@@ -28,7 +28,6 @@ exports.crypt = function (origpath, masterpass) {
     // Resolve the destination path for encrypted file
     exports.encrypt(origpath, masterpass)
       .then((creds) => {
-        logger.info(`Encrypt creds: ${JSON.stringify(creds)}`)
         resolve({
           op: 'Encrypted', // Crypter operation
           name: path.basename(origpath), // filename
@@ -62,7 +61,7 @@ exports.encrypt = function (origpath, mpkey) {
         fs.mkdirs(tempd, function (err) {
           if (err)
             reject(err)
-          logger.info(`Created ${tempd} successfully`)
+          logger.verbose(`Created ${tempd} successfully`)
           // readstream to read the (unencrypted) file
           const origin = fs.createReadStream(origpath)
           // create data and creds file
@@ -119,7 +118,7 @@ exports.encrypt = function (origpath, mpkey) {
                 if (err)
                   reject(err)
                 // return all the credentials and parameters used for encryption
-                logger.info('Successfully deleted tempd!')
+                logger.verbose('Successfully deleted tempd!')
                 resolve({
                   salt: dcreds.salt,
                   key: dcreds.key,
@@ -181,17 +180,15 @@ exports.decrypt = function (origpath, mpkey) {
             const iv = new Buffer(creds[1], 'hex')
             const authTag = new Buffer(creds[2], 'hex')
             const salt = new Buffer(creds[3], 'hex')
-            logger.info(`iv: ${iv}, authTag: ${authTag}, salt: ${salt}`)
+            logger.verbose(`Extracted data, iv: ${iv}, authTag: ${authTag}, salt: ${salt}`)
             // Read encrypted data stream
             const dataOrig = fs.createReadStream(dataOrigPath)
             // derive the original encryption key for the file
             exports.deriveKey(mpkey, salt, defaults.iterations)
               .then((dcreds) => {
                 try {
-                  logger.info(`Derived encryption key ${dcreds.key.toString('hex')}`)
                   let decipher = scrypto.createDecipheriv(defaults.algorithm, dcreds.key, iv)
                   decipher.setAuthTag(authTag)
-                  logger.info(`authTag: ${authTag.toString('hex')}`)
                   const dataDest = fs.createWriteStream(dataDestPath)
                   dataOrig.pipe(decipher).pipe(dataDest)
 

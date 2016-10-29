@@ -21,7 +21,7 @@
           <!-- TODO: Consider using <input class="fancy" type="file" name="name" value="selectfile"> -->
           <div id="fileInput" class="fancy">
             <p id="fileInputText">
-              Select a file
+              Select or drop file
             </p>
           </div>
         </div>
@@ -90,7 +90,7 @@
       var dialog = remote.dialog
       var BrowserWindow = remote.BrowserWindow
       var paths = remote.getGlobal('paths')
-      var logger = require('../script/logger.js')
+      var logger = require('winston')
       var Handlebars = require('handlebars')
       var path = require('path')
       var errLabel = $('#errLabel')
@@ -111,7 +111,9 @@
         fileInputD.ondragleave = fileInputD.ondragend = function () {
           return false
         }
+
         turnFileInputOn ()
+
         $('.navigationLink').each(function (index) {
           $(this).click(function () {
             navigate(this.getAttribute('data-target'))

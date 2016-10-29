@@ -6,16 +6,16 @@
 const winston = require('winston')
 const moment = require('moment')
 const fs = require('fs-extra')
-const path = require('path')
 
-let debugDir = path.join(__dirname,'/debug')
+let debugDir = `${global.paths.userData}/debug`
 fs.ensureDirSync(debugDir)
 winston.emitErrs = true
 const fileTransport = new (winston.transports.File)({
   filename: `${debugDir}/CS_debug_${moment().format('DD.MM@HH:MM').trim()}.log`,
   handleExceptions: true,
   maxsize: 5242880, // 5MB
-  colorize: false
+  colorize: false,
+  level: 'verbose'
 })
 
 module.exports = (!process.env.TEST_RUN) ? new (winston.Logger)({

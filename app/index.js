@@ -9,14 +9,6 @@ const Db = require('./src/Db')
 const MasterPass = require('./src/MasterPass')
 const MasterPassKey = require('./src/MasterPassKey')
 const _ = require('lodash')
-const logger = require('./script/logger')
-// change exec path
-logger.info(`AppPath: ${app.getAppPath()}`)
-logger.info(`UseData Path: ${app.getPath('userData')}`)
-process.chdir(app.getAppPath())
-logger.info(`Changed cwd to: ${process.cwd()}`)
-logger.info(`Electron node v${process.versions.node}`)
-
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')()
 
@@ -33,6 +25,14 @@ global.views = {
   setup: `file://${__dirname}/static/setup.html`,
   crypter: `file://${__dirname}/static/crypter.html`
 }
+const logger = require('./script/logger')
+
+// change exec path
+logger.info(`AppPath: ${app.getAppPath()}`)
+logger.info(`UseData Path: ${app.getPath('userData')}`)
+process.chdir(app.getAppPath())
+logger.info(`Changed cwd to: ${process.cwd()}`)
+logger.info(`Electron node v${process.versions.node}`)
 
 /**
  * Promisification of initialisation
