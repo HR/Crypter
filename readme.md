@@ -42,9 +42,10 @@
 
 > Encrypt unlimited bits; remember only a bit.
 
-**Crypter** is an innovative, convenient and secure cross-platform crypto app that
-simplifies password generation and management by requiring you to only
-remember one bit, the MasterPass. It uses electron which makes it cross
+**Crypter** is an innovative, convenient and secure cross-platform crypto app
+that simplifies secure password generation and management by requiring you to
+only remember one bit, the MasterPass. All prebuilt binaries for all major
+platforms under [releases](https://github.com/HR/Crypter/releases/latest).
 
 This is based on [Crypto.Sync](https://github.com/HR/CryptoSync) (an end-to-end
 cloud encryption client) which is a more elaborate implementation of the idea.
@@ -56,9 +57,9 @@ Short link for this page: https://git.io/Crypter.info
 [Crypter v2.0](https://github.com/HR/Crypter/releases/tag/v2.0.0) is a fully
 fledged crypto app that can decrypt and encrypt any arbitrary data. This version
 has been released and fully tested for macOS (OSX), Linux (for all distros via
-[AppImage](http://appimage.org/)) and Windows (32 & 64 bit). All internal
-modules are fully tested (90%+ coverage). Some end-to-end tests have been
-written (see test/ui/test.js) but end-to-end testing is still mostly a WIP.
+[AppImage](http://appimage.org/)) and Windows (32 & 64 bit). All internal modules
+are fully tested (90%+ coverage). Some end-to-end tests have been written (see
+test/ui/test.js) but end-to-end testing is still mostly a WIP.
 
 The next major release is [v3.0](https://github.com/HR/Crypter/milestones/v3.0)
 and any work for it is done on the "dev" branch. All features to be implemented
