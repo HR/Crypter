@@ -45,7 +45,8 @@
 **Crypter** is an innovative, convenient and secure cross-platform crypto app
 that simplifies secure password generation and management by requiring you to
 only remember one bit, the MasterPass. All prebuilt binaries for all major
-platforms under [releases](https://github.com/HR/Crypter/releases/latest).
+platforms are available under 
+[releases](https://github.com/HR/Crypter/releases/latest).
 
 This is based on [Crypto.Sync](https://github.com/HR/CryptoSync) (an end-to-end
 cloud encryption client) which is a more elaborate implementation of the idea.
