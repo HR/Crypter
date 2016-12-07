@@ -229,7 +229,7 @@ $ gulp
 ```
 ### Test
 Uses mainly mocha (+ chai) for testing. Since the project uses a lot of JS ES6
-syntax, babel is used as a compiler. To run all the tests
+syntax, babel is used as a transpiler. To run all the tests
 ```
 $ npm test
 ```
@@ -239,13 +239,7 @@ $ gulp coverage
 ```
 
 ### Build
-Binaries (available under releases) have been build using the following config
-```
-Node 6.3.0
-NPM 3.10.3
-Electron v1.1.3
-Compiler clang
-```
+Binaries (available under releases) have been build using Electron ```v1.1.3```
 Crypter uses electron-builder to build binaries so install it globally first
 prior to any build
 ```
