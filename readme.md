@@ -45,7 +45,7 @@
 **Crypter** is an innovative, convenient and secure cross-platform crypto app
 that simplifies secure password generation and management by requiring you to
 only remember one bit, the MasterPass. All prebuilt binaries for all major
-platforms are available under 
+platforms are available under
 [releases](https://github.com/HR/Crypter/releases/latest).
 
 This is based on [Crypto.Sync](https://github.com/HR/CryptoSync) (an end-to-end
@@ -91,6 +91,15 @@ have the flexibility of deriving the encryption keys whenever you need to and
 not having to worry about storing them securely. All you have to do is remember
 your MasterPass.
 
+Crypter never ever directly uses your MasterPass to encrypt anything but instead
+derives a MasterPassKey from it which it then uses to derive the encryption key
+(which is used directly to encrypt your file). Every time a file is decrypted,
+the encryption key is re-derived from the MasterPassKey. Every time you set the
+MasterPass through the setup or reset it (through Verify MasterPass), the
+MasterPassKey is derived from the MasterPass using a newly generated set of
+(random) credentials. These credentials are used to re-derive the MasterPassKey
+every time the Crypter is executed (i.e. the app is launched).
+
 
 Authentication is used by default since the AES-256-GCM symmetric block cipher
 is used.
@@ -107,20 +116,22 @@ let defaults = {
   mpk_iterations: 100000 // MasterPassKey derivation iterations
 }
 ```
+
 ### Encryption process
 When encrypting a file, Crypter first creates a temporary hidden directory,
 namely '.crypting'. It then encrypts the user selected file with the crypto
-defaults and flushes the encrypted data it to file in the directory, namely
+defaults and flushes the encrypted data to a file in the directory, namely
 'data'. Furthermore, it writes the public credentials to a file within the same
 directory, namely 'creds'. Finally, Crypter compresses the directory to a tar
-archive with then name of the user selected file and the '.crypto' extension
+archive with the name of the user selected file and the '.crypto' extension
 appended to it.
 ### Decryption process
 The decryption process is essentially the inverse of the encryption process
 where the temporary hidden directory is named '.decrypting'. The credentials are
 read from the creds file and used to decrypt the data file to the original user
-file (with its original extension).
-### Crypto format
+file with its original extension which is deduced from the crypto file name
+(e.g. extension for "file.txt.crypto" would be ".txt").
+### Crypto file format
 A .crypto file is the product of the Crypter encryption process. It stores both
 the encrypted version of the user selected file and the public credentials used
 to encrypt it (and needed to decrypt it). The file itself it is a tar archive
@@ -141,7 +152,43 @@ the .crypto archive (as delineated above) in the following format:
 Crypter#iv#authTag#salt
 ```
 
+
+## Portability
+When you encrypt a crypto file on one machine with Crypter and try to decrypt it
+with Crypter running on a different machine then you most probably will come
+across the following error:
+```
+ERROR: Unsupported state or unable to authenticate data
+```
+What happens is that the MasterPassKey originally used to derive the encryption
+key on one machine is **not the same** as the MasterPassKey derived on a
+different machine because the set of credentials generated on the other machine
+is **different** (due to randomness). As a result your encryption key that is
+derived from the MasterPassKey is different and so incorrect which yields the
+error.
+
+### Full portability
+To achieve full portability the set of (MasterPassKey) credentials need to be
+exported from Crypter on one machine and imported into Crypter on another
+machine. The functionality is currently being implemented, see [#6](https://github.com/HR/Crypter/issues/6) for
+[v3.0](https://github.com/HR/Crypter/milestone/2).
+
+<!-- #### Temporary solution to full portability (untested)
+However, since Crypter v2.0 uses leveldb for persistently storing the
+credentials, you can try to directly copy the db or even whole appdata folder
+which should be found under ```~/.config/Crypter/``` for linux from one machine
+to another. -->
+
+
 ## Security
+
+### Security-first practice
+Crypter follows a security-first practice. This means that security is the
+highest priority and first consideration. This means that, while Crypter seeks
+to make encryption more convenient, Crypter chooses a convenient trade-off over
+a higher level of security.
+
+### MasterPassKey
 Crypter uses a WeakMap to store the MasterPassKey inside the MasterPassKey class
 using closure function. This makes the MasterPassKey data held in the object
 (externally) inaccessible to an extent which increases the protection of the
@@ -159,6 +206,10 @@ application, you may choose to select 10,000,000 iterations instead (in
 app/src/crypto.js). Refer to
 http://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf for
 more info
+
+Crypter generates a new set of random credentials for deriving the MasterPassKey
+every time the MasterPass is set (at setup) or reset. Using randomness, mitigate
+brute-force attacks which drastically improves security.
 
 ## Dev
 The "dev" branch is the development branch and may be unstable. However the
