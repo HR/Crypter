@@ -64,7 +64,7 @@ $ brew cask install crypter
 ```
 
 ## Status
-[Crypter v2.0](https://github.com/HR/Crypter/releases/tag/v2.0.0) is a fully
+[Crypter v3.0](https://github.com/HR/Crypter/releases/tag/v3.0.0) is a fully
 fledged crypto app that can decrypt and encrypt any arbitrary data. This version
 has been released and fully tested for macOS (OSX), Linux (for all distros via
 [AppImage](http://appimage.org/)) and Windows (32 & 64 bit). All internal modules
@@ -183,7 +183,7 @@ machine. The functionality is currently being implemented, see [#6](https://gith
 [v3.0](https://github.com/HR/Crypter/milestone/2).
 
 <!-- #### Temporary solution to full portability (untested)
-However, since Crypter v2.0 uses leveldb for persistently storing the
+However, since Crypter v3.0 uses leveldb for persistently storing the
 credentials, you can try to directly copy the db or even whole appdata folder
 which should be found under ```~/.config/Crypter/``` for linux from one machine
 to another. -->
