@@ -239,7 +239,7 @@ $ gulp coverage
 ```
 
 ### Build
-Binaries (available under releases) have been build using Electron ```v1.1.3```
+Binaries (available under releases) have been build using Electron ```v1.1.3```.
 Crypter uses electron-builder to build binaries so install it globally first
 prior to any build
 ```
