@@ -1,12 +1,13 @@
 'use strict'
 /**
  * Db.js
- * Custom DB (levelup) API implementation
+ * Custom JSON DB API implementation
  ******************************/
 
-const levelup = require('levelup')
 const _ = require('lodash')
-const util = require('util')
+const logger = require('winston')
+const fs = require('fs-extra')
+// const util = require('util')
 
 /**
  * Constructor
@@ -15,31 +16,124 @@ const util = require('util')
  */
 
 // Db class constructor
-function Db (path) {
-  // If levelup Db already exists at the path, it opens the Db
-  // If no levelup Db exists at the path, it creates a new Db
-  // Calls the levelup constructor
-  // this refers to the Db instance
-  levelup.call(this, path)
+function Db (path, cb) {
+  // If Db already exists at the path, it opens the Db
+  // If no Db exists at the path, it creates a new Db
+
+  // Set db path
+  this.path = path
+  // Save context to instance
+  const self = this
+
+  // Create db if does not exist
+  fs.ensureFile(path, function (err) {
+    if (err) {
+      throw err
+      return
+    }
+    // file has now been created or exists
+    // either way, read the json now
+    fs.readFile(path, (err, db) => {
+      if (err) {
+        throw err
+        return
+      }
+      if (_.isEmpty(db)) {
+        logger.verbose('db is empty so initialising it...')
+        self._db = {}
+        self.open = true
+      } else {
+        try {
+          logger.verbose('db is not empty so json parsing it...')
+          // Get original JSON object or create new if does not exist
+          self._db = JSON.parse(db)
+          self.open = true
+        } catch (err) {
+          throw err
+          return
+        }
+      }
+      // call callback with newly created object
+      cb(self)
+    })
+  })
 }
 
-// Inherit all properties and methods from levelup superclass
-util.inherits(Db, levelup)
+// Flush db to filesystem
+Db.prototype.flush = function () {
+  logger.verbose('flushing _db to fs')
+  const self = this
+  return new Promise(function (resolve, reject) {
+    fs.outputJson(self.path, self._db, function (err) {
+      if (err) reject(err)
+      // successfully flushed db to disk
+      resolve()
+    })
+  })
+}
+
+// Add items to db
+Db.prototype.put = function (key, value) {
+  logger.verbose(`Putting ${key} in _db`)
+  const self = this
+  return new Promise(function (resolve, reject) {
+    // set value with key in the internal db
+    self._db[key] = value
+    // then flush db to fs
+    self.flush()
+      .then(() => {
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
+// Get items from db
+Db.prototype.get = function (key) {
+  logger.verbose(`Getting ${key} from _db`)
+  const self = this
+  return new Promise(function (resolve, reject) {
+    // Return the object if it exists otherwise return false
+    resolve(_.has(self._db, key) ? self._db[key] : false)
+  })
+}
+
+Db.prototype.close = function() {
+  logger.verbose(`Closing _db`)
+  const self = this
+  return new Promise(function(resolve, reject) {
+    self.flush()
+      .then(() => {
+        self.open = false
+        resolve()
+      })
+      .catch((err) => {
+        reject(err)
+      })
+
+  })
+}
 
 // save a global object of a name (objName)
 Db.prototype.saveGlobalObj = function (objName) {
+  logger.verbose(`Saving global obj ${objName} to _db`)
   const self = this // get reference to the class instance
   return new Promise(function (resolve, reject) {
     // If object not empty then save it in db
-    if (!(_.isEmpty(global[objName]))) {
+    if (!_.isEmpty(global[objName])) {
       // stringify object and store as a string with objName as key
       try {
         // wrap serialization of object around try catch as it could throw error
         const serializedObj = JSON.stringify(global[objName])
-        self.put(objName, serializedObj, function (err) {
-          if (err) reject(err) // db save error
-          resolve()
-        })
+        self.put(objName, serializedObj)
+          .then(() => {
+            resolve()
+          })
+          .catch((err) => {
+            reject(err) // db save error
+          })
       } catch (err) {
         reject(err)
       }
@@ -52,44 +146,22 @@ Db.prototype.saveGlobalObj = function (objName) {
 
 // restores a global object of a name (objName)
 Db.prototype.restoreGlobalObj = function (objName) {
+  logger.verbose(`Restoring global obj ${objName} from _db`)
   const self = this // get reference to th class instance
   return new Promise(function (resolve, reject) {
     // get serialized object from db
-    self.get(objName, function (err, serializedObj) {
-      if (err) {
-        // I/O or other error, pass it up the callback
+    self.get(objName).then((serializedObj) => {
+      try {
+        // deserialize object and set as global
+        global[objName] = JSON.parse(serializedObj) // try parsing JSON
+        resolve()
+      } catch (err) {
+        // if error occurs while parsing, reject promise
         reject(err)
-      } else {
-        try {
-          // deserialize object and set as global
-          global[objName] = JSON.parse(serializedObj) // try parsing JSON
-          resolve()
-        } catch (err) {
-          // if error occurs while parsing, reject promise
-          reject(err)
-        }
       }
-    })
-  })
-}
-
-// Only get value for a key from Db if it exists otherwise return null
-Db.prototype.onlyGetValue = function (key) {
-  const self = this // get reference to the class instance
-  return new Promise(function (resolve, reject) {
-    self.get(key, function (err, value) { // get value of key from db
-      if (err) {
-        if (err.notFound) {
-          // if key not found in the db then resolve with false
-          resolve(false)
-        } else {
-          // I/O or other error, reject it with the error
-          reject(err)
-        }
-      } else {
-        // resolve with found key
-        resolve(value)
-      }
+    }).catch((err) => {
+      // I/O or other error, pass it up the callback
+      reject(err)
     })
   })
 }

@@ -41,14 +41,10 @@ logger.info(`Electron node v${process.versions.node}`)
 const init = function () {
   return new Promise(function (resolve, reject) {
     // initialise mdb
-    global.mdb = new Db(global.paths.mdb)
-    logger.info(`status: ${global.mdb._status}`)
-    // Get the credentials serialized object from mdb
-    // Resolves with false if not found
-    // setTimeout to ensure mdb is open before get creds
-    setTimeout(function () {
-      resolve(global.mdb.onlyGetValue('creds'))
-    }, 1000)
+    global.mdb = new Db(global.paths.mdb, function (mdb) {
+      // Get the credentials serialized object from mdb
+      resolve(mdb.get('creds'))
+    })
   })
 }
 
@@ -61,9 +57,10 @@ const initMain = function () {
 }
 
 const closeDb = function () {
-  if (_.isEmpty(global.mdb) ? false : global.mdb.isOpen()) {
+  if (_.isEmpty(global.mdb) ? false : global.mdb.open) {
     // close mdb before quitting if opened
-    global.mdb.close()
+    // return promise
+    return global.mdb.close()
   }
 }
 
@@ -137,13 +134,19 @@ app.on('window-all-closed', () => {
 
 app.on('quit', () => {
   logger.info('APP: quit event emitted')
-  closeDb()
+  closeDb().catch((err) => {
+    console.error(err)
+    throw err
+  })
 })
 
 app.on('will-quit', (event) => {
   // will exit program once exit procedures have been run (exit flag is true)
   logger.info(`APP.ON('will-quit'): will-quit event emitted`)
-  closeDb()
+  closeDb().catch((err) => {
+    console.error(err)
+    throw err
+  })
 })
 
 /**

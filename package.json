@@ -67,11 +67,12 @@
     },
     "win": {
       "iconUrl": "https://dl.dropboxusercontent.com/s/oh66258p4pgwwpq/Crypter.ico",
-      "target": [ "nsis" ],
+      "target": [
+        "nsis"
+      ],
       "publish": "github"
     },
-    "nsis": {
-    }
+    "nsis": {}
   },
   "scripts": {
     "pack": "build --dir",
