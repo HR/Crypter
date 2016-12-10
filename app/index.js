@@ -299,11 +299,10 @@ function SetupWindow (callback) {
     // Setup successfully finished
     // therefore set error to nothing
     error = null
-    // Upgrade to electron >= v1.2.2
-    // app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
-    // app.exit(0)
+    app.relaunch()
+    app.exit(0)
     // close window (invokes 'closed') event
-    win.close()
+    // win.close()
   })
 
   win.on('closed', function () {

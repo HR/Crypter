@@ -77,22 +77,47 @@
             </p>
           </section>
         </div>
+
+        <div id="panel-done">
+          <header>
+            <div class="banner">
+              <img src="images/icons/done.svg" class="himg"/>
+            </div>
+            <h1>All done!</h1>
+            <p>You have successfully setup Crypter.
+              <br/>
+              You just need to verify your MasterPass to start Crypting shortly.</p>
+          </header>
+          <button class="fancy done navigationLink" id="done">FINISH</button>
+          <footer class="credit" style="padding: 0.3rem 0;">
+            <img src="images/icons/code.svg" alt="" class="icon"/>
+            with
+            <img src="images/icons/heart.svg" alt="" class="icon"/>
+            by
+            <a style="cursor: pointer; cursor: hand; padding: ;" onclick="openURL">Habib Rehman</a>
+          </footer>
+        </div>
       </div>
     </section>
     <script type="text/javascript">
       'use strict'
+      function openURL(event) {
+        event.preventDefault();
+        require('electron').shell.openExternal('https://git.io/HR');
+        return false;
+      }
       // Get error label
       var errLabel = $('#setMasterPassLabel')
+      // Delay (in ms) after which it navigates to the done panel
+      const NAV2DONE_TIMEOUT = 2000
       // Delay (in ms) after which the setup window is closed
-      const DONE_TIMEOUT = 5000
+      const DONE_TIMEOUT = NAV2DONE_TIMEOUT + 5000
       // Animation config
       const SPEED = 5000
       const OFFSET = SPEED * 0.8
 
       $(window).on('load', function() {
-        // When DOM has loaded...
-
-        // hide error label and make red
+        // When DOM has loaded... hide error label and make red
         errLabel.hide().css('color', COLORS.bad)
 
         // attach click event listener to setMasterPass button
@@ -101,12 +126,16 @@
           validateMasterPass('setMasterPass', errLabel)
         })
 
+        $('#done').click(function() {
+          // Close setup window and restart app
+          ipcRenderer.send('done')
+        })
+
         /* Navigation */
         // attach event listener to every element with class navigationLink
         $('.navigationLink').each(function(index) {
           $(this).click(function() {
-            // when the element is clicked
-            // call navigate() with the elements data-target value
+            // when the element is clicked call navigate() with the elements data-target value
             navigate(this.getAttribute('data-target'))
           })
         })
@@ -126,21 +155,18 @@
       /* Event listeners */
       ipcRenderer.on('setMasterPassResult', function(event, err) {
         if (err) {
-          // If error occured
-          // Display the error
+          // If error occured Display the error
           errLabel.text(`ERROR: ${err}`.toUpperCase())
           errLabel.show()
         } else {
           // Display the MasterPass set success
           errLabel.text(RESPONSES.setSuccess).css('color', COLORS.good).show()
-          // Change note text to give further instruction and higlight it
-          $('p.note').html(RESPONSES.done).css('color', COLORS.highlight)
-          // Invoke (setup) done event in main after 5 seconds
-          // So that user has time to comprehend the above change
           setTimeout(function() {
-            // Close setup window after 5 seconds
-            ipcRenderer.send('done')
-          }, DONE_TIMEOUT)
+            // Navigate to the done panel after 2 seconds
+            navigate('done')
+          }, NAV2DONE_TIMEOUT)
+
+          // Invoke (setup) done event in main after 5 seconds So that user has time to comprehend the above change setTimeout(function() {   // Close setup window after 5 seconds   ipcRenderer.send('done') }, DONE_TIMEOUT)
         }
       })
     </script>
