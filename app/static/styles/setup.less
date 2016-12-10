@@ -153,16 +153,6 @@ a.csp {
     widht : auto;
   }
 }
-footer.credit {
-  text-align     : center;
-  display        : flex;
-  align-items    : center;
-  font-size      : 0.8rem;
-  justify-content: center;
-  img {
-    height: 1rem !important;
-  }
-}
 footer {
   display         : flex;
   clear           : both;
@@ -264,31 +254,19 @@ div.submit {
   display: none;
 }
 
-/* Welcome Panel styles
+/* Panel styles
 * =================
 */
+a {
+  cursor: pointer;
+  cursor: hand;
+}
 .banner {
   margin         : 1rem auto 0;
   position       : relative;
   align-items    : center;
   justify-content: center;
   width          : 100%;
-}
-div#panel-welcome > header {
-  .banner {
-    margin  : 2rem auto 0;
-    position: relative;
-    display : inline-block;
-    width   : 50%;
-    z-index : -1;
-    color   : @light;
-  }
-  .banner + .himg {
-    margin-top: -7.5rem !important;
-  }
-  .himg {
-    z-index: 1000;
-  }
 }
 .banner-left {
   margin-left: -3rem;
@@ -298,129 +276,54 @@ div#panel-welcome > header {
   margin-right: -3rem;
   float       : right;
 }
-.marquee {
-  overflow: hidden;
-  position: relative;
-}
-.marquee-1 {
-  visibility: hidden;
-}
-.marquee-2 {
-  visibility: hidden;
-}
-.marquee.visible {
-  visibility: visible;
-}
-div.item.err > div {
-  display         : none;
-  margin-top      : 0.5rem;
-  margin-left     : 0;
-  width           : 100%;
-  font-size       : 0.8rem;
-  padding         : 0.4rem 0;
-  background-color: @invalid-color;
-  color           : @white;
-}
-
-/* Accounts Panel styles
+/* Welcome Panel styles
 * =================
 */
-section.accounts {
-
+#panel-welcome {
+  .marquee {
+    overflow: hidden;
+    position: relative;
+  }
+  .marquee-1 {
+    visibility: hidden;
+  }
+  .marquee-2 {
+    visibility: hidden;
+  }
+  .marquee.visible {
+    visibility: visible;
+  }
+  & > header {
+    .banner {
+      margin  : 2rem auto 0;
+      position: relative;
+      display : inline-block;
+      width   : 50%;
+      z-index : -1;
+      color   : @light;
+    }
+    .banner + .himg {
+      margin-top: -7.5rem !important;
+    }
+    .himg {
+      z-index: 1000;
+    }
+  }
 }
-section.accounts {
-  width : @section-width;
-  margin: auto;
-}
-section.accounts > header {
-  border-bottom: 1px solid @light;
-}
-
-/* Auth Panel styles
+/* Done Panel styles
 * =================
 */
-.spinner {
-  -webkit-animation: rotator 1.4s linear infinite;
-  animation        : rotator 1.4s linear infinite;
-}
-@-webkit-keyframes rotator {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform        : rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(270deg);
-    transform        : rotate(270deg);
-  }
-}
-@keyframes rotator {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform        : rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(270deg);
-    transform        : rotate(270deg);
-  }
-}
-.path {
-  stroke-dasharray        : 187;
-  stroke-dashoffset       : 0;
-  -webkit-transform-origin: center;
-  transform-origin        : center;
-  -webkit-animation       : dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
-  animation               : dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
-}
-@-webkit-keyframes colors {
-  0% {
-    stroke: @orange;
-  }
-  50% {
-    stroke: @orange_d;
-  }
-  100% {
-    stroke: @orange;
-  }
-}
-@keyframes colors {
-  0% {
-    stroke: @orange;
-  }
-  50% {
-    stroke: @orange_d;
-  }
-  100% {
-    stroke: @orange;
-  }
-}
-@-webkit-keyframes dash {
-  0% {
-    stroke-dashoffset: 187;
-  }
-  50% {
-    stroke-dashoffset: 46.75;
-    -webkit-transform: rotate(135deg);
-    transform        : rotate(135deg);
-  }
-  100% {
-    stroke-dashoffset: 187;
-    -webkit-transform: rotate(450deg);
-    transform        : rotate(450deg);
-  }
-}
-@keyframes dash {
-  0% {
-    stroke-dashoffset: 187;
-  }
-  50% {
-    stroke-dashoffset: 46.75;
-    -webkit-transform: rotate(135deg);
-    transform        : rotate(135deg);
-  }
-  100% {
-    stroke-dashoffset: 187;
-    -webkit-transform: rotate(450deg);
-    transform        : rotate(450deg);
+#panel-done {
+  footer {
+    padding: 0.3rem 0;
+    text-align     : center;
+    display        : flex;
+    align-items    : center;
+    font-size      : 0.8rem;
+    justify-content: center;
+    img {
+      height: 1rem !important;
+    }
   }
 }
 

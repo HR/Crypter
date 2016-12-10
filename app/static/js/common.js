@@ -27,6 +27,11 @@ const COLORS = {
 }
 
 /* Shared functions */
+function openURL(url) {
+  require('electron').shell.openExternal(url);
+  return false;
+}
+
 function navigate (panelName) {
   var oldSel = $('.panel-container > div.current') // get current panel
   var sel = $(`#panel-${panelName}`) // get panel to navigate to

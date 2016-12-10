@@ -11,25 +11,25 @@
 <h4 align="center">An innovative, convenient and secure crypto app.</h4>
 <p align="center">
     <a href="https://github.com/HR/Crypter/releases/latest">
-        <img src="https://img.shields.io/badge/Download-2.0-red.svg"
+        <img src="https://img.shields.io/badge/Download-3.0-red.svg"
             alt="Download latest release" style= "margin-bottom: 0.5rem" height="25px">
     </a>
 </p>
 
 <p align="center">
     <a href="https://travis-ci.org/HR/Crypter">
-        <img src="https://travis-ci.org/HR/Crypter.svg?branch=master"
+        <img src="https://travis-ci.org/HR/Crypter.svg?branch=dev"
              alt="Travis Build">
     </a>
     <a href="https://ci.appveyor.com/project/HR/crypter">
-        <img src="https://ci.appveyor.com/api/projects/status/4pa8cnlb1qnyj1xd/branch/master?svg=true"
+        <img src="https://ci.appveyor.com/api/projects/status/4pa8cnlb1qnyj1xd/branch/dev?svg=true"
              alt="AppVeyor Build">
     </a>
-    <a href="https://coveralls.io/github/HR/Crypter?branch=master">
-        <img src="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=master"
+    <a href="https://coveralls.io/github/HR/Crypter?branch=dev">
+        <img src="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=dev"
              alt="Test Coverage">
     </a>
-    <a href="https://codeclimate.com/github/HR/Crypter?branch=master">
+    <a href="https://codeclimate.com/github/HR/Crypter?branch=dev">
         <img src="https://codeclimate.com/github/HR/Crypter/badges/gpa.svg"
              alt="CodeClimate GPA">
     </a>
@@ -71,10 +71,10 @@ has been released and fully tested for macOS (OSX), Linux (for all distros via
 are fully tested (90%+ coverage). Some end-to-end tests have been written (see
 test/ui/test.js) but end-to-end testing is still mostly a WIP.
 
-The next major release is [v3.0](https://github.com/HR/Crypter/milestones/v3.0)
+The next major release is [v3.1](https://github.com/HR/Crypter/milestones/v3.0)
 and any work for it is done on the "dev" branch. All features to be implemented
 for the next major version can be found at
-https://github.com/HR/Crypter/milestones/v3.0. Feel free to send PRs to speed
+https://github.com/HR/Crypter/milestones/v3.1. Feel free to send PRs to speed
 this up!
 
 If you have any suggestions then please open an issue!
@@ -181,13 +181,6 @@ To achieve full portability the set of (MasterPassKey) credentials need to be
 exported from Crypter on one machine and imported into Crypter on another
 machine. The functionality is currently being implemented, see [#6](https://github.com/HR/Crypter/issues/6) for
 [v3.0](https://github.com/HR/Crypter/milestone/2).
-
-<!-- #### Temporary solution to full portability (untested)
-However, since Crypter v3.0 uses leveldb for persistently storing the
-credentials, you can try to directly copy the db or even whole appdata folder
-which should be found under ```~/.config/Crypter/``` for linux from one machine
-to another. -->
-
 
 ## Security
 

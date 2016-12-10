@@ -89,23 +89,18 @@
               You just need to verify your MasterPass to start Crypting shortly.</p>
           </header>
           <button class="fancy done navigationLink" id="done">FINISH</button>
-          <footer class="credit" style="padding: 0.3rem 0;">
+          <footer>
             <img src="images/icons/code.svg" alt="" class="icon"/>
             with
             <img src="images/icons/heart.svg" alt="" class="icon"/>
             by
-            <a style="cursor: pointer; cursor: hand; padding: ;" onclick="openURL">Habib Rehman</a>
+            <a onclick="openURL('https://git.io/HR')">Habib Rehman</a>
           </footer>
         </div>
       </div>
     </section>
     <script type="text/javascript">
       'use strict'
-      function openURL(event) {
-        event.preventDefault();
-        require('electron').shell.openExternal('https://git.io/HR');
-        return false;
-      }
       // Get error label
       var errLabel = $('#setMasterPassLabel')
       // Delay (in ms) after which it navigates to the done panel
