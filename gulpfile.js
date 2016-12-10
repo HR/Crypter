@@ -22,7 +22,7 @@ gulp.task('coverage', function (cb) {
   const envs = env.set({
     TEST_RUN: true
   })
-  gulp.src('./app/src/**/*.js')
+  gulp.src('./app/core/**/*.js')
     .pipe(envs)
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())

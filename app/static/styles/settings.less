@@ -1,0 +1,281 @@
+// out: ./settings.css, compress: true
+/* Settings styles
+	 ==========================================================================
+*/
+@import (less) "mixins.less";
+/* Variable declarations*/
+@list-height: 10rem;
+@border-width: 2px;
+@side-margin: 0.8rem;
+@name-fsize: 1rem;
+@header-fsize: 1rem;
+@spacing04: 0.4rem;
+@spacing-ic-txt: @side-margin - 0.4rem;
+@email-fsize: 0.8rem;
+@profile-size: 4rem;
+@ic-size: 1.4rem;
+.panel-container {
+  overflow: hidden;
+  position: relative;
+  & > div:not(.menu) {
+    position  : absolute;
+    text-align: center;
+    transform : translateX(-110%);
+    transition: transform 0.5s;
+    & > button {
+      margin-top: 1rem;
+    }
+  }
+  & > div.current {
+    width    : 100%;
+    height   : 100%;
+    transform: none;
+    position : relative;
+  }
+  & > div.current ~ div {
+    transform: translateX(110%);
+  }
+  header {
+    margin-top: 2rem;
+  }
+}
+section#settings {
+  min-height      : 100%;
+  position        : relative;
+  background-color: @white;
+}
+a:not(.navigationLink) {
+  font-size      : 0.8rem;
+  color          : @blacker;
+  text-decoration: none;
+  outline        : none;
+}
+a.navigationLink {
+  font-size: 0.9rem;
+}
+.left {
+  -webkit-align-self: flex-start;
+  align-self        : flex-start;
+}
+.right {
+  margin-left: auto;
+}
+.menu {
+  display      : flex;
+  margin-left  : 0;
+  margin-right : 0;
+  border-bottom: @border-width solid rgba(0, 0, 0, 0.15);
+  align-self   : flex-end;
+  transition   : color 0.1s ease;
+}
+.menu:after {
+  content   : '';
+  display   : block;
+  height    : 0;
+  clear     : both;
+  visibility: hidden;
+}
+.menu .item:after {
+  display: none;
+}
+.menu .item {
+  position                   : relative;
+  cursor                     : pointer;
+  line-height                : 1.4rem;
+  text-decoration            : none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-box-flex           : 0;
+  flex                       : 0 0 auto;
+  -webkit-user-select        : none;
+  user-select                : none;
+  padding                    : 0.6rem 1.15rem;
+  padding-top: 1rem;
+  text-transform             : none;
+  color                      : rgba(0, 0, 0, 0.87);
+  transition                 : background 0.1s ease, box-shadow 0.1s ease, color 0.1s ease;
+}
+a.item:active {
+  border-bottom: @border-width solid rgba(0, 0, 0, 0.1);
+  margin-bottom: -@border-width;
+}
+.active.item {
+  background-color: transparent;
+  box-shadow      : none;
+  border-color    : @black;
+  font-weight     : 700;
+  margin-bottom   : -@border-width;
+  color           : rgba(0,0,0,.95);
+}
+.menu .active.item {
+  border-bottom: @border-width solid rgba(0, 0, 0, 0.8);
+  color        : rgba(0, 0, 0, 0.95);
+  font-weight  : normal;
+  box-shadow   : none;
+}
+.item.right {
+  display    : flex;
+  margin-left: auto !important;
+}
+img.icon {
+  width : @ic-size;
+  height: @ic-size;
+}
+h3 {
+  margin     : 0.5rem 0;
+  font-weight: normal;
+}
+h4 {
+  margin-top   : 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight  : 300;
+  text-align   : left;
+  border-bottom: 1px solid @light;
+}
+section.category {
+  text-align: left;
+}
+div.options {
+  margin-left: 1rem;
+}
+div.option {
+  display   : flex;
+  margin-top: 0.2rem;
+  font-size : 0.8rem;
+}
+span.config.right {
+  color: @darker
+}
+div.list {
+  height    : @list-height;
+  width     : 100%;
+  overflow-y: auto;
+}
+button.add {
+  margin-bottom: 2rem;
+}
+div.item {
+  display      : flex;
+  align-items  : center;
+  border-bottom: 1px solid @light;
+  padding      : @spacing04 0;
+  text-align   : left;
+}
+div.content,
+div.type {
+  display : inline-block;
+  position: relative;
+}
+div.content {
+  vertical-align: 100%;
+  margin-left   : @spacing-ic-txt;
+}
+div.name {
+  font-weight: 400;
+}
+div.email {
+  font-size: @email-fsize;
+}
+div.qouta {
+  font-size : 0.6rem;
+  margin-top: 0.1rem;
+  color: @darker;
+}
+div.cloudType {
+  position: absolute;
+  bottom  : 2px;
+  right   : 2px;
+}
+div.cloudType > img {
+  height: 1rem;
+  width : auto;
+}
+div.profile {
+  width              : @profile-size;
+  height             : @profile-size;
+  margin             : 0;
+  border-radius      : 50%;
+  background-position: center center !important;
+  background-size    : @profile-size @profile-size !important;
+}
+section.contribute {
+  footer {
+    padding-bottom : 1rem;
+    text-align     : center;
+    display        : flex;
+    align-items    : center;
+    font-size      : 0.8rem;
+    justify-content: center;
+    img {
+      height: 1rem !important;
+    }
+  }
+  div.list {
+    width        : 100%;
+    margin-bottom: 3rem;
+    height       : 100%;
+    .item {
+      a {
+        cursor     : pointer;
+        display    : flex;
+        align-items: center;
+        text-align : left;
+      }
+      .name {
+        font-weight: 300;
+      }
+      .icon {
+        padding: 0.4rem;
+      }
+    }
+  }
+}
+section.contribute {
+  width: 70%;
+  margin: auto;
+  margin-top: 1rem;
+  header {
+    border-bottom: 1px solid @light;
+    img {
+      height: 4rem !important;
+      width : auto;
+    }
+  }
+}
+section.accounts {
+  width: 70%;
+  margin: auto;
+  margin-top: 1rem;
+  header {
+    border-bottom: 1px solid @light;
+    img {
+      height: 4rem !important;
+      width : auto;
+    }
+  }
+}
+section.crypto {
+  width : 90%;
+  margin: auto;
+  margin-top   : 1rem;
+  margin-bottom: 1rem;
+  header > img {
+    height: 4rem !important;
+    width : auto;
+  }
+  button {
+    width: 20%;
+  }
+}
+section.sync {
+  width : 90%;
+  margin: auto;
+  margin-top   : 1rem;
+  margin-bottom: 1rem;
+  header > img {
+    height: 4rem !important;
+    width : auto;
+  }
+  button {
+    width: 20%;
+  }
+}

@@ -85,7 +85,7 @@
     "electronVersion": "node_modules/.bin/electron -v | sed s/\\v//g",
     "test": "TEST_RUN=true mocha --compilers js:babel-core/register test/test.js",
     "xtest": "npm run xtestbuild && npm run xltest",
-    "coverage": "TEST_RUN=true ./node_modules/.bin/babel-node ./node_modules/.bin/isparta cover --root src/ ./node_modules/.bin/_mocha -- test/test.js --reporter mocha-lcov-reporter",
+    "coverage": "TEST_RUN=true ./node_modules/.bin/babel-node ./node_modules/.bin/isparta cover --root core/ ./node_modules/.bin/_mocha -- test/test.js --reporter mocha-lcov-reporter",
     "coveralls": "node ./node_modules/.bin/coveralls < coverage/lcov.info",
     "codeclimate": "node ./node_modules/.bin/codeclimate-test-reporter < coverage/lcov.info",
     "package": "electron-packager . $npm_package_productName --out=dest --ignore='(test|dest|coverage)' --prune --asar --all --version=$(npm run electronVersion)",

@@ -86,7 +86,7 @@ dist/
 *.log
 .editorconfig
 .Debug
-src/elements/*.js
+core/elements/*.js
 debug
 backups/
 *.app

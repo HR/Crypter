@@ -1,13 +1,10 @@
 'use strict'
-const electron = require('electron')
-const app = electron.app
-const BrowserWindow = electron.BrowserWindow
-const ipc = electron.ipcMain
-const dialog = electron.dialog
-const crypto = require('./src/crypto')
-const Db = require('./src/Db')
-const MasterPass = require('./src/MasterPass')
-const MasterPassKey = require('./src/MasterPassKey')
+const {app, ipcMain, dialog, Menu, BrowserWindow, shell} = require('electron')
+const crypto = require('./core/crypto')
+const Db = require('./core/Db')
+const MasterPass = require('./core/MasterPass')
+const MasterPassKey = require('./core/MasterPassKey')
+const menuTemplate = require('./src/menu')
 const _ = require('lodash')
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')()
@@ -23,7 +20,8 @@ global.paths = {
 global.views = {
   masterpassprompt: `file://${__dirname}/static/masterpassprompt.html`,
   setup: `file://${__dirname}/static/setup.html`,
-  crypter: `file://${__dirname}/static/crypter.html`
+  crypter: `file://${__dirname}/static/crypter.html`,
+  settings: `file://${__dirname}/static/settings.html`
 }
 const logger = require('./script/logger')
 
@@ -211,7 +209,7 @@ function CrypterWindow (callback) {
   win.loadURL(global.views.crypter)
 
   // When user selects a file to encrypt in Crypter window
-  ipc.on('cryptFile', function (event, filePath) {
+  ipcMain.on('cryptFile', function (event, filePath) {
     logger.verbose('IPCMAIN: cryptFile emitted. Starting encryption...')
     crypto.crypt(filePath, global.MasterPassKey.get())
       .then((file) => {
@@ -225,7 +223,7 @@ function CrypterWindow (callback) {
   })
 
   // When user selects a file to decrypt in Crypter window
-  ipc.on('decryptFile', function (event, filePath) {
+  ipcMain.on('decryptFile', function (event, filePath) {
     logger.verbose('IPCMAIN: decryptFile emitted. Starting decryption...')
     // let destPath = filePath.replace('.crypto', '.decrypto')
     crypto.decrypt(filePath, global.MasterPassKey.get())
@@ -268,7 +266,7 @@ function SetupWindow (callback) {
   // loads setup.html view into the SetupWindow
   win.loadURL(global.views.setup)
 
-  ipc.on('setMasterPass', function (event, masterpass) {
+  ipcMain.on('setMasterPass', function (event, masterpass) {
     // setMasterPass event triggered by render proces
     logger.verbose('IPCMAIN: setMasterPass emitted Setting Masterpass...')
     // derive MasterPassKey, genPassHash and set creds globally
@@ -293,16 +291,16 @@ function SetupWindow (callback) {
       })
   })
 
-  ipc.on('done', function (event, masterpass) {
+  ipcMain.on('done', function (event, masterpass) {
     // Dond event emotted from render process
     logger.info('IPCMAIN: done emitted setup complete. Closing...')
     // Setup successfully finished
     // therefore set error to nothing
     error = null
+    // Relaunch Crypter
     app.relaunch()
+    // Exit successfully
     app.exit(0)
-    // close window (invokes 'closed') event
-    // win.close()
   })
 
   win.on('closed', function () {
@@ -319,6 +317,8 @@ function MasterPassPromptWindow (callback) {
   let gotMP = false // init gotMP flag with false
   let error = null
   const CLOSE_TIMEOUT = 2000
+  const menu = Menu.buildFromTemplate(menuTemplate)
+  Menu.setApplicationMenu(menu)
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 300,
@@ -334,7 +334,7 @@ function MasterPassPromptWindow (callback) {
   // loads masterpassprompt.html view into the BrowserWindow
   win.loadURL(global.views.masterpassprompt)
 
-  ipc.on('checkMasterPass', function (event, masterpass) {
+  ipcMain.on('checkMasterPass', function (event, masterpass) {
     logger.verbose('IPCMAIN: checkMasterPass emitted. Checking MasterPass...')
     // Check user submitted MasterPass
     MasterPass.check(masterpass)
@@ -376,7 +376,7 @@ function MasterPassPromptWindow (callback) {
       })
   })
 
-  ipc.on('setMasterPass', function (event, masterpass) {
+  ipcMain.on('setMasterPass', function (event, masterpass) {
     // setMasterPass event triggered by render proces
     logger.verbose('IPCMAIN: setMasterPass emitted Setting Masterpass...')
     // derive MasterPassKey, genPassHash and set creds globally
@@ -408,6 +408,32 @@ function MasterPassPromptWindow (callback) {
     callback(error, gotMP)
     // close window by setting it to nothing (null)
     win = null
+  })
+
+  return win
+}
+
+function SettingsWindow (callback) {
+  // creates a new BrowserWindow
+  let win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    center: true,
+    show: true,
+    titleBarStyle: 'hidden-inset',
+    resizable: false,
+    movable: true
+  })
+
+  let webContents = win.webContents
+
+  // loads settings.html view into the BrowserWindow
+  win.loadURL(global.views.settings)
+
+  win.on('closed', function () {
+    logger.info('win.closed event emitted for SettingsWindow')
+    win = null
+    callback()
   })
 
   return win
