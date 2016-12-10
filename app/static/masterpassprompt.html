@@ -111,7 +111,7 @@
 
     ipcRenderer.on('checkMasterPassResult', function(event, result) {
       if (result.err) {
-        errLabelCheckMP.text(`ERROR: ${err}`)
+        errLabelCheckMP.text(`ERROR: ${err.message}`)
           .show()
         return
       }

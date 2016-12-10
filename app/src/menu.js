@@ -1,8 +1,10 @@
 const {app, Menu, shell} = require('electron')
+// Constants
 const REPO = 'https://github.com/HR/Crypter/'
 const REPO_FORK = 'https://github.com/HR/Crypter/fork'
 const REPO_DOCS = 'https://github.com/HR/Crypter/blob/master/readme.md'
 const REPO_REPORT_ISSUE = 'https://github.com/HR/Crypter/issues/new'
+
 const menu = [
   {
     label: 'Help',
@@ -21,12 +23,12 @@ if (process.platform === 'darwin') {
   menu.unshift({
     label: 'Crypter',
     submenu: [
-      { label: 'About Crypter', click() { } },
+      { label: 'About Crypter', click() { app.emit('app:about') } },
       { label: `Version ${app.getVersion()}`, enabled: false },
       { type: 'separator' },
-      { label: 'Preferences…', click() { SettingsWindow(()=>{}) } },
+      { label: 'Preferences…', click() { app.emit('app:open-settings') } },
       { type: 'separator' },
-      { label: 'Quit', click() { } }
+      { label: 'Quit', click() { app.emit('app:quit') } }
     ]
   })
 }
