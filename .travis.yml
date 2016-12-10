@@ -31,7 +31,10 @@ after_success:
   - node_modules/.bin/gulp coverage
   - npm run coveralls
   - npm run codeclimate
-  - ./app/script/build_ml.sh
+  - lgcm=$(git log -1 --pretty=%B | xargs echo);
+    if [[ $lgcm == *"[build]"* ]]; then
+      ./app/script/build_ml.sh;
+    fi
 
 cache:
   apt: true
