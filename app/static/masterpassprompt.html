@@ -24,7 +24,7 @@
           <div class="masterpass">
             <input type="password" name="masterpass" id="checkMasterPassInput" placeholder="********" />
             <label for="checkMasterPassInput" id="checkMasterPassLabel"></label>
-            <a href="#" id="resetMasterPassInput" class="navigationLink" data-target="reset">Forgot it?</a>
+            <a href="#" id="resetMasterPassInput" class="navigationLink" data-panel="reset">Forgot it?</a>
           </div>
           <button id="checkMasterPass">Verify</button>
         </form>
@@ -48,7 +48,7 @@
           NOTE: If lost, your former encrypted data will be inaccessible!
         </p>
         <footer>
-          <a href="#" class="back navigationLink" data-target="default">
+          <a href="#" class="back navigationLink" data-panel="default">
             <img src="images/icons/back.svg" alt="" />
           </a>
         </footer>
@@ -65,16 +65,6 @@
 
     $(window).on('load', function() {
       // When DOM has loaded...
-      /* Navigation */
-      // attach event listener to every element with class navigationLink
-      $('.navigationLink').each(function(index) {
-        $(this).click(function() {
-          // when the element is clicked
-          // call navigate() with the elements data-target value
-          navigate(this.getAttribute('data-target'))
-        })
-      })
-
       navigate('default')
       // hide error label and make red
       errLabelCheckMP.hide().css('color', COLORS.bad)

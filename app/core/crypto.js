@@ -285,3 +285,9 @@ exports.genPassHash = function (masterpass, salt) {
     }
   })
 }
+
+// Convert array string of buffer to hex string
+exports.buf2hex = function (arr) {
+  const buf = new Buffer(arr)
+  return buf.toString('hex')
+}

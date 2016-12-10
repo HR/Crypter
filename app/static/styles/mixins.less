@@ -82,6 +82,18 @@ button.fancy {
     opacity: 0.8;
   }
 }
+input[type=text] {
+  border: none;
+  border-bottom: 1px solid @light;
+  outline: none;
+  vertical-align: top;
+
+  &:focus {
+    animation-name: colorTrans;
+    animation-duration: 2s;
+    border-bottom: 1px solid @black;
+  }
+}
 img.info {
   padding-left: 0.2rem;
   height      : 0.8rem;
@@ -100,7 +112,10 @@ img.info:hover + p.info {
   max-height: 100%;
   padding   : 0.2rem;
 }
-
+a {
+  cursor: pointer;
+  cursor: hand;
+}
 /* font declarations */
 @font-face {
   font-family: 'Roboto';

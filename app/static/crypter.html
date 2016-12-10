@@ -33,7 +33,7 @@
             Note these details down! They may be erased when you navigate back
           </p>
           <footer>
-            <a href="#" class="back navigationLink" data-target="crypt">
+            <a href="#" class="back navigationLink" data-panel="crypt">
               <img src="images/icons/back.svg" alt="" />
             </a>
           </footer>
@@ -113,12 +113,6 @@
         }
 
         turnFileInputOn ()
-
-        $('.navigationLink').each(function (index) {
-          $(this).click(function () {
-            navigate(this.getAttribute('data-target'))
-          })
-        })
       })
 
       /* Event listeners */

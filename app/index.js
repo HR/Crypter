@@ -129,6 +129,7 @@ app.on('ready', function () {
 /**
  * Electron events
  **/
+let settingsWindowNotOpen = true
 
 app.on('window-all-closed', () => {
   logger.verbose('APP: window-all-closed event emitted')
@@ -164,9 +165,16 @@ app.on('app:quit', () => {
 
 app.on('app:open-settings', () => {
   logger.verbose('APP: app:open-settings event emitted')
-  settingsWindow().then(() => {
-    logger.verbose('APP: closed settingsWindow')
-  })
+  // Check if not already opened
+  if (settingsWindowNotOpen) {
+    settingsWindowNotOpen = false
+    settingsWindow().then(() => {
+      logger.verbose('APP: closed settingsWindow')
+      // Closed so not open anymore
+      settingsWindowNotOpen = true
+    })
+  }
+
 })
 
 app.on('app:about', () => {

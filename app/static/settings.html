@@ -5,15 +5,15 @@
     <meta charset="utf-8">
     <title>Settings</title>
     <link rel="stylesheet" href="styles/settings.css">
+    <script src="js/common.js" charset="utf-8"></script>
   </head>
 
   <body>
     <section id="settings">
       <div class="panel-container">
         <div class="menu">
-          <a class="item navigationLink active" data-target="general">General</a>
-          <a class="item navigationLink" data-target="crypto">Crypto</a>
-          <a class="item navigationLink" data-target="contribute">
+          <a class="item right navigationLink active" data-tab="general">General</a>
+          <a class="item  navigationLink" data-tab="contribute">
             <img class="icon" src="images/icons/mark-github.svg" alt="" />
           </a>
         </div>
@@ -24,63 +24,15 @@
               <h3>General</h3>
             </header>
             <section class="category">
-              <h4>Encryption</h4>
-              <div class="options">
+              <h4>Credentials</h4>
+              <div class="options" id="creds">
                 <div class="option">
-                  <span>Algorithm</span>
-                  <span class="right">AES-256-GCM</span>
-                </div>
-                <div class="option">
-                  <span>Key length</span>
-                  <span class="right">256 bits</span>
-                </div>
-                <div class="option">
-                  <span>IV length</span>
-                  <span class="right config">96 bits</span>
-                </div>
-                <div class="option">
-                  <span>Salt length</span>
-                  <span class="right ">256 bits</span>
-                </div>
-                <div class="option">
-                  <span>PBKDF2 iterations</span>
-                  <span class="right ">5,000</span>
-                </div>
-                <div class="option">
-                  <span>Hash function</span>
-                  <span class="right ">MD5</span>
-                </div>
-                <div class="option">
-                  <img class="info" src="images/icons/info.svg" alt="">
-                  <p class="info">s = Total number of shares <br/> n = Number of shares required to reconstruct MasterPass</p>
+                  <button class="navigationLink" data-action="export">Export</button>
+                  <button class="navigationLink" data-action="import">Import</button>
                 </div>
               </div>
             </section>
           </section>
-          <footer>
-            <img src="images/icons/code.svg" alt="" class="icon"/>
-            with
-            <img src="images/icons/heart.svg" alt="" class="icon"/>
-            by
-            <br>
-            <a class="navigationLink" data-target="https://github.com/HR">Habib Rehman</a>
-          </footer>
-        </div>
-        <div id="panel-crypto">
-          <section class="crypto">
-            <header>
-              <img class="icon" src="images/icons/crypto.svg" alt="">
-              <h3>Crypto</h3>
-            </header>
-          </section>
-          <footer>
-            <img src="images/icons/code.svg" alt="" class="icon"/>
-            with
-            <img src="images/icons/heart.svg" alt="" class="icon"/>
-            by
-            <br>
-            <a class="navigationLink" data-target="https://github.com/HR">Habib Rehman</a>
-          </footer>
         </div>
         <div id="panel-contribute">
           <section class="contribute">
@@ -90,15 +42,15 @@
             </header>
             <div class="list">
               <div class="item">
-                <a class="navigationLink" data-target="https://github.com/HR/CryptoSync/issues">
+                <a class="navigationLink" data-target="https://github.com/HR/Crypter/issues/new">
                   <img src="images/icons/issue-opened.svg" class="icon" alt=""/>
                   <div class="name">
-                    Report an issue / Give feedback
+                    Report an issue / Suggest improvements
                   </div>
                 </a>
               </div>
               <div class="item">
-                <a class="navigationLink" data-target="https://github.com/HR/CryptoSync">
+                <a class="navigationLink" data-target="https://github.com/HR/Crypter">
                   <img src="images/icons/star.svg" alt="" class="icon"/>
                   <div class="name">
                     Star the repo
@@ -106,42 +58,46 @@
                 </a>
               </div>
               <div class="item">
-                <a class="navigationLink" data-target="https://github.com/HR/CryptoSync/fork">
+                <a class="navigationLink" data-target="https://github.com/HR/Crypter/fork">
                   <img src="images/icons/repo-forked.svg" alt="" class="icon"/>
                   <div class="name">
                     Fork the repo
                   </div>
                 </a>
               </div>
-              <div class="item">
+              <!-- <div class="item">
                 <a class="navigationLink" data-action="check-updates">
                   <img src="images/icons/package.svg" alt="" class="icon"/>
                   <div class="name">
                     Check for Updates
                   </div>
                 </a>
-              </div>
+              </div> -->
             </div>
-            <footer>
-              <img src="images/icons/code.svg" alt="" class="icon"/>
-              with
-              <img src="images/icons/heart.svg" alt="" class="icon"/>
-              by
-              <br>
-              <a class="navigationLink" data-target="https://github.com/HR">Habib Rehman</a>
-            </footer>
           </section>
         </div>
+        <footer>
+          <img src="images/icons/code.svg" alt="" class="icon"/>
+          with
+          <img src="images/icons/heart.svg" alt="" class="icon"/>
+          by
+          <br>
+          <a class="navigationLink" data-target="https://github.com/HR">Habib Rehman</a>
+        </footer>
       </div>
     </section>
-    <script id="crypto-template" type="text/x-handlebars-template">
+    <script id="creds-template" type="text/x-handlebars-template">
       <div class="option">
-        <span>Initialisation Vector</span>
-        <span class="right">{{viv}}</span>
+        <span>MasterPass salt</span>
+        <input class="right" type="text" value="{{mpsalt}}" />
       </div>
       <div class="option">
-        <span>Authentication tag</span>
-        <span class="right">{{authTag}}</span>
+        <span>MasterPassKey hash</span>
+        <input class="right" type="text" value="{{mpkhash}}" />
+      </div>
+      <div class="option">
+        <span>MasterPassKey salt</span>
+        <input class="right" type="text" value="{{mpksalt}}" />
       </div>
     </script>
     <script type="text/javascript">
@@ -152,16 +108,16 @@
       var Handlebars = require('handlebars')
       var ipcRenderer = require('electron').ipcRenderer
       // var settings = remote.getGlobal("settings")
-      var creds = remote.getGlobal("creds")
-      var logger = require('../script/logger.js')
-      var shell = require('shell')
-      var userSettings = {}
+      var creds = remote.getGlobal('creds')
+      const buf2hex = require('../core/crypto').buf2hex
+      var logger = require('winston')
 
-      $(window).load(function() {
-        var creds_temp = Handlebars.compile($("#crypto-template").html())
-        $('#vaultCreds').append(creds_temp({
-          viv: buf2hex(creds.viv.data),
-          authTag: buf2hex(creds.authTag.data)
+      $(window).on('load', function() {
+        var creds_temp = Handlebars.compile($("#creds-template").html())
+        $('#creds').prepend(creds_temp({
+          mpsalt: buf2hex(creds.mpsalt),
+          mpkhash: creds.mpkhash,
+          mpksalt: creds.mpksalt
         }))
       })
     </script>

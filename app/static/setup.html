@@ -52,7 +52,7 @@
             <p>Encrypt unlimited bits. Remember only a bit.</p>
             <p class="intrfo">An innovative, convenient and secure encryption app that simplifies password generation and management by requiring you to only remember one bit, the MasterPass.</p>
           </header>
-          <button class="fancy navigationLink" data-target="masterpass" id="getstarted">GET STARTED</button>
+          <button class="fancy navigationLink" data-panel="masterpass" id="getstarted">GET STARTED</button>
         </div>
 
         <div id="panel-masterpass">
@@ -124,15 +124,6 @@
         $('#done').click(function() {
           // Close setup window and restart app
           ipcRenderer.send('done')
-        })
-
-        /* Navigation */
-        // attach event listener to every element with class navigationLink
-        $('.navigationLink').each(function(index) {
-          $(this).click(function() {
-            // when the element is clicked call navigate() with the elements data-target value
-            navigate(this.getAttribute('data-target'))
-          })
         })
 
         // navigate to welcome screen by default
