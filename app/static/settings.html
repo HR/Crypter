@@ -31,6 +31,7 @@
                   <button class="navigationLink" data-action="import">Import</button>
                 </div>
               </div>
+              <p id="errLabel" class="info"></p>
             </section>
           </section>
         </div>
@@ -102,23 +103,71 @@
     </script>
     <script type="text/javascript">
       'use strict'
-      // TODO: Add reset config feature
       // load core modules first
-      var remote = require('electron').remote
-      var Handlebars = require('handlebars')
-      var ipcRenderer = require('electron').ipcRenderer
-      // var settings = remote.getGlobal("settings")
-      var creds = remote.getGlobal('creds')
+      const dialog = remote.dialog
+      const creds = remote.getGlobal('creds')
+      const paths = remote.getGlobal('paths')
       const buf2hex = require('../core/crypto').buf2hex
-      var logger = require('winston')
+      const errLabel = $('#errLabel')
+      // var settings = remote.getGlobal("settings")
 
       $(window).on('load', function() {
+        // Render the credentials
         var creds_temp = Handlebars.compile($("#creds-template").html())
         $('#creds').prepend(creds_temp({
           mpsalt: buf2hex(creds.mpsalt),
           mpkhash: creds.mpkhash,
           mpksalt: creds.mpksalt
         }))
+      })
+
+      ipcRenderer.on('export', function () {
+        dialog.showOpenDialog({
+          title: 'Choose a dir to export to',
+          defaultPath: paths.documents,
+          properties: ['openDirectory']
+        }, function(dirPath) {
+          // callback for selected file
+          // returns undefined if file not selected by user
+          if (dirPath && dirPath.length === 1) {
+            errLabel.hide()
+            console.log(`Got dirpath ${dirPath[0]}`);
+            ipcRenderer.send('export', dirPath[0])
+          }
+        })
+      })
+
+      ipcRenderer.on('exportResult', function (event, err) {
+        if (err) {
+          errLabel.text(`ERROR: ${err.message}`.toUpperCase()).css('color', COLORS.bad).show()
+        } else {
+          errLabel.text(RESPONSES.exportSuccess).css('color', COLORS.good).show()
+        }
+      })
+
+      ipcRenderer.on('import', function () {
+        dialog.showOpenDialog({
+          title: 'Choose the crypter credentials file',
+          defaultPath: paths.documents,
+          properties: ['openFile']
+        }, function(filePath) {
+          // callback for selected file
+          // returns undefined if file not selected by user
+          if (filePath && filePath.length === 1) {
+            errLabel.hide()
+            console.log(`Got filePath ${filePath[0]}`);
+            ipcRenderer.send('import', filePath[0])
+          }
+        })
+      })
+
+      ipcRenderer.on('importResult', function (event, err) {
+        if (err) {
+          console.log(JSON.stringify(err))
+          errLabel.text(`ERROR: ${err.message}`.toUpperCase()).css('color', COLORS.bad).show()
+        } else {
+          errLabel.text(RESPONSES.importSuccess).css('color', COLORS.good).show()
+        }
       })
     </script>
   </body>

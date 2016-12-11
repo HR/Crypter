@@ -8,9 +8,11 @@
 
 // Load JQuery library and make accessible via $
 window.$ = window.jQuery = require('jquery')
-// load interprocess communication module
-var ipcRenderer = require('electron').ipcRenderer
-const shell = require('electron').shell
+// Cross-view dependencies
+const {ipcRenderer, remote, shell} = require('electron')
+const logger = require('winston')
+const Handlebars = require('handlebars')
+const {CRYPTO_EXT, CRYPTER_CREDS_FILE, CRYPTER_CREDS_PROPS} = require('../core/config')
 // MasterPass regular expression
 const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g
 const RESPONSES = {
@@ -19,7 +21,9 @@ const RESPONSES = {
   incorrect: 'INCORRECT MASTERPASS',
   setSuccess: 'MASTERPASS SUCCESSFULLY SET',
   empty: 'PLEASE ENTER A MASTERPASS',
-  resetSuccess: 'You have successfully reset your MasterPass. You\'ll be redirected to verify it shortly.'
+  resetSuccess: 'You have successfully reset your MasterPass. You\'ll be redirected to verify it shortly.',
+  exportSuccess: 'Successfully exported the credentials',
+  importSuccess: 'Successfully imported the credentials. You will need to verify the MasterPass for the credentials imported so Crypter will relaunch shortly.'
 }
 const COLORS = {
   bad: '#9F3A38',
@@ -72,7 +76,7 @@ $(window).on('load', function() {
         // Is an action to perform
         // TODO: Action (i.e. check for updates/open updater)
         console.log(`Got action ${action}`)
-        // ipcRenderer.send(action)
+        ipcRenderer.emit(action)
       } else if (tab) {
         console.log(`Got tab ${tab}`)
         // is a tab to navigate to

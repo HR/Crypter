@@ -177,6 +177,15 @@ app.on('app:open-settings', () => {
 
 })
 
+app.on('app:relaunch', () => {
+  logger.verbose('APP: app:relaunch event emitted')
+  // Relaunch Crypter
+  app.relaunch()
+  // Exit successfully
+  app.quit(0)
+  // app.exit(0)
+})
+
 app.on('app:about', () => {
   logger.verbose('APP: app:about event emitted')
 })

@@ -33,7 +33,7 @@
             Note these details down! They may be erased when you navigate back
           </p>
           <footer>
-            <a href="#" class="back navigationLink" data-panel="crypt">
+            <a class="back navigationLink" data-panel="crypt">
               <img src="images/icons/back.svg" alt="" />
             </a>
           </footer>
@@ -86,22 +86,19 @@
 
     <script type="text/javascript">
       'use strict'
-      var remote = require('electron').remote
-      var dialog = remote.dialog
-      var BrowserWindow = remote.BrowserWindow
-      var paths = remote.getGlobal('paths')
-      var logger = require('winston')
-      var Handlebars = require('handlebars')
-      var path = require('path')
-      var errLabel = $('#errLabel')
-      var fileInput = $('#fileInput')
-      var fileInputD = document.getElementById('fileInput')
-      var cryptedContainer = $('#crypted-container')
-      var fileInputText = fileInput.find('#fileInputText')
-      var ifileInputText = fileInputText.text()
+      const dialog = remote.dialog
+      const BrowserWindow = remote.BrowserWindow
+      const paths = remote.getGlobal('paths')
+      const path = require('path')
+      // Get DOM elements
+      let errLabel = $('#errLabel')
+      let fileInput = $('#fileInput')
+      let fileInputD = document.getElementById('fileInput')
+      let cryptedContainer = $('#crypted-container')
+      let fileInputText = fileInput.find('#fileInputText')
+      let ifileInputText = fileInputText.text()
       // compile the crypted template
-      var crypted_template = Handlebars.compile($('#crypted-template').html())
-      const cryptoExt = '.crypto'
+      let crypted_template = Handlebars.compile($('#crypted-template').html())
 
       $(window).on('load', function() {
         // attach  event
@@ -134,7 +131,7 @@
       })
       ipcRenderer.on('cryptErr', function(event, err) {
         logger.verbose(`IPCRENDER cryptErr emitted`)
-        errLabel.text(`ERROR: ${err}`).show()
+        errLabel.text(`ERROR: ${err.message}`).show()
         fileInputText.text(ifileInputText)
         turnFileInputOn()
       })
@@ -163,7 +160,7 @@
         turnFileInputOff()
         errLabel.hide()
 
-        if (fileExt.toLowerCase() === cryptoExt) {
+        if (fileExt.toLowerCase() === CRYPTO_EXT) {
           // Decrypt file
           fileInputText.text(`Decrypting ${path.basename(file)}...`)
           // send file to decryptFile controller function

@@ -142,7 +142,7 @@
       ipcRenderer.on('setMasterPassResult', function(event, err) {
         if (err) {
           // If error occured Display the error
-          errLabel.text(`ERROR: ${err}`.toUpperCase())
+          errLabel.text(`ERROR: ${err.message}`.toUpperCase())
           errLabel.show()
         } else {
           // Display the MasterPass set success

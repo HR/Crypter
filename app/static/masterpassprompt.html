@@ -35,7 +35,7 @@
           <p>Please enter a new secure MasterPass
           </p>
           <img class="info" src="images/icons/info.svg" alt=" " />
-          <p class="info ">The MasterPass is used to derive the data encryption keys. So any encrypted data using former MasterPass would not be decryptable.</p>
+          <p class="info">The MasterPass is used to derive the data encryption keys. So any encrypted data using former MasterPass would not be decryptable.</p>
         </header>
         <form onsubmit="return false;">
           <div class="masterpass">
@@ -85,8 +85,7 @@
       if (err) {
         // If error occured
         // Display the error
-        errLabelSetMP.text(`ERROR: ${err}`.toUpperCase())
-        errLabelSetMP.show()
+        errLabelSetMP.text(`ERROR: ${err.message}`.toUpperCase()).css('color', COLORS.bad).show()
       } else {
         // Display the MasterPass set success
         errLabelSetMP.text(RESPONSES.setSuccess).css('color', COLORS.good).show()

@@ -54,9 +54,7 @@ exports.window = function (global, callback) {
     // therefore set error to nothing
     error = null
     // Relaunch Crypter
-    app.relaunch()
-    // Exit successfully
-    app.exit(0)
+    app.emit('app:relaunch')
   })
 
   win.on('closed', function () {
