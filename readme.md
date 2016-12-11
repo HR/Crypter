@@ -81,9 +81,10 @@ If you have any suggestions then please open an issue!
 
 ## Screens (some of them)
 <p align="center">
-  <img src="/github/Welcome_screen.png?raw=true" alt="Crypter app icon" width="100%">
-  <img src="/github/Crypter_screen.png?raw=true" alt="Crypter app icon" width="40%">
-  <img src="/github/MasterPass_screen.png?raw=true" alt="Crypter app icon" width="40%">
+  <img src="/github/Welcome_screen.png?raw=true" alt="Welcome screen" width="100%">
+  <img src="/github/Crypter_screen.png?raw=true" alt="Crypter screen" width="40%">
+  <img src="/github/MasterPass_screen.png?raw=true" alt="MasterPass screen" width="40%">
+  <img src="/github/Settings_screen.png?raw=true" alt="Settings screen" width="85%">
 </p>
 
 ## Crypto
