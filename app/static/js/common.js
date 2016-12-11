@@ -15,6 +15,7 @@ const Handlebars = require('handlebars')
 const {CRYPTO_EXT, CRYPTER_CREDS_FILE, CRYPTER_CREDS_PROPS} = require('../core/config')
 // MasterPass regular expression
 const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g
+const APP_EVENT_REGEX = /^app:[\w-]+$/i
 const RESPONSES = {
   invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
   correct: 'CORRECT MASTERPASS',
@@ -75,8 +76,16 @@ $(window).on('load', function() {
       if (action) {
         // Is an action to perform
         // TODO: Action (i.e. check for updates/open updater)
-        console.log(`Got action ${action}`)
-        ipcRenderer.emit(action)
+        const appEvent = APP_EVENT_REGEX.test(action)
+        if (appEvent) {
+          console.log(`Got main app event ${action}`)
+          // Emit event in main proc
+          ipcRenderer.send(action)
+        } else {
+          console.log(`Got render event ${action}`)
+          // Emit event in render proc
+          ipcRenderer.emit(action)
+        }
       } else if (tab) {
         console.log(`Got tab ${tab}`)
         // is a tab to navigate to

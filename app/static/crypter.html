@@ -11,11 +11,15 @@
     <section id="crypt">
       <div class="panel-container">
         <div id="panel-crypt" class="current">
+          <a class="navigationLink" data-action="app:open-settings">
+            <img class="info" src="images/icons/settings.svg" alt="Settings">
+          </a>
           <header>
-            <img src="images/icons/Crypter.svg" alt="some" class="crypto"/>
-            <h1>Crypter</h1>
-            <p>Encrypt or decrypt any file.</p>
-            <p class="intrfo">All you have to remember is your MasterPass. All you need to encrypt/decrypt is it and a crypto file.</p>
+            <img src="images/icons/Crypter.svg" alt="Crypter" class="crypto"/>
+            <h1 class="title">Crypter</h1>
+            <p class="subtitle">Encrypt &amp; decrypt any file.</p>
+            <p class="leadinfo">Encrypt unlimited bits. Remember only a bit.<br/>
+              All you need is your MasterPass and a CRYTPO file.</p>
             <p id="errLabel" style="display: none"></p>
           </header>
           <!-- TODO: Consider using <input class="fancy" type="file" name="name" value="selectfile"> -->
@@ -34,7 +38,7 @@
           </p>
           <footer>
             <a class="back navigationLink" data-panel="crypt">
-              <img src="images/icons/back.svg" alt="" />
+              <img src="images/icons/back.svg" alt="back"/>
             </a>
           </footer>
         </div>
@@ -43,10 +47,11 @@
 
     <script id="crypted-template" type="text/x-handlebars-template">
       <header>
-        <img src="images/icons/{{op}}.svg" alt="some" class="crypto" />
+        <img src="images/icons/{{op}}.svg" alt="some" class="crypto"/>
       </header>
       <div id="finfo">
-        <h3>{{op}} {{name}}</h3>
+        <h3>{{op}}
+          {{name}}</h3>
         <table>
           <tr>
             <td>Path</td>
@@ -59,25 +64,25 @@
           <tr>
             <td>Initialisation Vector</td>
             <td>
-              <input type="text" value="{{iv}}" />
+              <input type="text" value="{{iv}}"/>
             </td>
           </tr>
           <tr>
             <td>Authentication Tag</td>
             <td>
-              <input type="text" value="{{authTag}}" />
+              <input type="text" value="{{authTag}}"/>
             </td>
           </tr>
           <tr>
             <td>Salt (for key derivation)</td>
             <td>
-              <input type="text" value="{{salt}}" />
+              <input type="text" value="{{salt}}"/>
             </td>
           </tr>
           <tr>
             <td>Encryption Key</td>
             <td>
-              <input type="text" value="{{key}}" />
+              <input type="text" value="{{key}}"/>
             </td>
           </tr>
         </table>
@@ -102,14 +107,14 @@
 
       $(window).on('load', function() {
         // attach  event
-        fileInputD.ondragover = function () {
+        fileInputD.ondragover = function() {
           return false
         }
-        fileInputD.ondragleave = fileInputD.ondragend = function () {
+        fileInputD.ondragleave = fileInputD.ondragend = function() {
           return false
         }
 
-        turnFileInputOn ()
+        turnFileInputOn()
       })
 
       /* Event listeners */
@@ -137,15 +142,15 @@
       })
 
       /* Helper functions */
-      function turnFileInputOff () {
+      function turnFileInputOff() {
         fileInput.off('click', handler)
-        fileInput.ondrop = function () {
+        fileInput.ondrop = function() {
           return false
         }
       }
-      function turnFileInputOn () {
+      function turnFileInputOn() {
         fileInput.on('click', handler)
-        fileInputD.ondrop = function (e) {
+        fileInputD.ondrop = function(e) {
           e.preventDefault()
           logger.info(`ONDROP fired!`)
           if (e.dataTransfer.files[0].path) {
@@ -175,19 +180,17 @@
 
       function handler() {
         // Prevent multiple input dialog
-        fileInput.off('click',handler)
+        fileInput.off('click', handler)
         // Create file input dialog
         dialog.showOpenDialog({
-          title: 'Choose a file to Encrypt',
-          defaultPath: paths.documents, // open dialog at home directory
+          title: 'Choose a file to Encrypt', defaultPath: paths.documents, // open dialog at home directory
           properties: ['openFile']
         }, function(filePath) {
-          // callback for selected file
-          // returns undefined if file not selected by user
+          // callback for selected file returns undefined if file not selected by user
           if (filePath && filePath.length === 1) {
             handleFile(filePath[0])
           } else {
-            fileInput.on('click',handler)
+            fileInput.on('click', handler)
           }
         })
         return false

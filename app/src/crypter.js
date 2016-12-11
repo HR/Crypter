@@ -24,6 +24,11 @@ exports.window = function (global, callback) {
   // loads crypt.html view into the BrowserWindow
   win.loadURL(global.views.crypter)
 
+  ipcMain.on('app:open-settings', function (event) {
+    logger.verbose('CRYPTER: app:open-settings emitted.')
+    app.emit('app:open-settings')
+  })
+
   // When user selects a file to encrypt in Crypter window
   ipcMain.on('cryptFile', function (event, filePath) {
     logger.verbose('IPCMAIN: cryptFile emitted. Starting encryption...')

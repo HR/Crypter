@@ -16,11 +16,6 @@ header > p {
   color: @blacker;
 }
 
-h1 {
-  font-size: 1.4rem;
-  margin-bottom: 0.1rem;
-}
-
 h3 {
   margin-top: 0;
 }
@@ -45,36 +40,12 @@ a {
   overflow: hidden;
 }
 
-.crypto {
-  width: 8rem;
-  height: auto;
-  bottom: 0;
-}
 
-p.intrfo {
-  color: @dark;
-  font-size: 0.8rem;
-  margin: 0.4rem;
-}
 
 #crypted-container {
   height: 84vh;
   overflow-y: scroll;
   overflow-x: hidden;
-}
-
-#fileInput {
-  margin-top: 6vh;
-  width: 100%;
-  height: @fileInput-height;
-  text-align: center;
-  display: flex;
-  flex-flow: column;
-
-  p {
-    line-height: @fileInput-height;
-    color: @white;
-  }
 }
 
 .panel-container {
@@ -108,7 +79,41 @@ p.intrfo {
   }
 }
 
-div#panel-crypted {
+#panel-crypt {
+  h1 {
+    margin: 0.4rem 0;
+    font-size: 1.4rem;
+  }
+  .crypto {
+    width: 8rem;
+    height: auto;
+    bottom: 0;
+  }
+
+  p.subtitle {
+    margin-top: 0.4rem;
+  }
+  p.leadinfo {
+    color: @dark;
+    font-size: 0.8rem;
+    margin: 0.2rem 1rem;
+  }
+  #fileInput {
+    margin-top: 6vh;
+    width: 100%;
+    height: @fileInput-height;
+    text-align: center;
+    display: flex;
+    flex-flow: column;
+
+    p {
+      line-height: @fileInput-height;
+      color: @white;
+    }
+  }
+}
+
+#panel-crypted {
   // height: 90vh;
   // flex: 1.8;
   // display: flex;
@@ -154,28 +159,14 @@ div#panel-crypted {
   }
 }
 
-
-p.info {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  max-height: 0;
-  overflow: hidden;
-  padding: 0 0.5rem;
-  transition: max-height 0.3s, padding 0.3s;
-  background-color: #efefef;
-  font-size: 0.8rem;
-}
-
-img.info {
-  float: right;
-  height: 0.9rem;
-}
-
-img.info:hover + p.info {
-  max-height: 10rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+a[data-action="app:open-settings"] {
+  img.info {
+    height: 1.2rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0.5rem;
+  }
 }
 
 a.back {
@@ -185,11 +176,6 @@ a.back {
 a.back > img {
   height: 1rem;
   width: auto;
-}
-
-div.forgotMP {
-  padding: 0.2rem 0.2rem 0 0;
-  text-align: right;
 }
 
 footer {
