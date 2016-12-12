@@ -28,7 +28,7 @@ install:
 
 build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
-  - script\build.cmd
+  - script\appveyor-build.cmd
 
 # Post-install test scripts.
 test_script:
