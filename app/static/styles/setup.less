@@ -7,13 +7,8 @@
 @border-width: 2px;
 @side-margin: 0.8rem;
 @section-width: 60%;
-@name-fsize: 1rem;
-@header-fsize: 1rem;
 @spacing04: 0.4rem;
 @spacing-ic-txt: @side-margin - 0.4rem;
-@lastMod-fsize: 0.8rem;
-@ic-size: 1.4rem;
-@win-height: 100vh;
 /* TODO: ADD MARGIN RELATIVELY/CONTEXTUALLY TO CORE ELEMENTS I.E. for a button, use panel-container > button*/
 /* Animations */
 @keyframes colorTrans {
@@ -130,21 +125,9 @@ h1 + p {
 .right {
   margin-left: auto !important;
 }
-img.icon {
-  width : @ic-size;
-  height: @ic-size;
-}
 h3 {
   margin     : 0.5rem 0;
   font-weight: normal;
-}
-a {
-
-  // cursor: hand;
-  font-size      : 0.8rem;
-  color          : @blacker;
-  text-decoration: none;
-  outline        : none;
 }
 a.csp {
   padding: 0.6rem 0 !important;
@@ -168,22 +151,10 @@ footer > a {
   float  : right;
   padding: 0.2rem;
 }
-a.back {
-  float: left;
-}
-a.back >img {
-  height: 1rem;
-  width : auto;
-}
 .himg {
   width  : 9rem;
   height : auto;
   z-index: 1000;
-}
-p.intrfo {
-  color: @dark;
-  font-size: 0.8rem;
-  margin: 0.4rem;
 }
 div.list {
   width   : 100%;
@@ -196,10 +167,9 @@ div.item > a {
   padding      : @spacing04 0;
   text-align   : left;
 }
-div.name {
-  font-size  : 1.2rem;
-  margin-left: @spacing-ic-txt;
-  font-weight: 300;
+img.info {
+  float : right;
+  height: 0.9rem;
 }
 p.info {
   display         : block;
@@ -211,15 +181,6 @@ p.info {
   transition      : max-height 0.3s, padding 0.3s;
   background-color: #efefef;
   font-size       : 0.8rem;
-}
-img.info {
-  float : right;
-  height: 0.9rem;
-}
-img.info:hover + p.info {
-  max-height    : 10rem;
-  padding-top   : 0.5rem;
-  padding-bottom: 0.5rem;
 }
 input {
   width: 98%;

@@ -14,7 +14,7 @@
     "url": "https://git.io/HR"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "build": {
     "appId": "com.github.hr.crypter",

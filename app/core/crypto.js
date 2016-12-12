@@ -10,18 +10,20 @@ const scrypto = require('crypto')
 const logger = require('winston')
 const Readable = require('stream').Readable
 const tar = require('tar-fs')
-const CRYPTER_REGEX = /^Crypter(.*)$/igm
+const {CRYPTO} = require('../config')
 
-// Crypto default constants
-let defaults = {
-  iterations: 50000, // file encryption key derivation iterations
-  keyLength: 32, // encryption key length
-  ivLength: 12, // initialisation vector length
-  algorithm: 'aes-256-gcm', // encryption algorithm
-  digest: 'sha256', // digest function
-  hash_alg: 'sha256', // hashing function
-  mpk_iterations: 100000 // MasterPassKey derivation iterations
+// Helper functions
+
+let readFile = function (path) {
+  return new Promise(function (resolve, reject) {
+    fs.readFile(path, 'utf-8', function (err, data) {
+      if (err) reject(err)
+      resolve(data)
+    })
+  })
 }
+
+// Exports
 
 exports.crypt = function (origpath, masterpass) {
   return new Promise(function (resolve, reject) {
@@ -29,7 +31,7 @@ exports.crypt = function (origpath, masterpass) {
     exports.encrypt(origpath, masterpass)
       .then((creds) => {
         resolve({
-          op: 'Encrypted', // Crypter operation
+          op: CRYPTO.ENCRYPT_OP, // Crypter operation
           name: path.basename(origpath), // filename
           path: origpath, // path of the (unencrypted) file
           cryptPath: creds.cryptpath, // path of the encrypted file
@@ -49,11 +51,10 @@ exports.encrypt = function (origpath, mpkey) {
   // Encrypts any arbitrary data passed with the pass
   return new Promise(function (resolve, reject) {
     // derive the encryption key
-    exports.deriveKey(mpkey, null, defaults.iterations)
+    exports.deriveKey(mpkey, null, CRYPTO.DEFAULTS.ITERATIONS)
       .then((dcreds) => {
         let tag
-        let dname = '.crypting'
-        let tempd = `${path.dirname(origpath)}/${dname}`
+        let tempd = `${path.dirname(origpath)}/${CRYPTO.ENCRYPTION_TMP_DIR}`
         let dataDestPath = `${tempd}/data`
         let credsDestPath = `${tempd}/creds`
         logger.verbose(`tempd: ${tempd}, dataDestPath: ${dataDestPath}, credsDestPath: ${credsDestPath}`)
@@ -68,9 +69,9 @@ exports.encrypt = function (origpath, mpkey) {
           const dataDest = fs.createWriteStream(dataDestPath)
           const credsDest = fs.createWriteStream(credsDestPath)
           // generate a cryptographically secure random iv
-          const iv = scrypto.randomBytes(defaults.ivLength)
+          const iv = scrypto.randomBytes(CRYPTO.DEFAULTS.IVLENGTH)
           // create the AES-256-GCM cipher with iv and derive encryption key
-          const cipher = scrypto.createCipheriv(defaults.algorithm, dcreds.key, iv)
+          const cipher = scrypto.createCipheriv(CRYPTO.DEFAULTS.ALGORITHM, dcreds.key, iv)
 
           // Read file, apply tranformation (encryption) to stream and
           // then write stream to filesystem
@@ -104,7 +105,7 @@ exports.encrypt = function (origpath, mpkey) {
 
           // writestream finish handler
           credsDest.on('finish', () => {
-            let tarDestPath = `${origpath}.crypto`
+            let tarDestPath = origpath + CRYPTO.EXT
             const tarDest = fs.createWriteStream(tarDestPath)
             // Pack directory and zip into a .crypto file
             tar.pack(tempd).pipe(tarDest)
@@ -137,28 +138,19 @@ exports.encrypt = function (origpath, mpkey) {
       })
   })
 }
-let readFile = function (path) {
-  return new Promise(function (resolve, reject) {
-    fs.readFile(path, 'utf-8', function (err, data) {
-      if (err) reject(err)
-      resolve(data)
-    })
-  })
-}
 
 exports.decrypt = function (origpath, mpkey) {
   // Decrypts a crypto format file passed with the pass
   return new Promise(function (resolve, reject) {
     // Extract a directory
-    let dname = '.decrypting'
-    let tempd = `${path.dirname(origpath)}/${dname}`
-    let dataOrigPath = `${tempd}/data`
-    let credsOrigPath = `${tempd}/creds`
-    let dataDestPath = origpath.replace('.crypto', '')
-    dataDestPath = dataDestPath.replace(path.basename(dataDestPath), `Decrypted ${path.basename(dataDestPath)}`)
+    let tempd = `${path.dirname(origpath)}/${CRYPTO.DECRYPTION_TMP_DIR}`
+    let dataOrigPath = `${tempd}/${CRYPTO.FILE_DATA}`
+    let credsOrigPath = `${tempd}/${CRYPTO.FILE_CREDS}`
+    let dataDestPath = origpath.replace(CRYPTO.EXT, '')
+    dataDestPath = dataDestPath.replace(path.basename(dataDestPath), CRYPTO.DECRYPT_TITLE_PREPEND + path.basename(dataDestPath))
     let tarOrig = fs.createReadStream(origpath)
     let tarExtr = tar.extract(tempd)
-    // Extract tar to dname directory
+    // Extract tar to CRYPTO.DECRYPTION_TMP_DIR directory
     tarOrig.pipe(tarExtr)
 
     tarOrig.on('error', (err) => {
@@ -171,7 +163,7 @@ exports.decrypt = function (origpath, mpkey) {
 
       readFile(credsOrigPath)
         .then((credsLines) => {
-          let credsLine = credsLines.trim().match(CRYPTER_REGEX)
+          let credsLine = credsLines.trim().match(CRYPTO.ENCRYPTION_CREDS_REGEX)
 
           if (credsLine) {
             let creds = credsLine[0].split('#')
@@ -184,10 +176,10 @@ exports.decrypt = function (origpath, mpkey) {
             // Read encrypted data stream
             const dataOrig = fs.createReadStream(dataOrigPath)
             // derive the original encryption key for the file
-            exports.deriveKey(mpkey, salt, defaults.iterations)
+            exports.deriveKey(mpkey, salt, CRYPTO.DEFAULTS.ITERATIONS)
               .then((dcreds) => {
                 try {
-                  let decipher = scrypto.createDecipheriv(defaults.algorithm, dcreds.key, iv)
+                  let decipher = scrypto.createDecipheriv(CRYPTO.DEFAULTS.ALGORITHM, dcreds.key, iv)
                   decipher.setAuthTag(authTag)
                   const dataDest = fs.createWriteStream(dataDestPath)
                   dataOrig.pipe(decipher).pipe(dataDest)
@@ -212,7 +204,7 @@ exports.decrypt = function (origpath, mpkey) {
                         reject(err)
                       logger.verbose(`Removed temp dir ${tempd}`)
                       resolve({
-                        op: 'Decrypted',
+                        op: CRYPTO.DECRYPT_OP,
                         name: path.basename(origpath),
                         path: origpath,
                         cryptPath: dataDestPath,
@@ -237,7 +229,7 @@ exports.decrypt = function (origpath, mpkey) {
   })
 }
 
-exports.deriveKey = function (pass, psalt, iterations = defaults.mpk_iterations) {
+exports.deriveKey = function (pass, psalt) {
   return new Promise(function (resolve, reject) {
     // reject with error if pass not provided
     if (!pass) reject(new Error('Pass to derive key from not provided'))
@@ -250,10 +242,10 @@ exports.deriveKey = function (pass, psalt, iterations = defaults.mpk_iterations)
       ? ((psalt instanceof Buffer)
         ? psalt
         : new Buffer(psalt))
-      : scrypto.randomBytes(defaults.keyLength)
+      : scrypto.randomBytes(CRYPTO.DEFAULTS.KEYLENGTH)
 
     // derive the key using the salt, password and default crypto setup
-    scrypto.pbkdf2(pass, salt, iterations, defaults.keyLength, defaults.digest, (err, key) => {
+    scrypto.pbkdf2(pass, salt, CRYPTO.DEFAULTS.MPK_ITERATIONS, CRYPTO.DEFAULTS.KEYLENGTH, CRYPTO.DEFAULTS.DIGEST, (err, key) => {
       if (err) reject(err)
       // return the key and the salt
       resolve({key, salt})
@@ -273,14 +265,14 @@ exports.genPassHash = function (masterpass, salt) {
     if (salt) {
       // create hash from the contanation of the pass and salt
       // assign the hex digest of the created hash
-      const hash = scrypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
+      const hash = scrypto.createHash(CRYPTO.DEFAULTS.HASH_ALG).update(`${pass}${salt}`).digest('hex')
       resolve({hash, key: masterpass})
     } else {
       // generate a cryptographically secure salt and use it as the salt
-      const salt = scrypto.randomBytes(defaults.keyLength).toString('hex')
+      const salt = scrypto.randomBytes(CRYPTO.DEFAULTS.KEYLENGTH).toString('hex')
       // create hash from the contanation of the pass and salt
       // assign the hex digest of the created hash
-      const hash = scrypto.createHash(defaults.hash_alg).update(`${pass}${salt}`).digest('hex')
+      const hash = scrypto.createHash(CRYPTO.DEFAULTS.HASH_ALG).update(`${pass}${salt}`).digest('hex')
       resolve({hash, salt, key: masterpass})
     }
   })

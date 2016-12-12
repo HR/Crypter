@@ -1,10 +1,8 @@
 const {app, ipcMain, BrowserWindow} = require('electron')
+const {CRYPTO, VIEWS, SETTINGS} = require('../config')
 const logger = require('winston')
 const fs = require('fs-extra')
 const _ = require('lodash')
-const {CRYPTER_CREDS_FILE, CRYPTER_CREDS_PROPS} = require('../core/config')
-const RESTART_TIMEOUT = 4000
-
 
 exports.window = function (global, callback) {
   // creates a new BrowserWindow
@@ -15,16 +13,17 @@ exports.window = function (global, callback) {
     show: true,
     titleBarStyle: 'hidden-inset',
     resizable: false,
+    maximizable: false,
     movable: true
   })
 
   let webContents = win.webContents
   // loads settings.html view into the BrowserWindow
-  win.loadURL(global.views.settings)
+  win.loadURL(VIEWS.SETTINGS)
 
   ipcMain.on('export', (event, dir) => {
     logger.verbose(`SETTINGS: export event emitted, got ${dir}`)
-    const file = `${dir}/${CRYPTER_CREDS_FILE}`
+    const file = `${dir}/${CRYPTO.MASTERPASS_CREDS_FILE}`
     fs.outputJson(file, global.creds, function (err) {
       if (err) {
         logger.error(err)
@@ -46,7 +45,7 @@ exports.window = function (global, callback) {
         let isCredsObjProp = function (prop, index, array) {
           return credsObj.hasOwnProperty(prop)
         }
-        let credsFileValid = CRYPTER_CREDS_PROPS.every(isCredsObjProp)
+        let credsFileValid = CRYPTO.MASTERPASS_CREDS_PROPS.every(isCredsObjProp)
         logger.verbose(`SETTINGS: Got for credsFileValid ${credsFileValid}`)
 
         if (credsFileValid) {
@@ -60,7 +59,7 @@ exports.window = function (global, callback) {
           // Restart after timeout
           setTimeout(function () {
             app.emit('app:relaunch')
-          }, RESTART_TIMEOUT);
+          }, SETTINGS.RELAUNCH_TIMEOUT);
         } else {
           webContents.send('importResult', new Error('Not a valid Crypter credentials file!'))
         }

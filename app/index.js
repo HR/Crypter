@@ -1,4 +1,9 @@
 'use strict'
+/**
+ * index.js
+ * Entry point for app execution
+ ******************************/
+
 const {app, dialog} = require('electron')
 // Core
 const Db = require('./core/Db')
@@ -7,7 +12,6 @@ const crypter = require('./src/crypter')
 const masterPassPrompt = require('./src/masterPassPrompt')
 const setup = require('./src/setup')
 const settings = require('./src/settings')
-const _ = require('lodash')
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')()
 
@@ -18,12 +22,6 @@ global.paths = {
   userData: app.getPath('userData'),
   home: app.getPath('home'),
   documents: app.getPath('documents')
-}
-global.views = {
-  masterpassprompt: `file://${__dirname}/static/masterpassprompt.html`,
-  setup: `file://${__dirname}/static/setup.html`,
-  crypter: `file://${__dirname}/static/crypter.html`,
-  settings: `file://${__dirname}/static/settings.html`
 }
 const logger = require('./script/logger')
 
@@ -54,14 +52,6 @@ const initMain = function () {
     // restore the creds object globally
     resolve(global.mdb.restoreGlobalObj('creds'))
   })
-}
-
-const closeDb = function () {
-  if (_.isEmpty(global.mdb) ? false : global.mdb.open) {
-    // close mdb before quitting if opened
-    // return promise
-    return global.mdb.close()
-  }
 }
 
 /**
@@ -139,19 +129,21 @@ app.on('window-all-closed', () => {
 
 app.on('quit', () => {
   logger.info('APP: quit event emitted')
-  closeDb().catch((err) => {
-    console.error(err)
-    throw err
-  })
+  global.mdb.close()
+    .catch((err) => {
+      console.error(err)
+      throw err
+    })
 })
 
 app.on('will-quit', (event) => {
-  // will exit program once exit procedures have been run (exit flag is true)
+  // will exit program once exit procedures have been run
   logger.info(`APP.ON('will-quit'): will-quit event emitted`)
-  closeDb().catch((err) => {
-    console.error(err)
-    throw err
-  })
+  global.mdb.close()
+    .catch((err) => {
+      console.error(err)
+      throw err
+    })
 })
 
 /**

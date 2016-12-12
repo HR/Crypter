@@ -7,6 +7,8 @@
 const crypto = require('./crypto')
 const _ = require('lodash')
 
+// TODO: Make independent from global obj! use param instead
+
 // Check MasterPass
 exports.check = function (masterpass) {
   return new Promise(function(resolve, reject) {

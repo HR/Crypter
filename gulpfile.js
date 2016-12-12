@@ -10,12 +10,44 @@ const injectModules = require('gulp-inject-modules')
 const mocha = require('gulp-mocha')
 const LessPluginCleanCSS = require('less-plugin-clean-css')
 const cleancss = new LessPluginCleanCSS({ advanced: true })
+const LESS_FILES = './app/static/styles/*.less'
 
-gulp.task('default', ['less'], shell.task([
+gulp.task('default', ['less', 'watch'], shell.task([
   // Run electron
   // 'ELECTRON_RUN_AS_NODE=true node_modules/.bin/electron node_modules/node-inspector/bin/inspector.js'
   'unset TEST_RUN && npm run start'
   // 'node_modules/.bin/electron --debug-brk=5858 .'
+]))
+
+gulp.task('run', function () {
+  return gulp.src('*', {
+    read: false
+  })
+    .pipe(shell([
+      // start electron main and render process
+      'node_modules/.bin/electron .'
+    ]))
+})
+
+gulp.task('watch', function () {
+  gulp.watch(LESS_FILES, ['less'])
+  // gulp.watch(['./app/static/**/*', './*.js'], ['run'])
+})
+
+gulp.task('less', function () {
+  return gulp.src('./app/static/styles/*.less')
+    .pipe(less({
+      paths: [ path.join(__dirname, 'less', 'includes') ],
+      plugins: [cleancss]
+    }))
+    .pipe(gulp.dest('./app/static/styles/'))
+})
+
+/* TEST */
+
+gulp.task('test', shell.task([
+  // Run test stuff
+  'mocha --compilers js:babel-core/register test/'
 ]))
 
 gulp.task('coverage', function (cb) {
@@ -36,33 +68,8 @@ gulp.task('coverage', function (cb) {
     })
 })
 
-gulp.task('less', function () {
-  return gulp.src('./app/static/styles/*.less')
-    .pipe(less({
-      paths: [ path.join(__dirname, 'less', 'includes') ],
-      plugins: [cleancss]
-    }))
-    .pipe(gulp.dest('./app/static/styles/'))
-})
 
-gulp.task('test', shell.task([
-  // Run test stuff
-  'mocha --compilers js:babel-core/register test/'
-]))
-
-gulp.task('watch', function () {
-  gulp.watch(['./app/static/**/*', './*.js'], ['run'])
-})
-
-gulp.task('run', function () {
-  return gulp.src('*', {
-    read: false
-  })
-    .pipe(shell([
-      // start electron main and render process
-      'node_modules/.bin/electron .'
-    ]))
-})
+/* BUILD */
 
 gulp.task('rebuildni', shell.task([
   // start node inspector server

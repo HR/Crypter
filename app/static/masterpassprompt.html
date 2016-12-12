@@ -10,7 +10,7 @@
 
 <body>
   <section id="masterpassprompt">
-    <img src="images/icons/masterpass.svg" alt="some" id="vault" />
+    <img class="header" src="images/icons/masterpass.svg"/>
     <div class="panel-container">
       <div id="panel-default" class="current">
         <header>
@@ -34,7 +34,7 @@
           <h1>Reset the MasterPass</h1>
           <p>Please enter a new secure MasterPass
           </p>
-          <img class="info" src="images/icons/info.svg" alt=" " />
+          <img class="info" src="images/icons/info.svg" />
           <p class="info">The MasterPass is used to derive the data encryption keys. So any encrypted data using former MasterPass would not be decryptable.</p>
         </header>
         <form onsubmit="return false;">
@@ -44,12 +44,9 @@
           </div>
           <button id="setMasterPass">Reset</button>
         </form>
-        <p class="note">
-          NOTE: If lost, your former encrypted data will be inaccessible!
-        </p>
         <footer>
-          <a href="#" class="back navigationLink" data-panel="default">
-            <img src="images/icons/back.svg" alt="" />
+          <a class="back navigationLink" data-panel="default">
+            <img src="images/icons/back.svg" />
           </a>
         </footer>
       </div>

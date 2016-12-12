@@ -1,4 +1,5 @@
 const {app, ipcMain, BrowserWindow} = require('electron')
+const {VIEWS} = require('../config')
 const MasterPass = require('../core/MasterPass')
 const MasterPassKey = require('../core/MasterPassKey')
 const logger = require('winston')
@@ -14,13 +15,14 @@ exports.window = function (global, callback) {
     show: true,
     titleBarStyle: 'hidden-inset',
     resizable: false,
+    maximizable: false,
     movable: true
   })
 
   let webContents = win.webContents
   let error
   // loads setup.html view into the SetupWindow
-  win.loadURL(global.views.setup)
+  win.loadURL(VIEWS.SETUP)
 
   ipcMain.on('setMasterPass', function (event, masterpass) {
     // setMasterPass event triggered by render proces

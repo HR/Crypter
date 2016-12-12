@@ -104,15 +104,17 @@ Db.prototype.close = function() {
   logger.verbose(`Closing _db`)
   const self = this
   return new Promise(function(resolve, reject) {
-    self.flush()
-      .then(() => {
-        self.open = false
-        resolve()
-      })
-      .catch((err) => {
-        reject(err)
-      })
-
+    // Check if db is open
+    if (self.open) {
+      self.flush()
+        .then(() => {
+          self.open = false
+          resolve()
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    }
   })
 }
 

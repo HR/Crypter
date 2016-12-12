@@ -15,7 +15,7 @@
             <img class="info" src="images/icons/settings.svg" alt="Settings">
           </a>
           <header>
-            <img src="images/icons/Crypter.svg" alt="Crypter" class="crypto"/>
+            <img src="images/icons/Crypter.svg" alt="Crypter" class="header"/>
             <h1 class="title">Crypter</h1>
             <p class="subtitle">Encrypt &amp; decrypt any file.</p>
             <p class="leadinfo">Encrypt unlimited bits. Remember only a bit.<br/>
@@ -47,7 +47,7 @@
 
     <script id="crypted-template" type="text/x-handlebars-template">
       <header>
-        <img src="images/icons/{{op}}.svg" alt="some" class="crypto"/>
+        <img src="images/icons/{{op}}.svg" class="header"/>
       </header>
       <div id="finfo">
         <h3>{{op}}
@@ -136,7 +136,7 @@
       })
       ipcRenderer.on('cryptErr', function(event, err) {
         logger.verbose(`IPCRENDER cryptErr emitted`)
-        errLabel.text(`ERROR: ${err.message}`).show()
+        errLabel.text(`ERROR: ${err}`).show()
         fileInputText.text(ifileInputText)
         turnFileInputOn()
       })
@@ -165,7 +165,7 @@
         turnFileInputOff()
         errLabel.hide()
 
-        if (fileExt.toLowerCase() === CRYPTO_EXT) {
+        if (fileExt.toLowerCase() === CRYPTO.EXT) {
           // Decrypt file
           fileInputText.text(`Decrypting ${path.basename(file)}...`)
           // send file to decryptFile controller function

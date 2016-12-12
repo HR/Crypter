@@ -12,7 +12,7 @@ window.$ = window.jQuery = require('jquery')
 const {ipcRenderer, remote, shell} = require('electron')
 const logger = require('winston')
 const Handlebars = require('handlebars')
-const {CRYPTO_EXT, CRYPTER_CREDS_FILE, CRYPTER_CREDS_PROPS} = require('../core/config')
+const {CRYPTO} = require('../config')
 // MasterPass regular expression
 const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g
 const APP_EVENT_REGEX = /^app:[\w-]+$/i

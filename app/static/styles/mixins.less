@@ -11,6 +11,8 @@
 @invalid-color: #F05A5C;
 @orange: #EEA849;
 @orange_d: #F46B45;
+@ic-size: 1.4rem;
+@max-height: 100vh;
 
 /* Animations */
 @keyframes colorTrans {
@@ -94,26 +96,66 @@ input[type=text] {
     border-bottom: 1px solid @black;
   }
 }
+img.header {
+  width: 7rem;
+  height: auto;
+  bottom: 0;
+}
+img.icon {
+  width : @ic-size;
+  height: @ic-size;
+}
 img.info {
   padding-left: 0.2rem;
   height      : 0.8rem;
+}
+p.intrfo {
+  color: @dark;
+  font-size: 0.8rem;
+  margin: 0.4rem;
 }
 p.info {
   display         : block;
   width           : 100%;
   box-sizing      : border-box;
   max-height      : 0;
+  padding         : 0 0.5rem;
   transition      : max-height 0.5s, padding 0.3s;
   background-color: @light;
   font-size       : 0.8rem;
 }
 img.info:hover + p.info {
-  max-height: 100%;
-  padding   : 0.2rem;
+  max-height    : 10rem;
+  padding-top   : 0.5rem;
+  padding-bottom: 0.5rem;
 }
 a {
   cursor: pointer;
   cursor: hand;
+  font-size      : 0.8rem;
+  color          : @blacker;
+  text-decoration: none;
+  outline        : none;
+}
+a.back {
+  float: left;
+}
+a.back > img {
+  height: 1rem;
+  padding: 0.2rem;
+  width : auto;
+}
+footer {
+  display: flex;
+  position: absolute;
+  border-top: 1px solid @light;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  font-size: 0.8rem;
+  align-items: center;
+  justify-content: left;
+  background: @white;
 }
 /* font declarations */
 @font-face {

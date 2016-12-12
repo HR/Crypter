@@ -1,4 +1,5 @@
 const {app, ipcMain, Menu, BrowserWindow} = require('electron')
+const {VIEWS} = require('../config')
 const crypto = require('../core/crypto')
 const menuTemplate = require('./menu')
 const logger = require('winston')
@@ -7,11 +8,12 @@ exports.window = function (global, callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 350,
-    height: 450,
+    height: 440,
     center: true,
     show: true,
     titleBarStyle: 'hidden-inset',
     resizable: false,
+    maximizable: false,
     movable: true
   })
   // create menu from menuTemplate
@@ -22,7 +24,7 @@ exports.window = function (global, callback) {
   let webContents = win.webContents
 
   // loads crypt.html view into the BrowserWindow
-  win.loadURL(global.views.crypter)
+  win.loadURL(VIEWS.CRYPTER)
 
   ipcMain.on('app:open-settings', function (event) {
     logger.verbose('CRYPTER: app:open-settings emitted.')
@@ -46,7 +48,6 @@ exports.window = function (global, callback) {
   // When user selects a file to decrypt in Crypter window
   ipcMain.on('decryptFile', function (event, filePath) {
     logger.verbose('IPCMAIN: decryptFile emitted. Starting decryption...')
-    // let destPath = filePath.replace('.crypto', '.decrypto')
     crypto.decrypt(filePath, global.MasterPassKey.get())
       .then((file) => {
         logger.info('decrypted')

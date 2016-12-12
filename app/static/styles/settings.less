@@ -28,15 +28,14 @@
 
   & > div.current {
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     transform: none;
     position: relative;
     display: flex;
-    min-height: 100vh;
     flex-direction: column;
 
     section {
-      height: 80vh;
+      height: 90vh;
     }
   }
 
@@ -133,6 +132,11 @@ a.item:active {
 img.icon {
   width: @ic-size;
   height: @ic-size;
+}
+img.header {
+  width: 6rem;
+  height: auto;
+  bottom: 0;
 }
 
 h3 {
@@ -234,7 +238,6 @@ section.contribute {
 
     .item {
       a {
-        cursor: pointer;
         display: flex;
         align-items: center;
         text-align: left;
