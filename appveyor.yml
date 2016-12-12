@@ -1,7 +1,12 @@
-version: 2.0.{build}
+version: "{build}"
 
 platform:
+  - x86
   - x64
+
+environment:
+  matrix:
+  - NODE_VERSION: 6.9.1
 
 cache:
   - node_modules
@@ -12,18 +17,26 @@ cache:
 init:
   - git config --global core.autocrlf input
 
+cache:
+  - node_modules
+
+# Only build if commit message contains 'build'
+only_commits:
+  message: /build/
+
 install:
-  - set NODE_ENV=production
-  - ps: Install-Product node 6.3.0 x64
-  - git reset --hard HEAD
+  - ps: Install-Product node $env:NODE_VERSION $env:PLATFORM
   - npm install npm -g
-  - npm install electron-builder@next -g
-  - npm install --production
-  - npm prune
+  - npm install --no-optional
 
 build_script:
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - script\build.cmd
+
+# Post-install test scripts.
+test_script:
+  # Output useful info for debugging.
   - node --version
   - npm --version
-  - build -w --x64
-
-test: off
+  # run tests
+  - npm test

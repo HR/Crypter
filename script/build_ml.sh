@@ -1,9 +1,15 @@
 #!/bin/bash
 
 echo "Building for: $TRAVIS_OS_NAME"
-echo "cwd: $PWD"
+echo "CWD: $PWD"
+# Change dir to app to build
+cd ../app
+echo "cd ../app"
+echo "New CWD: $PWD"
+
 # remove any existing distribution
-rm -rf dist
+rm -rf ../dist
+
 # make for production
 unset TEST_RUN
 export NODE_ENV=production

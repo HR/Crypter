@@ -20,12 +20,12 @@ matrix:
     - os: osx
 
 before_script:
- - chmod +x ./app/script/travis-build.sh
- - chmod +x ./app/script/build_ml.sh
- - export NODE_VERSION=6.3.0
+ - chmod +x ./script/travis-build.sh
+ - chmod +x ./script/build_ml.sh
+ - export NODE_VERSION=6.9.1
  - export TEST_RUN=true
 
-script: ./app/script/travis-build.sh
+script: ./script/travis-build.sh
 
 after_success:
   - node_modules/.bin/gulp coverage
@@ -33,7 +33,7 @@ after_success:
   - npm run codeclimate
   - lgcm=$(git log -1 --pretty=%B | xargs echo);
     if [[ $lgcm == *"[build]"* ]]; then
-      ./app/script/build_ml.sh;
+      ./script/build_ml.sh;
     fi
 
 cache:

@@ -13,8 +13,9 @@ source /tmp/.nvm/nvm.sh
 nvm install "$NODE_VERSION"
 nvm use "$NODE_VERSION"
 
-node --version
-npm --version
+echo "Node $(node --version)"
+echo "NPM $(npm --version)"
+echo "Electron v$(npm run electronVersion --silent)"
 
 npm install --no-optional
 npm prune
