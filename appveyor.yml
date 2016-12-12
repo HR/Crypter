@@ -18,8 +18,8 @@ init:
   - git config --global core.autocrlf input
 
 # Only build if commit message contains 'build'
-# only_commits:
-#   message: /build/
+only_commits:
+  message: /build/
 
 install:
   - ps: Install-Product node $env:NODE_VERSION $env:PLATFORM
@@ -31,9 +31,6 @@ build_script:
   - script\appveyor-build.cmd
 
 # Post-install test scripts.
-test_script:
-  # Output useful info for debugging.
-  - node --version
-  - npm --version
-  # run tests
-  - npm test
+# test_script:
+#   - script\test.cmd
+test: off
