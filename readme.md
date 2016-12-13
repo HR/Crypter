@@ -181,39 +181,38 @@ multiple machines.
 
 ### Full portability
 To achieve full portability the set of (MasterPassKey) credentials need to be
-exported from Crypter on the source machine<sup>[1](#source)</sup> and imported into Crypter on the
-target machine<sup>[2](#target)</sup> that you wish to decrypt the CRYPTO file.
+exported from Crypter on the source machine<sup>[1](#source)</sup> and imported
+into Crypter on the target machine<sup>[2](#target)</sup> that you wish to
+decrypt the CRYPTO file.
 <br/>
-<small id="source">[1] The machine on which it was originally encrypted on with the original
-MasterPass used</small>
+<small id="source">[1] The machine on which it was originally encrypted on with
+the original MasterPass used</small>
 <br/>
-<small id="target">[2] The machine on which you wish to decrypt the CRYPTO file on</small>
+<small id="target">[2] The machine on which you wish to decrypt the CRYPTO file
+on</small>
 
 Achieve full portability in two simple steps:
-1. Export MasterPass credentials on the source machine
-2. Import the MasterPass on the target machine
+1. [Export MasterPass credentials on the source machine](#how-do-i-export-my-masterpass-credentials)
+2. [Import the MasterPass on the target machine](#how-do-i-import-my-masterpass-credentials)
 
-The following subsection delineate how to perform the above steps.
-#### Exporting MasterPass credentials
-To export the MasterPass credentials, you have to first open the Crypter
-settings (see FAQs). From the settings, click on the "Export" button. A select
-folder dialog should appear from which select the folder that you wish to export
-the credentials to. Finally, you should see the a success message to confirm
-successful export.
-
-#### Setting MasterPass
-Ti
-
-#### Importing MasterPass credentials
+Refer to the FAQs for instructions on how to perform the above steps.
 
 ## Security
-Crypter never stores your MasterPass in memory nor on the filesystem. This substantially improves the security of you MasterPass. Whenever you provide your MasterPass to Crypter,
-
 ### Security-first practice
 Crypter follows a security-first practice. This means that security is the
 highest priority and first consideration. This means that, while Crypter seeks
 to make encryption more convenient, Crypter chooses a convenient trade-off over
 a higher level of security.
+
+### MasterPass
+Crypter never stores your MasterPass in memory nor on the filesystem. This
+substantially improves the security of you MasterPass. You are only asked to
+enter the MasterPass when you first set, reset or verify it. Whenever you enter
+your MasterPass, Crypter derives a MasterPassKey (using a set of generated
+credentials) and discards the MasterPass. The derived MasterPassKey is
+indistinguishable from the MasterPass and cannot be used in any way to derive
+the MasterPass (as it is derived from a one-way function). The MasterPassKey is
+then securely stored in main memory and used to derive the encryption keys.
 
 ### MasterPassKey
 Crypter uses a WeakMap to store the MasterPassKey inside the MasterPassKey class
@@ -237,6 +236,50 @@ more info
 Crypter generates a new set of random credentials for deriving the MasterPassKey
 every time the MasterPass is set (at setup) or reset. Using randomness, mitigate
 brute-force attacks which drastically improves security.
+
+## FAQs
+
+### How do I access the Crypter settings?
+Access the Crypter setting by either clicking on the cog icon in the main
+Crypter window or going to  ```Crypter > Preferences...``` from the menu.
+
+### How do I reset my MasterPass?
+Reset your MasterPass by first clicking on the "Forgot it" link in the Verify
+MasterPass window. This takes you to a new screen where you enter a new valid
+MasterPass. Once you've entered it, click the 'Reset' button and you'll be sent
+back to the verify screen where you verify it and your done! :).
+
+### What is a valid MasterPass?
+Crypter checks for a valid MasterPass when set and won't allow you to set an
+invalid one. A MasterPass is valid when it adheres to the following rules:
+- It is at least 8 characters long
+- It has at least one alphabet character (A-Z, a-z)
+- It has at least one number character (0-9)
+- It has at least one special character ($@!%\*#?&)
+
+These rules are enforced via the following regular expression:
+```javascript
+/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[$@!%*#?&]).{8,}$/
+```
+
+### How do I export my MasterPass credentials?
+To export the MasterPass credentials, you have to first open the Crypter
+settings (see above). From the settings, click on the "Export" button. A select
+folder dialog should appear from which select the folder that you wish to export
+the credentials to. Finally, you should see the a success message to confirm
+successful export.
+
+### How do I import my MasterPass credentials?
+To export the MasterPass credentials, assuming that you have already
+successfully exported them, you have to first open the Crypter settings (see
+above). From the settings, click on the "Import" button. A select file dialog
+should appear from which locate your ```credentials.crypter``` file and select
+it. You should see the a success message to confirm successful import shortly
+after which you will have to verify the MasterPass for the credentials.
+
+NOTE: I you do not remember the MasterPass for the credentials then you will not
+be able to decrypt any files originally encrypted with it.
+
 
 ## Dev
 The "dev" branch is the development branch and may be unstable. However the
@@ -288,10 +331,6 @@ To build the app for your **Windows** x84 and/or x64
 ```
 $ build -w --x64 --ia32
 ```
-## FAQs
-### How do I access settings?
-Access the Crypter setting by either clicking on the cog icon in the main
-Crypter window or going to  ```Crypter > Preferences...``` from the menu.
 
 ## License
 The MIT License (MIT)

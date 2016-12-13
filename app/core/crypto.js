@@ -10,7 +10,7 @@ const scrypto = require('crypto')
 const logger = require('winston')
 const Readable = require('stream').Readable
 const tar = require('tar-fs')
-const {CRYPTO} = require('../config')
+const {CRYPTO, REGEX} = require('../config')
 
 // Helper functions
 
@@ -163,7 +163,7 @@ exports.decrypt = function (origpath, mpkey) {
 
       readFile(credsOrigPath)
         .then((credsLines) => {
-          let credsLine = credsLines.trim().match(CRYPTO.ENCRYPTION_CREDS_REGEX)
+          let credsLine = credsLines.trim().match(REGEX.ENCRYPTION_CREDS)
 
           if (credsLine) {
             let creds = credsLine[0].split('#')

@@ -92,7 +92,6 @@
     <script type="text/javascript">
       'use strict'
       const dialog = remote.dialog
-      const BrowserWindow = remote.BrowserWindow
       const paths = remote.getGlobal('paths')
       const path = require('path')
       // Get DOM elements
@@ -183,7 +182,8 @@
         fileInput.off('click', handler)
         // Create file input dialog
         dialog.showOpenDialog({
-          title: 'Choose a file to Encrypt', defaultPath: paths.documents, // open dialog at home directory
+          title: 'Choose a file to Encrypt',
+          defaultPath: paths.documents, // open dialog at home directory
           properties: ['openFile']
         }, function(filePath) {
           // callback for selected file returns undefined if file not selected by user

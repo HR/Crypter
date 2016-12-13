@@ -10,27 +10,9 @@
 window.$ = window.jQuery = require('jquery')
 // Cross-view dependencies
 const {ipcRenderer, remote, shell} = require('electron')
+const {CRYPTO, REGEX, RESPONSES, COLORS} = require('../config')
 const logger = require('winston')
 const Handlebars = require('handlebars')
-const {CRYPTO} = require('../config')
-// MasterPass regular expression
-const MP_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/g
-const APP_EVENT_REGEX = /^app:[\w-]+$/i
-const RESPONSES = {
-  invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
-  correct: 'CORRECT MASTERPASS',
-  incorrect: 'INCORRECT MASTERPASS',
-  setSuccess: 'MASTERPASS SUCCESSFULLY SET',
-  empty: 'PLEASE ENTER A MASTERPASS',
-  resetSuccess: 'You have successfully reset your MasterPass. You\'ll be redirected to verify it shortly.',
-  exportSuccess: 'Successfully exported the credentials',
-  importSuccess: 'Successfully imported the credentials. You will need to verify the MasterPass for the credentials imported so Crypter will relaunch shortly.'
-}
-const COLORS = {
-  bad: '#9F3A38',
-  good: '#2ECC71',
-  highlight: '#333333'
-}
 
 /* Shared functions */
 function navigate (panel) {
@@ -41,7 +23,7 @@ function navigate (panel) {
 }
 
 function validateMasterPass (field, errLabel) {
-  var MPel = $(`input#${field + 'Input'}`)
+  const MPel = $(`input#${field}Input`)
   const masterpass = MPel.val()
   if (!masterpass) {
     // MP is empty
@@ -49,7 +31,7 @@ function validateMasterPass (field, errLabel) {
     errLabel.text(RESPONSES.empty).show()
     // Clear MP input field
     MPel.val('')
-  } else if (MP_REGEX.test(masterpass)) {
+  } else if (REGEX.MASTERPASS.test(masterpass)) {
     // MP is valid
     // Hide errLabel
     errLabel.hide()
@@ -76,8 +58,7 @@ $(window).on('load', function() {
       if (action) {
         // Is an action to perform
         // TODO: Action (i.e. check for updates/open updater)
-        const appEvent = APP_EVENT_REGEX.test(action)
-        if (appEvent) {
+        if (REGEX.APP_EVENT.test(action)) {
           console.log(`Got main app event ${action}`)
           // Emit event in main proc
           ipcRenderer.send(action)

@@ -99,18 +99,14 @@
       if (result.err) {
         errLabelCheckMP.text(`ERROR: ${err.message}`)
           .show()
-        return
-      }
-
-      if (result.match) {
+      } else if (result.match) {
+        $('#resetMasterPassInput').hide()
         errLabelCheckMP.text(RESPONSES.correct)
           .css('color', COLORS.good)
           .show()
-        return
       } else {
         errLabelCheckMP.text(RESPONSES.incorrect)
           .show()
-        return
       }
     })
   </script>
