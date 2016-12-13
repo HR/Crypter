@@ -192,6 +192,7 @@ the original MasterPass used</small>
 on</small>
 
 Achieve full portability in two simple steps:
+
 1. [Export MasterPass credentials on the source machine](#how-do-i-export-my-masterpass-credentials)
 2. [Import the MasterPass on the target machine](#how-do-i-import-my-masterpass-credentials)
 
@@ -252,6 +253,7 @@ back to the verify screen where you verify it and your done! :).
 ### What is a valid MasterPass?
 Crypter checks for a valid MasterPass when set and won't allow you to set an
 invalid one. A MasterPass is valid when it adheres to the following rules:
+
 - It is at least 8 characters long
 - It has at least one alphabet character (A-Z, a-z)
 - It has at least one number character (0-9)
@@ -277,8 +279,8 @@ should appear from which locate your ```credentials.crypter``` file and select
 it. You should see the a success message to confirm successful import shortly
 after which you will have to verify the MasterPass for the credentials.
 
-NOTE: I you do not remember the MasterPass for the credentials then you will not
-be able to decrypt any files originally encrypted with it.
+NOTE: If you forget the MasterPass for the credentials then you will
+not be able to decrypt any files originally encrypted with it using Crypter.
 
 
 ## Dev
