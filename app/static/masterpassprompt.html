@@ -1,115 +1,58 @@
 <!doctype html>
 <html>
 
-<head>
-  <meta charset="utf-8">
-  <title>Verify the MasterPass</title>
-  <link rel="stylesheet" href="styles/masterpassprompt.css" charset="utf-8">
-  <script src="js/common.js" charset="utf-8"></script>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <title>Verify the MasterPass</title>
+    <link rel="stylesheet" href="styles/masterpassprompt.css" charset="utf-8">
+    <script src="js/common.js" type="text/javascript"></script>
+    <script src="js/masterpassprompt.js" type="text/javascript"></script>
+  </head>
 
-<body>
-  <section id="masterpassprompt">
-    <img class="header" src="images/icons/masterpass.svg"/>
-    <div class="panel-container">
-      <div id="panel-default" class="current">
-        <header>
-          <h1>Verify the MasterPass</h1>
-          <p>Please enter your Master Password
-          </p>
-          <img class="info" src="images/icons/info.svg" alt="" />
-          <p class="info">A MasterPassKey will be derived from the MasterPass. This will then be used to derive the keys used to encrypt your data.</p>
-        </header>
-        <form onsubmit="return false;">
-          <div class="masterpass">
-            <input type="password" name="masterpass" id="checkMasterPassInput" placeholder="********" />
-            <label for="checkMasterPassInput" id="checkMasterPassLabel"></label>
-            <a href="#" id="resetMasterPassInput" class="navigationLink" data-panel="reset">Forgot it?</a>
-          </div>
-          <button id="checkMasterPass">Verify</button>
-        </form>
+  <body>
+    <section id="masterpassprompt">
+      <img class="header" src="images/icons/masterpass.svg"/>
+      <div class="panel-container">
+        <div id="panel-default" class="current">
+          <header>
+            <h1>Verify the MasterPass</h1>
+            <p>Please enter your Master Password
+            </p>
+            <img class="info" src="images/icons/info.svg" alt=""/>
+            <p class="info">A MasterPassKey will be derived from the MasterPass. This will then be used to derive the keys used to encrypt your data.</p>
+          </header>
+          <form onsubmit="return false;">
+            <div class="masterpass">
+              <input type="password" name="masterpass" id="checkMasterPassInput" placeholder="********"/>
+              <label for="checkMasterPassInput" id="checkMasterPassLabel"></label>
+              <a href="#" id="resetMasterPassInput" class="navigationLink" data-panel="reset">Forgot it?</a>
+            </div>
+            <button id="checkMasterPass">Verify</button>
+          </form>
+        </div>
+        <div id="panel-reset">
+          <header>
+            <h1>Reset the MasterPass</h1>
+            <p>Please enter a new secure MasterPass
+            </p>
+            <img class="info" src="images/icons/info.svg"/>
+            <p class="info">The MasterPass is used to derive the data encryption keys. So any encrypted data using former MasterPass would not be decryptable.</p>
+          </header>
+          <form onsubmit="return false;">
+            <div class="masterpass">
+              <input type="password" name="name" id="setMasterPassInput" placeholder="********" required/>
+              <label for="setMasterPassInput" id="setMasterPassLabel"></label>
+            </div>
+            <button id="setMasterPass">Reset</button>
+          </form>
+          <footer>
+            <a class="back navigationLink" data-panel="default">
+              <img src="images/icons/back.svg"/>
+            </a>
+          </footer>
+        </div>
       </div>
-      <div id="panel-reset">
-        <header>
-          <h1>Reset the MasterPass</h1>
-          <p>Please enter a new secure MasterPass
-          </p>
-          <img class="info" src="images/icons/info.svg" />
-          <p class="info">The MasterPass is used to derive the data encryption keys. So any encrypted data using former MasterPass would not be decryptable.</p>
-        </header>
-        <form onsubmit="return false;">
-          <div class="masterpass">
-            <input type="password" name="name" id="setMasterPassInput" placeholder="********" required/>
-            <label for="setMasterPassInput" id="setMasterPassLabel"></label>
-          </div>
-          <button id="setMasterPass">Reset</button>
-        </form>
-        <footer>
-          <a class="back navigationLink" data-panel="default">
-            <img src="images/icons/back.svg" />
-          </a>
-        </footer>
-      </div>
-    </div>
-
-  </section>
-  <script type="text/javascript">
-    'use strict'
-    // Get error label element
-    var errLabelCheckMP = $('#checkMasterPassLabel')
-    var errLabelSetMP = $('#setMasterPassLabel')
-    const DONE_TIMEOUT = 5000
-
-    $(window).on('load', function() {
-      // When DOM has loaded...
-      navigate('default')
-      // hide error label and make red
-      errLabelCheckMP.hide().css('color', COLORS.bad)
-
-      // attach event listener to checkMasterPass button
-      $('#checkMasterPass').click(function() {
-          validateMasterPass('checkMasterPass', errLabelCheckMP)
-        })
-      // attach click event listener to setMasterPass button
-      $('#setMasterPass').click(function() {
-        // Event handler function
-        validateMasterPass('setMasterPass', errLabelSetMP)
-      })
-    })
-
-    /* Event listeners */
-    ipcRenderer.on('setMasterPassResult', function(event, err) {
-      if (err) {
-        // If error occured
-        // Display the error
-        errLabelSetMP.text(`ERROR: ${err.message}`.toUpperCase()).css('color', COLORS.bad).show()
-      } else {
-        // Display the MasterPass set success
-        errLabelSetMP.text(RESPONSES.setSuccess).css('color', COLORS.good).show()
-        // Change note text to give further instruction and higlight it
-        $('p.note').html(RESPONSES.resetSuccess).css('color', COLORS.highlight)
-        // Close navigate back to chechMP after 5 seconds
-        setTimeout(function() {
-          navigate('default')
-        }, DONE_TIMEOUT)
-      }
-    })
-
-    ipcRenderer.on('checkMasterPassResult', function(event, result) {
-      if (result.err) {
-        errLabelCheckMP.text(`ERROR: ${err.message}`)
-          .show()
-      } else if (result.match) {
-        $('#resetMasterPassInput').hide()
-        errLabelCheckMP.text(RESPONSES.correct)
-          .css('color', COLORS.good)
-          .show()
-      } else {
-        errLabelCheckMP.text(RESPONSES.incorrect)
-          .show()
-      }
-    })
-  </script>
-</body>
+    </section>
+  </body>
 
 </html>

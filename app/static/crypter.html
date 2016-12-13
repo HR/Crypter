@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>Crypter</title>
-    <link rel="stylesheet" href="styles/crypter.css" charset="utf-8">
-    <script src="js/common.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="styles/crypter.css">
+    <script src="js/common.js" type="text/javascript"></script>
+    <script src="js/crypter.js" type="text/javascript"></script>
   </head>
 
   <body>
@@ -87,114 +88,6 @@
           </tr>
         </table>
       </div>
-    </script>
-
-    <script type="text/javascript">
-      'use strict'
-      const dialog = remote.dialog
-      const paths = remote.getGlobal('paths')
-      const path = require('path')
-      // Get DOM elements
-      let errLabel = $('#errLabel')
-      let fileInput = $('#fileInput')
-      let fileInputD = document.getElementById('fileInput')
-      let cryptedContainer = $('#crypted-container')
-      let fileInputText = fileInput.find('#fileInputText')
-      let ifileInputText = fileInputText.text()
-      // compile the crypted template
-      let crypted_template = Handlebars.compile($('#crypted-template').html())
-
-      $(window).on('load', function() {
-        // attach  event
-        fileInputD.ondragover = function() {
-          return false
-        }
-        fileInputD.ondragleave = fileInputD.ondragend = function() {
-          return false
-        }
-
-        turnFileInputOn()
-      })
-
-      /* Event listeners */
-      ipcRenderer.on('cryptedFile', function(event, file) {
-        logger.verbose(`IPCRENDER cryptedFile emitted`)
-        var fileHTML = crypted_template(file)
-        cryptedContainer.html(fileHTML)
-        fileInputText.text(ifileInputText)
-        navigate('crypted')
-        turnFileInputOn()
-      })
-      ipcRenderer.on('decryptedFile', function(event, file) {
-        logger.verbose(`IPCRENDER decryptedFile emitted`)
-        var fileHTML = crypted_template(file)
-        cryptedContainer.html(fileHTML)
-        fileInputText.text(ifileInputText)
-        navigate('crypted')
-        turnFileInputOn()
-      })
-      ipcRenderer.on('cryptErr', function(event, err) {
-        logger.verbose(`IPCRENDER cryptErr emitted`)
-        errLabel.text(`ERROR: ${err}`).show()
-        fileInputText.text(ifileInputText)
-        turnFileInputOn()
-      })
-
-      /* Helper functions */
-      function turnFileInputOff() {
-        fileInput.off('click', handler)
-        fileInput.ondrop = function() {
-          return false
-        }
-      }
-      function turnFileInputOn() {
-        fileInput.on('click', handler)
-        fileInputD.ondrop = function(e) {
-          e.preventDefault()
-          logger.info(`ONDROP fired!`)
-          if (e.dataTransfer.files[0].path) {
-            logger.info(`Got file: ${e.dataTransfer.files[0].path}`)
-            handleFile(e.dataTransfer.files[0].path)
-          }
-          return false
-        }
-      }
-      function handleFile(file) {
-        let fileExt = path.extname(file)
-        turnFileInputOff()
-        errLabel.hide()
-
-        if (fileExt.toLowerCase() === CRYPTO.EXT) {
-          // Decrypt file
-          fileInputText.text(`Decrypting ${path.basename(file)}...`)
-          // send file to decryptFile controller function
-          ipcRenderer.send('decryptFile', file)
-        } else {
-          // Encrypt file
-          fileInputText.text(`Encrypting ${path.basename(file)}...`)
-          // send file to crypter controller function
-          ipcRenderer.send('cryptFile', file)
-        }
-      }
-
-      function handler() {
-        // Prevent multiple input dialog
-        fileInput.off('click', handler)
-        // Create file input dialog
-        dialog.showOpenDialog({
-          title: 'Choose a file to Encrypt',
-          defaultPath: paths.documents, // open dialog at home directory
-          properties: ['openFile']
-        }, function(filePath) {
-          // callback for selected file returns undefined if file not selected by user
-          if (filePath && filePath.length === 1) {
-            handleFile(filePath[0])
-          } else {
-            fileInput.on('click', handler)
-          }
-        })
-        return false
-      }
     </script>
   </body>
 

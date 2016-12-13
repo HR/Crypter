@@ -83,7 +83,7 @@ h1 + p {
     transform : translateX(-110%);
     transition: transform 0.5s;
     & > button {
-      margin-top: 1rem;
+      display: none;
     }
   }
   & > div.current {
@@ -92,6 +92,10 @@ h1 + p {
     overflow : hidden;
     transform: none;
     position : relative;
+    & > button {
+      margin-top: 1rem;
+      display: inline-block;
+    }
   }
   & > div.current ~ div {
     transform: translateX(110%);
