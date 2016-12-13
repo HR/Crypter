@@ -14,9 +14,9 @@ const {CRYPTO, REGEX} = require('../config')
 
 // Helper functions
 
-let readFile = function (path) {
-  return new Promise(function (resolve, reject) {
-    fs.readFile(path, 'utf-8', function (err, data) {
+let readFile = (path) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, 'utf-8', (err, data) => {
       if (err) reject(err)
       resolve(data)
     })
@@ -25,8 +25,8 @@ let readFile = function (path) {
 
 // Exports
 
-exports.crypt = function (origpath, masterpass) {
-  return new Promise(function (resolve, reject) {
+exports.crypt = (origpath, masterpass) => {
+  return new Promise((resolve, reject) => {
     // Resolve the destination path for encrypted file
     exports.encrypt(origpath, masterpass)
       .then((creds) => {
@@ -47,9 +47,9 @@ exports.crypt = function (origpath, masterpass) {
   })
 }
 
-exports.encrypt = function (origpath, mpkey) {
+exports.encrypt = (origpath, mpkey) => {
   // Encrypts any arbitrary data passed with the pass
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     // derive the encryption key
     exports.deriveKey(mpkey, null, CRYPTO.DEFAULTS.ITERATIONS)
       .then((dcreds) => {
@@ -59,7 +59,7 @@ exports.encrypt = function (origpath, mpkey) {
         let credsDestPath = `${tempd}/creds`
         logger.verbose(`tempd: ${tempd}, dataDestPath: ${dataDestPath}, credsDestPath: ${credsDestPath}`)
         // create tempd temporary directory
-        fs.mkdirs(tempd, function (err) {
+        fs.mkdirs(tempd, (err) => {
           if (err)
             reject(err)
           logger.verbose(`Created ${tempd} successfully`)
@@ -115,7 +115,7 @@ exports.encrypt = function (origpath, mpkey) {
             })
             tarDest.on('finish', () => {
               // Remove temporary dir tempd
-              fs.remove(tempd, function (err) {
+              fs.remove(tempd, (err) => {
                 if (err)
                   reject(err)
                 // return all the credentials and parameters used for encryption
@@ -139,9 +139,9 @@ exports.encrypt = function (origpath, mpkey) {
   })
 }
 
-exports.decrypt = function (origpath, mpkey) {
+exports.decrypt = (origpath, mpkey) => {
   // Decrypts a crypto format file passed with the pass
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     // Extract a directory
     let tempd = `${path.dirname(origpath)}/${CRYPTO.DECRYPTION_TMP_DIR}`
     let dataOrigPath = `${tempd}/${CRYPTO.FILE_DATA}`
@@ -199,7 +199,7 @@ exports.decrypt = function (origpath, mpkey) {
                   dataDest.on('finish', () => {
                     logger.verbose(`Encrypted to ${dataDestPath}`)
                     // Now delete tempd (temporary directory)
-                    fs.remove(tempd, function (err) {
+                    fs.remove(tempd, (err) => {
                       if (err)
                         reject(err)
                       logger.verbose(`Removed temp dir ${tempd}`)
@@ -229,8 +229,8 @@ exports.decrypt = function (origpath, mpkey) {
   })
 }
 
-exports.deriveKey = function (pass, psalt) {
-  return new Promise(function (resolve, reject) {
+exports.deriveKey = (pass, psalt) => {
+  return new Promise((resolve, reject) => {
     // reject with error if pass not provided
     if (!pass) reject(new Error('Pass to derive key from not provided'))
 
@@ -254,8 +254,8 @@ exports.deriveKey = function (pass, psalt) {
 }
 
 // create a sha256 hash of the MasterPassKey
-exports.genPassHash = function (masterpass, salt) {
-  return new Promise(function (resolve, reject) {
+exports.genPassHash = (masterpass, salt) => {
+  return new Promise((resolve, reject) => {
     // convert the masterpass (of type Buffer) to a hex encoded string
     // if it is not already one
     const pass = (masterpass instanceof Buffer) ? masterpass.toString('hex') : masterpass
@@ -279,7 +279,7 @@ exports.genPassHash = function (masterpass, salt) {
 }
 
 // Convert array string of buffer to hex string
-exports.buf2hex = function (arr) {
+exports.buf2hex = (arr) => {
   const buf = new Buffer(arr)
   return buf.toString('hex')
 }

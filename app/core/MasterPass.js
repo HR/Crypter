@@ -10,8 +10,8 @@ const _ = require('lodash')
 // TODO: Make independent from global obj! use param instead
 
 // Check MasterPass
-exports.check = function (masterpass) {
-  return new Promise(function(resolve, reject) {
+exports.check = (masterpass) => {
+  return new Promise((resolve, reject) => {
     // deriveKey using the salt originally used to generate the
     // MasterPassKey
     crypto.deriveKey(masterpass, global.creds.mpsalt)
@@ -34,8 +34,8 @@ exports.check = function (masterpass) {
 }
 
 // Set MasterPass
-exports.set = function (masterpass) {
-  return new Promise(function(resolve, reject) {
+exports.set = (masterpass) => {
+  return new Promise((resolve, reject) => {
     // Derive the MasterPassKey from the supplied masterpass
     crypto.deriveKey(masterpass, null)
       .then((mp) => {

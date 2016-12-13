@@ -26,7 +26,7 @@ function Db (path, cb) {
   const self = this
 
   // Create db if does not exist
-  fs.ensureFile(path, function (err) {
+  fs.ensureFile(path, (err) => {
     if (err) {
       throw err
       return
@@ -63,8 +63,8 @@ function Db (path, cb) {
 Db.prototype.flush = function () {
   logger.verbose('flushing _db to fs')
   const self = this
-  return new Promise(function (resolve, reject) {
-    fs.outputJson(self.path, self._db, function (err) {
+  return new Promise((resolve, reject) => {
+    fs.outputJson(self.path, self._db, (err) => {
       if (err) reject(err)
       // successfully flushed db to disk
       resolve()
@@ -76,7 +76,7 @@ Db.prototype.flush = function () {
 Db.prototype.put = function (key, value) {
   logger.verbose(`Putting ${key} in _db`)
   const self = this
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     // set value with key in the internal db
     self._db[key] = value
     // then flush db to fs
@@ -94,16 +94,16 @@ Db.prototype.put = function (key, value) {
 Db.prototype.get = function (key) {
   logger.verbose(`Getting ${key} from _db`)
   const self = this
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     // Return the object if it exists otherwise return false
     resolve(_.has(self._db, key) ? self._db[key] : false)
   })
 }
 
-Db.prototype.close = function() {
+Db.prototype.close = function () {
   logger.verbose(`Closing _db`)
   const self = this
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     // Check if db is open
     if (self.open) {
       self.flush()
@@ -122,7 +122,7 @@ Db.prototype.close = function() {
 Db.prototype.saveGlobalObj = function (objName) {
   logger.verbose(`Saving global obj ${objName} to _db`)
   const self = this // get reference to the class instance
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     // If object not empty then save it in db
     if (!_.isEmpty(global[objName])) {
       // stringify object and store as a string with objName as key
@@ -150,7 +150,7 @@ Db.prototype.saveGlobalObj = function (objName) {
 Db.prototype.restoreGlobalObj = function (objName) {
   logger.verbose(`Restoring global obj ${objName} from _db`)
   const self = this // get reference to th class instance
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     // get serialized object from db
     self.get(objName).then((serializedObj) => {
       try {
