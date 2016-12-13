@@ -63,6 +63,7 @@ macOS, simply run the following command in the Terminal
 $ brew cask install crypter
 ```
 
+
 ## Status
 [Crypter v3.0](https://github.com/HR/Crypter/releases/tag/v3.0.0) is a fully
 fledged crypto app that can decrypt and encrypt any arbitrary data. This version
@@ -80,6 +81,7 @@ this up!
 
 If you have any suggestions then please open an issue!
 
+
 ## Screens (some of them)
 <p align="center">
   <img src="/.github/Welcome_screen.png?raw=true" alt="Welcome screen" width="100%">
@@ -87,6 +89,7 @@ If you have any suggestions then please open an issue!
   <img src="/.github/MasterPass_screen.png?raw=true" alt="MasterPass screen" width="40%">
   <img src="/.github/Settings_screen.png?raw=true" alt="Settings screen" width="85%">
 </p>
+
 
 ## Crypto
 > One key to derive them all!
@@ -111,20 +114,21 @@ MasterPassKey is derived from the MasterPass using a newly generated set of
 (random) credentials. These credentials are used to re-derive the MasterPassKey
 every time the Crypter is executed (i.e. the app is launched).
 
-
 Authentication is used by default since the AES-256-GCM symmetric block cipher
-is used.
+is used. This ensures data integrity is verified on decryption and allowing the
+detection of tampering or data corruption.
 
+The following are the crypto defaults and can be found under ```app/config.js```
 ```js
 // Crypto defaults
-let defaults = {
-  iterations: 50000, // file encryption key derivation iterations
-  keyLength: 32, // encryption key length
-  ivLength: 12, // initialisation vector length
-  algorithm: 'aes-256-gcm', // encryption algorithm
-  digest: 'sha256', // PBKDF2 hash function
-  hash_alg: 'sha256', // default hashing function
-  mpk_iterations: 100000 // MasterPassKey derivation iterations
+{
+  ITERATIONS: 50000, // file encryption key derivation iterations
+  KEYLENGTH: 32, // encryption key length
+  IVLENGTH: 12, // initialisation vector length
+  ALGORITHM: 'aes-256-gcm', // encryption algorithm
+  DIGEST: 'sha256', // digest function
+  HASH_ALG: 'sha256', // hashing function
+  MPK_ITERATIONS: 100000 // MasterPassKey derivation iterations
 }
 ```
 
@@ -136,13 +140,15 @@ defaults and flushes the encrypted data to a file in the directory, namely
 directory, namely 'creds'. Finally, Crypter compresses the directory to a tar
 archive with the name of the user selected file and the '.crypto' extension
 appended to it.
+
 ### Decryption process
 The decryption process is essentially the inverse of the encryption process
 where the temporary hidden directory is named '.decrypting'. The credentials are
 read from the creds file and used to decrypt the data file to the original user
 file with its original extension which is deduced from the CRYPTO file name
 (e.g. extension for "file.txt.crypto" would be ".txt").
-### Crypto file format
+
+### CRYPTO file format
 A .CRYPTO file is the product of the Crypter encryption process. It stores both
 the encrypted version of the user selected file and the public credentials used
 to encrypt it (and needed to decrypt it). The file itself it is a tar archive
@@ -198,7 +204,9 @@ Achieve full portability in two simple steps:
 
 Refer to the FAQs for instructions on how to perform the above steps.
 
+
 ## Security
+
 ### Security-first practice
 Crypter follows a security-first practice. This means that security is the
 highest priority and first consideration. This means that, while Crypter seeks
@@ -237,6 +245,7 @@ more info
 Crypter generates a new set of random credentials for deriving the MasterPassKey
 every time the MasterPass is set (at setup) or reset. Using randomness, mitigate
 brute-force attacks which drastically improves security.
+
 
 ## FAQs
 
@@ -287,6 +296,12 @@ not be able to decrypt any files originally encrypted with it using Crypter.
 The "dev" branch is the development branch and may be unstable. However the
 "master" branch will always be kept stable.  So issue pull requests for
 improvements mainly on the dev branch.
+
+### Configurations
+All major configurations that you can do are found under ```app/config.js```.
+This includes changing the crypto settings. But be advised that doing so may
+break functionality and certainly risks [portability](#portability).
+
 ### Install (dependencies)
 To install all dependencies run
 ```
@@ -333,6 +348,7 @@ To build the app for your **Windows** x84 and/or x64
 ```
 $ build -w --x64 --ia32
 ```
+
 
 ## License
 The MIT License (MIT)
