@@ -153,7 +153,8 @@ needed to reconstruct the particular encryption key and verify data integrity.
 These can be stored publicly without compromising security as it is fairly
 impossible (by current standards) to reconstruct the encryption key without the
 MasterPass and its credentials. The credentials are stored in the creds file of
-the .crypto archive (as delineated above) in the following format:
+the [CRYPRO file](#crypto-file) archive (as delineated above) in the following
+format:
 ```
 Crypter#iv#authTag#salt
 ```
@@ -161,11 +162,13 @@ Crypter#iv#authTag#salt
 
 ## CRYPTO file
 
-### format
-A .CRYPTO file is the product of the Crypter encryption process. It stores both
+### Format
+A CRYPTO file is the product of the Crypter encryption process. It stores both
 the encrypted version of the user file and the public credentials used to
-encrypt it (and needed to decrypt it). The file itself it is a tar archive in
-the following structure:
+encrypt it (and needed to decrypt it). It has a ```.crypto``` file extension
+which is appended to the full file name (including the extension) of the file
+originally encrypted. The file itself it is a tar archive in the following
+structure:
 ```c
 someFile.crypto
 ├── data // the encrypted version of the user selected file
@@ -350,7 +353,7 @@ To export the MasterPass credentials, you have to first open the Crypter
 settings (see above). From the settings, click on the "Export" button. A select
 folder dialog should appear from which select the folder that you wish to export
 the credentials to. Finally, you should see the a success message to confirm
-successful export.
+successful export. The exported MasterPass credentials file is always named ```credentials.crypter```.
 
 ### How do I import my MasterPass credentials?
 To export the MasterPass credentials, assuming that you have already
@@ -360,11 +363,14 @@ should appear from which locate your ```credentials.crypter``` file and select
 it. You should see the a success message to confirm successful import shortly
 after which you will have to verify the MasterPass for the credentials.
 
-NOTE: If you forget the MasterPass for the credentials then you will
-not be able to decrypt any files originally encrypted with it using Crypter.
+NOTE: while Crypter does not require the MasterPass credentials file to be
+exactly named ```credentials.crypter```, it does require the file's contents to
+be unaltered from when it was exported from Crypter. If it has been altered then
+the import may fail.
 
+<br/>
 
-## Dev
+## Development
 The "dev" branch is the development branch and may be unstable. However the
 "master" branch will always be kept stable.  So issue pull requests for
 improvements mainly on the dev branch.
