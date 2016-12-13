@@ -1,8 +1,8 @@
 ### Prerequisites
 
-* [ ] Can you reproduce the problem
+* [ ] Can you reproduce the problem?
 * [ ] Did you read the entire [README.md](https://github.com/HR/Crypter/blob/master/readme.md)?
-* [ ] Did you read the [FAQs](https://github.com/HR/Crypter/blob/master/readme.md#FAQs)?
+* [ ] Did you read the [FAQs](https://github.com/HR/Crypter/blob/master/readme.md#faqs)?
 * [ ] Do you fully understand how Crypter works and how to use it?
 * [ ] Did you check the [issues](https://github.com/HR/Crypter/issues) to see if your bug or enhancement is already reported?
 
@@ -28,4 +28,4 @@ Release (full release name):
 
 Operating System (name and version):
 
-You can find the full release name under https://github.com/HR/Crypter/releases. For version ```3.0.0``` and up, the version is found under ```Crypter > About```.
+You can find the full release name under https://github.com/HR/Crypter/releases. For version ```3.0.0``` and up, the version is found under ```Crypter > About``` or just in the menu ```Version X.Y.Z```.

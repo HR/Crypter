@@ -147,16 +147,6 @@ read from the creds file and used to decrypt the data file to the original user
 file with its original extension which is deduced from the CRYPTO file name
 (e.g. extension for "file.txt.crypto" would be ".txt").
 
-### CRYPTO file format
-A .CRYPTO file is the product of the Crypter encryption process. It stores both
-the encrypted version of the user selected file and the public credentials used
-to encrypt it (and needed to decrypt it). The file itself it is a tar archive
-with the following structure:
-```c
-someFile.crypto
-├── data // the encrypted version of the user selected file
-└── creds // the public credentials used to encrypt it
-```
 ### Public credentials
 Certain credentials are required to decrypt the encrypted data as they are
 needed to reconstruct the particular encryption key and verify data integrity.
@@ -169,9 +159,43 @@ Crypter#iv#authTag#salt
 ```
 
 
-## Portability
+## CRYPTO file
+
+### format
+A .CRYPTO file is the product of the Crypter encryption process. It stores both
+the encrypted version of the user file and the public credentials used to
+encrypt it (and needed to decrypt it). The file itself it is a tar archive in
+the following structure:
+```c
+someFile.crypto
+├── data // the encrypted version of the user selected file
+└── creds // the public credentials used to encrypt it
+```
+
+### Reusing the same MasterPass
+You may try to decrypt a CRYPTO file with the same
+MasterPass<sup>[1](#same-masterpass)</sup> set that you used while encrypting it
+but the MasterPass is being reused. This means that it has either been _reset to
+the same MasterPass (was previously different)_ or _set the same MasterPass on
+Crypter on a different machine (see [portability](#portability))_. If this is
+the case then you most probably will come across the following error:
+```
+ERROR: Unsupported state or unable to authenticate data
+```
+What happens is that the MasterPassKey originally used to derive the encryption
+key on is **not the same** as the MasterPassKey derived with the reused
+MasterPass because the set of credentials generated with the original MasterPass
+is **different** (due to randomness). As a result your encryption key that is
+derived from the MasterPassKey is different and so incorrect which yields the
+error.
+
+See [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
+for instructions on how to successfully reuse the same MasterPass.
+
+### Portability
 When you encrypt a CRYPTO file on one machine with Crypter and try to decrypt it
-with Crypter running on a different machine then you most probably will come
+with Crypter running on a different machine with the same
+MasterPass<sup>[1](#same-masterpass)</sup> then you most probably will come
 across the following error:
 ```
 ERROR: Unsupported state or unable to authenticate data
@@ -184,25 +208,33 @@ derived from the MasterPassKey is different and so incorrect which yields the
 error. See the subsequent section on how to achieve full portability between
 multiple machines.
 
-### Full portability
-To achieve full portability the set of (MasterPassKey) credentials need to be
-exported from Crypter on the source machine<sup>[1](#source)</sup> and imported
-into Crypter on the target machine<sup>[2](#target)</sup> that you wish to
+To achieve portability the set of (MasterPassKey) credentials need to be
+exported from Crypter on the source machine<sup>[2](#source)</sup> and imported
+into Crypter on the target machine<sup>[3](#target)</sup> that you wish to
 decrypt the CRYPTO file.
-<br/>
-<small id="source">[1] The machine on which it was originally encrypted on with
-the original MasterPass used</small>
-<br/>
-<small id="target">[2] The machine on which you wish to decrypt the CRYPTO file
-on</small>
 
-Achieve full portability in two simple steps:
+See [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
+for instructions on how to successfully achieve CRYPTO file portability.
 
-1. [Export MasterPass credentials on the source machine](#how-do-i-export-my-masterpass-credentials)
-2. [Import the MasterPass on the target machine](#how-do-i-import-my-masterpass-credentials)
+### Achieving portability and same MasterPass reuse
+This can be achieved in two simple steps:
+
+1. [Export MasterPass credentials on the source machine<sup>[2](#source)</sup>](#how-do-i-export-my-masterpass-credentials)
+2. [Import the MasterPass on the target machine<sup>[3](#target)</sup>](#how-do-i-import-my-masterpass-credentials)
 
 Refer to the FAQs for instructions on how to perform the above steps.
 
+<hr>
+<small id="same-masterpass">[1] Refers to the MasterPass that was set
+in Crypter at the time the CRYPTO file was encrypted (i.e. the correct
+MasterPass).</small>
+<br/>
+<small id="source">[2] The machine on which it was originally encrypted on with
+the original MasterPass used</small>
+<br/>
+<small id="target">[3] The machine on which you wish to decrypt the CRYPTO file
+on</small>
+<br/>
 
 ## Security
 
@@ -268,6 +300,12 @@ and after a few seconds...it's done! You should see all the information about
 file and the original encryption such as the encryption key and path of the
 decrypted file in a new screen. By default, the decrypted file has "Decrypted"
 with a space prepended to its file name with the original extension.
+
+### Can not decrypt a CRYPTO file on a different machine with the same MasterPass?
+Refer to [Portability](#portability) and [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
+
+### Can not decrypt a CRYPTO file with the same MasterPass?
+Refer to [Reusing the same MasterPass](#reusing-the-same-masterpass) and [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
 
 ### Where do my files get encrypted/decrypted to?
 By default, every source file you encrypt or decrypt gets encrypted or decrypted
