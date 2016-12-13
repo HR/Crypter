@@ -162,9 +162,10 @@
       })
 
       ipcRenderer.on('importResult', function (event, err) {
+        window.erro = err
         if (err) {
           console.log(JSON.stringify(err))
-          errLabel.text(`ERROR: ${err.message}`.toUpperCase()).css('color', COLORS.bad).show()
+          errLabel.text(`ERROR: ${err}`.toUpperCase()).css('color', COLORS.bad).show()
         } else {
           errLabel.text(RESPONSES.importSuccess).css('color', COLORS.good).show()
         }

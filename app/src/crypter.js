@@ -41,7 +41,7 @@ exports.window = function (global, callback) {
       .catch((err) => {
         logger.info(`cryptFile error`)
         logger.error(err)
-        webContents.send('cryptErr', err)
+        webContents.send('cryptErr', err.message)
       })
   })
 

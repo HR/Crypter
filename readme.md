@@ -67,9 +67,10 @@ $ brew cask install crypter
 [Crypter v3.0](https://github.com/HR/Crypter/releases/tag/v3.0.0) is a fully
 fledged crypto app that can decrypt and encrypt any arbitrary data. This version
 has been released and fully tested for macOS (OSX), Linux (for all distros via
-[AppImage](http://appimage.org/)) and Windows (32 & 64 bit). All internal modules
-are fully tested (90%+ coverage). Some end-to-end tests have been written (see
-test/ui/test.js) but end-to-end testing is still mostly a WIP.
+[AppImage](http://appimage.org/)) and Windows (32 & 64 bit). All core modules
+(modules that provide the core functionality) are fully tested (90%+ coverage).
+Some end-to-end tests have been written but end-to-end testing is still mostly a
+WIP.
 
 The next major release is [v3.1](https://github.com/HR/Crypter/milestones/v3.0)
 and any work for it is done on the "dev" branch. All features to be implemented
@@ -81,10 +82,10 @@ If you have any suggestions then please open an issue!
 
 ## Screens (some of them)
 <p align="center">
-  <img src="/github/Welcome_screen.png?raw=true" alt="Welcome screen" width="100%">
-  <img src="/github/Crypter_screen.png?raw=true" alt="Crypter screen" width="40%">
-  <img src="/github/MasterPass_screen.png?raw=true" alt="MasterPass screen" width="40%">
-  <img src="/github/Settings_screen.png?raw=true" alt="Settings screen" width="85%">
+  <img src="/.github/Welcome_screen.png?raw=true" alt="Welcome screen" width="100%">
+  <img src="/.github/Crypter_main_screen.png?raw=true" alt="Crypter screen" width="40%">
+  <img src="/.github/MasterPass_screen.png?raw=true" alt="MasterPass screen" width="40%">
+  <img src="/.github/Settings_screen.png?raw=true" alt="Settings screen" width="85%">
 </p>
 
 ## Crypto
@@ -139,10 +140,10 @@ appended to it.
 The decryption process is essentially the inverse of the encryption process
 where the temporary hidden directory is named '.decrypting'. The credentials are
 read from the creds file and used to decrypt the data file to the original user
-file with its original extension which is deduced from the crypto file name
+file with its original extension which is deduced from the CRYPTO file name
 (e.g. extension for "file.txt.crypto" would be ".txt").
 ### Crypto file format
-A .crypto file is the product of the Crypter encryption process. It stores both
+A .CRYPTO file is the product of the Crypter encryption process. It stores both
 the encrypted version of the user selected file and the public credentials used
 to encrypt it (and needed to decrypt it). The file itself it is a tar archive
 with the following structure:
@@ -164,7 +165,7 @@ Crypter#iv#authTag#salt
 
 
 ## Portability
-When you encrypt a crypto file on one machine with Crypter and try to decrypt it
+When you encrypt a CRYPTO file on one machine with Crypter and try to decrypt it
 with Crypter running on a different machine then you most probably will come
 across the following error:
 ```
@@ -175,15 +176,38 @@ key on one machine is **not the same** as the MasterPassKey derived on a
 different machine because the set of credentials generated on the other machine
 is **different** (due to randomness). As a result your encryption key that is
 derived from the MasterPassKey is different and so incorrect which yields the
-error.
+error. See the subsequent section on how to achieve full portability between
+multiple machines.
 
 ### Full portability
 To achieve full portability the set of (MasterPassKey) credentials need to be
-exported from Crypter on one machine and imported into Crypter on another
-machine. The functionality is currently being implemented, see [#6](https://github.com/HR/Crypter/issues/6) for
-[v3.0](https://github.com/HR/Crypter/milestone/2).
+exported from Crypter on the source machine<sup>[1](#source)</sup> and imported into Crypter on the
+target machine<sup>[2](#target)</sup> that you wish to decrypt the CRYPTO file.
+<br/>
+<small id="source">[1] The machine on which it was originally encrypted on with the original
+MasterPass used</small>
+<br/>
+<small id="target">[2] The machine on which you wish to decrypt the CRYPTO file on</small>
+
+Achieve full portability in two simple steps:
+1. Export MasterPass credentials on the source machine
+2. Import the MasterPass on the target machine
+
+The following subsection delineate how to perform the above steps.
+#### Exporting MasterPass credentials
+To export the MasterPass credentials, you have to first open the Crypter
+settings (see FAQs). From the settings, click on the "Export" button. A select
+folder dialog should appear from which select the folder that you wish to export
+the credentials to. Finally, you should see the a success message to confirm
+successful export.
+
+#### Setting MasterPass
+Ti
+
+#### Importing MasterPass credentials
 
 ## Security
+Crypter never stores your MasterPass in memory nor on the filesystem. This substantially improves the security of you MasterPass. Whenever you provide your MasterPass to Crypter,
 
 ### Security-first practice
 Crypter follows a security-first practice. This means that security is the
@@ -264,6 +288,10 @@ To build the app for your **Windows** x84 and/or x64
 ```
 $ build -w --x64 --ia32
 ```
+## FAQs
+### How do I access settings?
+Access the Crypter setting by either clicking on the cog icon in the main
+Crypter window or going to  ```Crypter > Preferences...``` from the menu.
 
 ## License
 The MIT License (MIT)

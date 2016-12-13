@@ -12,11 +12,11 @@ const LessPluginCleanCSS = require('less-plugin-clean-css')
 const cleancss = new LessPluginCleanCSS({ advanced: true })
 const LESS_FILES = './app/static/styles/*.less'
 
-gulp.task('default', ['less', 'watch'], shell.task([
-  // Run electron
-  // 'ELECTRON_RUN_AS_NODE=true node_modules/.bin/electron node_modules/node-inspector/bin/inspector.js'
-  'unset TEST_RUN && npm run start'
-  // 'node_modules/.bin/electron --debug-brk=5858 .'
+gulp.task('default', ['less'], shell.task([
+    // Run electron
+    // 'ELECTRON_RUN_AS_NODE=true node_modules/.bin/electron node_modules/node-inspector/bin/inspector.js'
+    'unset TEST_RUN && npm run start'
+    // 'node_modules/.bin/electron --debug-brk=5858 .'
 ]))
 
 gulp.task('run', function () {

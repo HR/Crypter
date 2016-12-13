@@ -17,9 +17,9 @@ cache:
 init:
   - git config --global core.autocrlf input
 
-# Only build if commit message contains 'build'
+# Only build if commit message contains '[build]'
 # only_commits:
-#   message: /build/
+#   message: /\[build\]/
 
 install:
   - ps: Install-Product node $env:NODE_VERSION $env:PLATFORM

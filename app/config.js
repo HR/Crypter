@@ -44,6 +44,9 @@ module.exports = {
     DOCS: 'https://github.com/HR/Crypter/blob/master/readme.md',
     REPORT_ISSUE: 'https://github.com/HR/Crypter/issues/new'
   },
+  ERRORS: {
+    INVALID_MASTERPASS_CREDS_FILE: 'Not a valid Crypter credentials file!',
+  },
   ICONS: {
     BASE_PATH: ICONS_BASE_PATH,
     CRYPTER: `${ICONS_BASE_PATH}/Crypter.svg`,

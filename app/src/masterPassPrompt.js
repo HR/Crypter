@@ -56,7 +56,7 @@ exports.window = function (global, callback) {
       })
       .catch((err) => {
         // Inform user of error (on render side)
-        webContents.send('checkMasterPassResult', err)
+        webContents.send('checkMasterPassResult', err.message)
         // set error
         error = err
         // Close after 1 second
@@ -88,7 +88,7 @@ exports.window = function (global, callback) {
       })
       .catch((err) => {
         // Inform user of the error that occured while setting the MasterPass
-        webContents.send('setMasterPassResult', err)
+        webContents.send('setMasterPassResult', err.message)
         error = err
       })
   })

@@ -44,7 +44,8 @@ exports.window = function (global, callback) {
       })
       .catch((err) => {
         // Inform user of the error that occured while setting the MasterPass
-        webContents.send('setMasterPassResult', err)
+        logger.error(err)
+        webContents.send('setMasterPassResult', err.message)
         error = err
       })
   })

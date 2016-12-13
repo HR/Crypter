@@ -1,5 +1,5 @@
 const {app, ipcMain, BrowserWindow} = require('electron')
-const {CRYPTO, VIEWS, SETTINGS} = require('../config')
+const {CRYPTO, VIEWS, SETTINGS, ERRORS} = require('../config')
 const logger = require('winston')
 const fs = require('fs-extra')
 const _ = require('lodash')
@@ -27,7 +27,7 @@ exports.window = function (global, callback) {
     fs.outputJson(file, global.creds, function (err) {
       if (err) {
         logger.error(err)
-        webContents.send('exportResult', err)
+        webContents.send('exportResult', err.message)
       } else {
         // Successfully exported
         webContents.send('exportResult', null)
@@ -38,9 +38,10 @@ exports.window = function (global, callback) {
   ipcMain.on('import', (event, file) => {
     logger.verbose(`SETTINGS: import event emitted, got ${file}`)
     fs.readJson(file, global.creds, function (err, credsObj) {
+      const invalidCredsErr = new Error(ERRORS.INVALID_MASTERPASS_CREDS_FILE)
       if (err) {
         logger.error(err)
-        webContents.send('importResult', err)
+        webContents.send('importResult', err.message)
       } else {
         let isCredsObjProp = function (prop, index, array) {
           return credsObj.hasOwnProperty(prop)
@@ -61,7 +62,7 @@ exports.window = function (global, callback) {
             app.emit('app:relaunch')
           }, SETTINGS.RELAUNCH_TIMEOUT);
         } else {
-          webContents.send('importResult', new Error('Not a valid Crypter credentials file!'))
+          webContents.send('importResult', invalidCredsErr.message)
         }
 
       }
