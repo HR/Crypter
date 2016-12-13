@@ -14,6 +14,8 @@ const OFFSET = SPEED * 1.1
 let errLabel
 
 $(window).on('load', function () {
+  // Load jQuery marquee plugin
+  window.$.marquee = window.jQuery.marquee = require('jquery.marquee')
   // Get error label
   errLabel = $('#setMasterPassLabel')
   // When DOM has loaded... hide error label and make red
