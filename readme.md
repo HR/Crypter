@@ -220,21 +220,22 @@ for instructions on how to successfully achieve CRYPTO file portability.
 This can be achieved in two simple steps:
 
 <ol>
-  <li><a href="#how-do-i-export-my-masterpass-credentials">Export MasterPass credentials on the source machine</a><sup><a href="#2">2</a></sup></li>
-  <li><a href="#how-do-i-import-my-masterpass-credentials">Import the MasterPass on the target machine</a><sup><a href="#3">3</a></sup></li>
+  <li><a href="#how-do-i-export-my-masterpass-credentials">Export MasterPass credentials on the source machine</a><sup><a href="#source">2</a></sup></li>
+  <li><a href="#how-do-i-import-my-masterpass-credentials">Import the MasterPass on the target machine</a><sup><a href="#target">3</a></sup></li>
 </ol>
 
 Refer to the FAQs for instructions on how to perform the above steps.
 
 <hr>
-######[1]
-Refers to the MasterPass that was set in Crypter at the time the CRYPTO file was
-encrypted (i.e. the correct MasterPass).
-######[2]
-The machine on which it was originally encrypted on with the original MasterPass
-used
-######[3]
-The machine on which you wish to decrypt the CRYPTO file on
+
+<a name="same-masterpass"></a> [1] Refers to the MasterPass that was set in
+Crypter at the time the CRYPTO file was encrypted (i.e. the correct MasterPass).
+
+<a name="source"></a> [2] The machine on which it was originally encrypted on
+with the original MasterPass used.
+
+<a name="target"></a> [3] The machine on which you wish to decrypt the CRYPTO
+file on.
 
 
 ## Security
