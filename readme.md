@@ -50,7 +50,7 @@ This is based on [Crypto.Sync](https://github.com/HR/CryptoSync) (an end-to-end
 cloud encryption client) which is a more elaborate implementation of the idea.
 So please check it out as well!
 
-Link to this page: https://git.io/Crypter.info
+Link to this README: https://git.io/Crypter.info
 
 ## Installation
 All prebuilt binaries for all major platforms are available under
@@ -58,9 +58,8 @@ All prebuilt binaries for all major platforms are available under
 
 Crypter is also available to install via [Homebrew Cask](http://caskroom.io) for
 macOS, simply run the following command in the Terminal
-
 ```bash
-$ brew cask install crypter
+$ brew update && brew cask install crypter
 ```
 
 
@@ -73,7 +72,7 @@ has been released and fully tested for macOS (OSX), Linux (for all distros via
 Some end-to-end tests have been written but end-to-end testing is still mostly a
 WIP.
 
-The next major release is [v3.1](https://github.com/HR/Crypter/milestones/v3.0)
+The next major release is [v3.1](https://github.com/HR/Crypter/milestones/v3.1)
 and any work for it is done on the "dev" branch. All features to be implemented
 for the next major version can be found at
 https://github.com/HR/Crypter/milestones/v3.1. Feel free to send PRs to speed
@@ -249,6 +248,31 @@ brute-force attacks which drastically improves security.
 
 ## FAQs
 
+### How do I encrypt a file?
+After walking through the setup, you should have a MasterPass set. Launch
+Crypter and verify it. After doing so successfully, you should get the main
+Crypter window. Here you simply drop or select the file you want to encrypt and
+after a few seconds...it's done! You should see all the information about file
+and the encryption such as the encryption key and path of the encrypted file in
+a new screen.
+
+### How do I decrypt a CRYPTO file?
+> The following instructions assume that the CRYPTO file that you wish to
+decrypt is being used with the same MasterPass that you set at setup and you
+have not reset it ever since. If this is not the case (i.e. you have reset the
+MasterPass or reset it back to the original) then refer to [portability](#portability)
+
+Launch Crypter and verify it. After doing so successfully, you should get the
+main Crypter window. Here you simply drop or select the file you want to decrypt
+and after a few seconds...it's done! You should see all the information about
+file and the original encryption such as the encryption key and path of the
+decrypted file in a new screen. By default, the decrypted file has "Decrypted"
+with a space prepended to its file name with the original extension.
+
+### Where do my files get encrypted/decrypted to?
+By default, every source file you encrypt or decrypt gets encrypted or decrypted
+(respectively) to the same directory where the source file is located.
+
 ### How do I access the Crypter settings?
 Access the Crypter setting by either clicking on the cog icon in the main
 Crypter window or going to  ```Crypter > Preferences...``` from the menu.
@@ -272,6 +296,12 @@ These rules are enforced via the following regular expression:
 ```javascript
 /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[$@!%*#?&]).{8,}$/
 ```
+### What are MasterPass credentials?
+MasterPass credentials are a set of values that are required to derive the
+MasterPassKey from the MasterPass. The values have a pseudo-random element and
+are cryptographically linked. Every MasterPass set or reset with Crypter has a
+unique set of MasterPass credentials which yield a different MasterPassKey even
+if any number of the MasterPass are the same.
 
 ### How do I export my MasterPass credentials?
 To export the MasterPass credentials, you have to first open the Crypter
