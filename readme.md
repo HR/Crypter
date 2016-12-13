@@ -228,15 +228,17 @@ Refer to the FAQs for instructions on how to perform the above steps.
 
 <hr>
 
-<a name="same-masterpass"></a> [1] Refers to the MasterPass that was set in
-Crypter at the time the CRYPTO file was encrypted (i.e. the correct MasterPass).
+<sub><a name="same-masterpass"></a> [1] Refers to the MasterPass that was set in
+Crypter at the time the CRYPTO file was encrypted (i.e. the correct
+MasterPass).</sub>
 
-<a name="source"></a> [2] The machine on which it was originally encrypted on
-with the original MasterPass used.
+<sub><a name="source"></a> [2] The machine on which it was originally encrypted
+on with the original MasterPass used.</sub>
 
-<a name="target"></a> [3] The machine on which you wish to decrypt the CRYPTO
-file on.
+<sub><a name="target"></a> [3] The machine on which you wish to decrypt the
+CRYPTO file on.</sub>
 
+<br/>
 
 ## Security
 
