@@ -3,7 +3,7 @@
  * index.js
  * Entry point for app execution
  ******************************/
-
+// Electron
 const {app, dialog} = require('electron')
 // Core
 const Db = require('./core/Db')
@@ -16,7 +16,11 @@ const settings = require('./src/settings')
 require('electron-debug')()
 
 // declare global constants
+// MasterPass credentials global
 global.creds = {}
+// User settings global
+global.settings = {}
+// Paths global (only resolved at runtime)
 global.paths = {
   mdb: `${app.getPath('userData')}/mdb`,
   userData: app.getPath('userData'),
@@ -178,10 +182,6 @@ app.on('app:relaunch', () => {
   // app.exit(0)
 })
 
-app.on('app:about', () => {
-  logger.verbose('APP: app:about event emitted')
-})
-
 /**
  * Promisification of windows
  **/
@@ -213,11 +213,7 @@ let masterPassPromptWindow = function () {
   return new Promise(function (resolve, reject) {
     masterPassPrompt.window(global, function (err, gotMP) {
       if (err) reject(err)
-      if (gotMP) {
-        resolve()
-      } else {
-        reject(new Error('Could not get MasterPass'))
-      }
+      resolve()
     })
   })
 }

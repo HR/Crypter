@@ -80,7 +80,8 @@ Db.prototype.put = function (key, value) {
     // set value with key in the internal db
     self._db[key] = value
     // then flush db to fs
-    self.flush()
+    self
+      .flush()
       .then(() => {
         resolve()
       })
@@ -106,7 +107,8 @@ Db.prototype.close = function () {
   return new Promise((resolve, reject) => {
     // Check if db is open
     if (self.open) {
-      self.flush()
+      self
+        .flush()
         .then(() => {
           self.open = false
           resolve()
@@ -129,7 +131,8 @@ Db.prototype.saveGlobalObj = function (objName) {
       try {
         // wrap serialization of object around try catch as it could throw error
         const serializedObj = JSON.stringify(global[objName])
-        self.put(objName, serializedObj)
+        self
+          .put(objName, serializedObj)
           .then(() => {
             resolve()
           })
@@ -152,19 +155,22 @@ Db.prototype.restoreGlobalObj = function (objName) {
   const self = this // get reference to th class instance
   return new Promise((resolve, reject) => {
     // get serialized object from db
-    self.get(objName).then((serializedObj) => {
-      try {
-        // deserialize object and set as global
-        global[objName] = JSON.parse(serializedObj) // try parsing JSON
-        resolve()
-      } catch (err) {
-        // if error occurs while parsing, reject promise
+    self
+      .get(objName)
+      .then((serializedObj) => {
+        try {
+          // deserialize object and set as global
+          global[objName] = JSON.parse(serializedObj) // try parsing JSON
+          resolve()
+        } catch (err) {
+          // if error occurs while parsing, reject promise
+          reject(err)
+        }
+      })
+      .catch((err) => {
+        // I/O or other error, pass it up the callback
         reject(err)
-      }
-    }).catch((err) => {
-      // I/O or other error, pass it up the callback
-      reject(err)
-    })
+      })
   })
 }
 
