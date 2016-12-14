@@ -44,15 +44,24 @@
 
 **Crypter** is an innovative, convenient and secure cross-platform crypto app
 that simplifies secure password generation and management by requiring you to
-only remember one bit, the MasterPass. All prebuilt binaries for all major
-platforms are available under
-[releases](https://github.com/HR/Crypter/releases/latest).
+only remember one bit, the MasterPass.
 
 This is based on [Crypto.Sync](https://github.com/HR/CryptoSync) (an end-to-end
 cloud encryption client) which is a more elaborate implementation of the idea.
 So please check it out as well!
 
-Short link for this page: https://git.io/Crypter.info
+Link to this page: https://git.io/Crypter.info
+
+## Installation
+All prebuilt binaries for all major platforms are available under
+[releases](https://github.com/HR/Crypter/releases/latest).
+
+Crypter is also available to install via [Homebrew Cask](http://caskroom.io) for
+macOS, simply run the following command in the Terminal
+
+```bash
+$ brew cask install crypter
+```
 
 ## Status
 [Crypter v2.0](https://github.com/HR/Crypter/releases/tag/v2.0.0) is a fully
