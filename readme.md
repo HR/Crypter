@@ -64,6 +64,19 @@ $ brew update && brew cask install crypter
 ```
 <br/>
 
+## Installation
+All prebuilt binaries for all major platforms are available under
+[releases](https://github.com/HR/Crypter/releases/latest).
+
+Crypter is also available to install via [Homebrew Cask](http://caskroom.io) for
+macOS, simply run the following command in the Terminal
+
+```bash
+$ brew cask install crypter
+```
+
+<br/>
+
 ## Status
 [Crypter v3.0](https://github.com/HR/Crypter/releases/tag/v3.0.0) is a fully
 fledged crypto app that can decrypt and encrypt any arbitrary data. This version
