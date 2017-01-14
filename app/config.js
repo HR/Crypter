@@ -62,6 +62,7 @@ module.exports = {
   },
   ERRORS: {
     INVALID_MASTERPASS_CREDS_FILE: 'Not a valid Crypter credentials file!',
+    PROMISE: 'Oops, we encountered a problem...'
   },
   COLORS: {
     bad: '#9F3A38',
@@ -70,24 +71,5 @@ module.exports = {
   },
   SETTINGS: {
     RELAUNCH_TIMEOUT: 4000
-  },
-  ICONS: {
-    BASE_PATH: ICONS_BASE_PATH,
-    CRYPTER: `${ICONS_BASE_PATH}/Crypter.svg`,
-    CRYPTED: `${ICONS_BASE_PATH}/crypt.svg`,
-    MASTERPASS: `${ICONS_BASE_PATH}/masterpass.svg`,
-    DECRYPTED: `${ICONS_BASE_PATH}/Decrypted.svg`,
-    ENCRYPTED: `${ICONS_BASE_PATH}/Encrypted.svg`,
-    DONE: `${ICONS_BASE_PATH}/done.svg`,
-    INFO: `${ICONS_BASE_PATH}/info.svg`,
-    BACK: `${ICONS_BASE_PATH}/back.svg`,
-    SETTINGS: `${ICONS_BASE_PATH}/settings.svg`,
-    UPDATE: `${ICONS_BASE_PATH}/package.svg`,
-    HEART: `${ICONS_BASE_PATH}/heart.svg`,
-    CODE: `${ICONS_BASE_PATH}/code.svg`,
-    GITHUB: `${ICONS_BASE_PATH}/mark-github.svg`,
-    STAR_REPO: `${ICONS_BASE_PATH}/star.svg`,
-    OPEN_ISSUE: `${ICONS_BASE_PATH}/issue-opened.svg`,
-    FORK_REPO: `${ICONS_BASE_PATH}/repo-forked.svg`
   }
 }

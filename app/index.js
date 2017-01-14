@@ -12,6 +12,7 @@ const crypter = require('./src/crypter')
 const masterPassPrompt = require('./src/masterPassPrompt')
 const setup = require('./src/setup')
 const settings = require('./src/settings')
+const ERRORS = require('./config').ERRORS
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')()
 
@@ -34,6 +35,7 @@ logger.info(`AppPath: ${app.getAppPath()}`)
 logger.info(`UseData Path: ${app.getPath('userData')}`)
 process.chdir(app.getAppPath())
 logger.info(`Changed cwd to: ${process.cwd()}`)
+logger.info(`Electron v${process.versions.electron}`)
 logger.info(`Electron node v${process.versions.node}`)
 
 /**
@@ -89,9 +91,11 @@ app.on('ready', function () {
             app.quit()
           })
           .catch(function (error) {
-            // Catch any fatal errors and exit
-            logger.error(`PROMISE ERR: ${error.stack}`)
-            // dialog.showErrorBox('Oops, we encountered a problem...', error.message)
+            if (error) {
+              // Catch any fatal errors and exit
+              logger.error(`PROMISE ERR: ${error.stack}`)
+              dialog.showErrorBox(ERRORS.PROMISE, error.message)
+            }
             app.quit()
           })
       } else {
@@ -107,7 +111,7 @@ app.on('ready', function () {
           .catch(function (error) {
             logger.error(`PROMISE ERR: ${error.stack}`)
             // Display error to user
-            dialog.showErrorBox('Oops, we encountered a problem...', error.message)
+            dialog.showErrorBox(ERRORS.PROMISE, error.message)
             app.quit()
           })
       }
@@ -115,7 +119,7 @@ app.on('ready', function () {
     .catch(function (error) {
       logger.error(`PROMISE ERR: ${error.stack}`)
       // Display error to user
-      dialog.showErrorBox('Oops, we encountered a problem...', error.message)
+      dialog.showErrorBox(ERRORS.PROMISE, error.message)
       app.quit()
     })
 })
@@ -217,7 +221,7 @@ let setupWindow = function () {
 let masterPassPromptWindow = function () {
   return new Promise(function (resolve, reject) {
     masterPassPrompt.window(global, function (err, gotMP) {
-      if (err) reject(err)
+      if (err || !gotMP) reject(err)
       resolve()
     })
   })

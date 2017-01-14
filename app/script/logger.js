@@ -13,8 +13,7 @@ winston.emitErrs = true
 const fileTransport = new (winston.transports.File)({
   filename: `${debugDir}/CS_debug_${moment().format('DD.MM@HH:MM').trim()}.log`,
   handleExceptions: true,
-  maxsize: 5242880, // 5MB
-  colorize: false,
+  colorize: true,
   level: 'verbose'
 })
 
