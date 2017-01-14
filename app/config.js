@@ -46,12 +46,10 @@ module.exports = {
   REGEX: {
     APP_EVENT: /^app:[\w-]+$/i,
     ENCRYPTION_CREDS: /^Crypter(.*)$/igm,
-    STRONGER_MASTERPASS: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@!%*#?&]).{8,}$/,
-    MASTERPASS: /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[$@!%*#?&]).{8,}$/
-
+    MASTERPASS: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@!%*#?&]).{8,}$/
   },
   RESPONSES: {
-    invalid: 'MUST CONTAIN 1 ALPHABET, 1 NUMBER, 1 SYMBOL AND BE AT LEAST 8 CHARACTERS',
+    invalid: 'MUST AT LEAST CONTAIN 1 UPPER & LOWER CASE ALPHABET, 1 NUMBER, 1 SYMBOL AND BE 8 CHARACTERS',
     correct: 'CORRECT MASTERPASS',
     incorrect: 'INCORRECT MASTERPASS',
     setSuccess: 'MASTERPASS SUCCESSFULLY SET',

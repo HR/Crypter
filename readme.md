@@ -361,13 +361,14 @@ Crypter checks for a valid MasterPass when set and won't allow you to set an
 invalid one. A MasterPass is valid when it adheres to the following rules:
 
 - It is at least 8 characters long
-- It has at least one alphabet character (A-Z, a-z)
+- It has at least one uppercase alphabet character (A-Z)
+- It has at least one lowercase alphabet character (a-z)
 - It has at least one number character (0-9)
 - It has at least one special character ($@!%\*#?&)
 
 These rules are enforced via the following regular expression:
 ```javascript
-/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[$@!%*#?&]).{8,}$/
+/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@!%*#?&]).{8,}$/
 ```
 ### What are MasterPass credentials?
 MasterPass credentials are a set of values that are required to derive the
