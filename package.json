@@ -113,7 +113,7 @@
     "devtron": "*",
     "electron-builder": "^10.6.1",
     "electron-packager": "^8.4.0",
-    "electron-prebuilt": "^1.4.11",
+    "electron": "^1.4.11",
     "electron-rebuild": "^1.4.0",
     "gulp": "*",
     "gulp-babel": "^6.1.2",

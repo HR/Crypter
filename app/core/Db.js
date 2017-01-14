@@ -7,7 +7,6 @@
 const _ = require('lodash')
 const logger = require('winston')
 const fs = require('fs-extra')
-// const util = require('util')
 
 /**
  * Constructor

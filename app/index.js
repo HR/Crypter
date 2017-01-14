@@ -164,13 +164,18 @@ app.on('app:open-settings', () => {
   // Check if not already opened
   if (settingsWindowNotOpen) {
     settingsWindowNotOpen = false
-    settingsWindow().then(() => {
-      logger.verbose('APP: closed settingsWindow')
-      // Closed so not open anymore
-      settingsWindowNotOpen = true
-    })
+    settingsWindow()
+      .then(() => {
+        logger.verbose('APP: closed settingsWindow')
+        // Closed so not open anymore
+        settingsWindowNotOpen = true
+      })
   }
+})
 
+app.on('app:check-updates', () => {
+  logger.verbose('APP: app:check-updates event emitted')
+  // Check for updates
 })
 
 app.on('app:relaunch', () => {
