@@ -42,6 +42,7 @@ describe("Crypter Core Modules' tests", function () {
   const DB_TEST_FILE_PATH = `${global.paths.tmp}/db`
   const BUF2HEX_TEST_ARR = [248, 27, 158, 201, 66, 216, 80, 254, 81, 104, 238, 9, 1, 231, 134, 106, 8, 202, 44, 89, 231, 61, 99, 139, 167, 162, 21, 216, 127, 85, 142, 86]
   const BUF2HEX_TEST_HEX_EXPECTED = 'f81b9ec942d850fe5168ee0901e7866a08ca2c59e73d638ba7a215d87f558e56'
+  const SAFEEQ_TEST_HEX = 'f81b9ec942d850f35168ee0901e7866a08ca2c59e73d638ba7a215d87f558e56'
 
   // Before all tests have run
   before(() => {
@@ -64,6 +65,13 @@ describe("Crypter Core Modules' tests", function () {
     it('should convert string buffer to hex string', function () {
       const b2hr = crypto.buf2hex(BUF2HEX_TEST_ARR)
       expect(b2hr).to.equal(BUF2HEX_TEST_HEX_EXPECTED)
+    })
+    it('should check if two strings are equal time safely', function () {
+      expect(crypto.timingSafeEqual(BUF2HEX_TEST_HEX_EXPECTED, BUF2HEX_TEST_HEX_EXPECTED)).to.be.true
+      expect(crypto.timingSafeEqual(BUF2HEX_TEST_HEX_EXPECTED, SAFEEQ_TEST_HEX)).to.be.false
+      expect(crypto.timingSafeEqual(SAFEEQ_TEST_HEX, BUF2HEX_TEST_HEX_EXPECTED)).to.be.false
+      expect(crypto.timingSafeEqual(SAFEEQ_TEST_HEX, BUF2HEX_TEST_HEX_EXPECTED)).to.be.false
+      expect(crypto.timingSafeEqual('ew', 'we4')).to.throw('TypeError: Input buffers must have the same length')
     })
     describe('deriveKey (and genPassHash)', function () {
       // deriveKey uses genPassHash Promise internally. Testing the derived
@@ -98,7 +106,7 @@ describe("Crypter Core Modules' tests", function () {
           })
           .then((dmp) => {
             // The deserialized salt should successfully create a Buffer
-            expect(dmp.salt instanceof Buffer).to.be.true
+            expect(Buffer.isBuffer(dmp.salt)).to.be.true
             // The deserialized salt should have been used to recreate the
             // Buffer orginally used to derive the key correctly which should
             // result in the newly derive MPK equalling to the originally

@@ -327,7 +327,8 @@ file and the original encryption such as the encryption key and path of the
 decrypted file in a new screen. By default, the decrypted file has "Decrypted"
 with a space prepended to its file name with the original extension.
 
-### Why am I getting `Corrupted Crypter file or trying to decrypt on a different machine.` error?
+### Why am I getting `Corrupted Crypter file or trying to decrypt on a different
+### machine.` error?
 Either your Crypter file (i.e. the `data` file) is corrupt/tempered or you are
 on a different machine than the one used to encrypt the file (or have previously
 reset the MasterPass). For the latter refer to [Portability](#portability) and

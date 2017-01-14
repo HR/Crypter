@@ -17,9 +17,9 @@ exports.window = function (global, callback) {
     movable: true
   })
   // create menu from menuTemplate
-  // const menu = Menu.buildFromTemplate(menuTemplate)
+  const menu = Menu.buildFromTemplate(menuTemplate)
   // set menu
-  // Menu.setApplicationMenu(menu)
+  Menu.setApplicationMenu(menu)
 
   let webContents = win.webContents
 

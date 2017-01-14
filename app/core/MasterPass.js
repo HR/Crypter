@@ -20,10 +20,10 @@ exports.check = (masterpass) => {
         return crypto.genPassHash(mpk.key, global.creds.mpksalt)
       })
       .then((mpk) => {
-        // check if MasterPassKey hash is equal to the MasterPassKey hash
-        // (stored in mdb)
-        const match = _.isEqual(global.creds.mpkhash, mpk.hash)
-        // return teh match and derived key
+        // check if MasterPassKey hash is equal to the MasterPassKey hash in mdb
+        // Use timingSafeEqual to protect against timing attacks
+        const match = crypto.timingSafeEqual(global.creds.mpkhash, mpk.hash)
+        // return the match and derived key
         resolve({match, key: mpk.key})
       })
       .catch((err) => {

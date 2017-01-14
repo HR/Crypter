@@ -12,7 +12,7 @@ const crypter = require('./src/crypter')
 const masterPassPrompt = require('./src/masterPassPrompt')
 const setup = require('./src/setup')
 const settings = require('./src/settings')
-const ERRORS = require('./config').ERRORS
+const {ERRORS} = require('./config')
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')()
 

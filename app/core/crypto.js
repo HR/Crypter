@@ -252,7 +252,7 @@ exports.deriveKey = (pass, psalt) => {
     // If psalt is not provided then generate a cryptographically secure salt
     // and assign it
     const salt = (psalt)
-      ? ((psalt instanceof Buffer)
+      ? ((Buffer.isBuffer(psalt))
         ? psalt
         : new Buffer(psalt))
       : scrypto.randomBytes(CRYPTO.DEFAULTS.KEYLENGTH)
@@ -271,7 +271,7 @@ exports.genPassHash = (masterpass, salt) => {
   return new Promise((resolve, reject) => {
     // convert the masterpass (of type Buffer) to a hex encoded string
     // if it is not already one
-    const pass = (masterpass instanceof Buffer) ? masterpass.toString('hex') : masterpass
+    const pass = Buffer.isBuffer(masterpass) ? masterpass.toString('hex') : masterpass
 
     // if salt provided then the MasterPass is being checked
     // if salt not provided then the MasterPass is being set
@@ -291,8 +291,22 @@ exports.genPassHash = (masterpass, salt) => {
   })
 }
 
-// Convert array string of buffer to hex string
+// Converts a buffer array to a hex string
 exports.buf2hex = (arr) => {
   const buf = new Buffer(arr)
   return buf.toString('hex')
+}
+
+// Compares vars in a constant time (protects against timing attacks)
+exports.timingSafeEqual = (a, b) => {
+  // convert args to buffers if not already
+  a = (Buffer.isBuffer(a)) ? a : new Buffer(a)
+  b = (Buffer.isBuffer(b)) ? b : new Buffer(b)
+  var result = 0
+  var l = a.length
+  while (l--) {
+    // bitwise comparison
+    result |= a[l] ^ b[l]
+  }
+  return result === 0
 }
