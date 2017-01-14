@@ -10,7 +10,7 @@ const scrypto = require('crypto')
 const logger = require('winston')
 const Readable = require('stream').Readable
 const tar = require('tar-fs')
-const {CRYPTO, REGEX} = require('../config')
+const {CRYPTO, REGEX, ERRORS} = require('../config')
 
 // Helper functions
 
@@ -107,17 +107,24 @@ exports.encrypt = (origpath, mpkey) => {
           credsDest.on('finish', () => {
             let tarDestPath = origpath + CRYPTO.EXT
             const tarDest = fs.createWriteStream(tarDestPath)
+            const tarPack = tar.pack(tempd)
             // Pack directory and zip into a .crypto file
-            tar.pack(tempd).pipe(tarDest)
+            tarPack.pipe(tarDest)
+
             tarDest.on('error', (err) => {
               // reject on writestream
               reject(err)
             })
+
+            tarPack.on('error', (err) => {
+              // reject on writestream
+              reject(err)
+            })
+
             tarDest.on('finish', () => {
               // Remove temporary dir tempd
               fs.remove(tempd, (err) => {
-                if (err)
-                  reject(err)
+                if (err) reject(err)
                 // return all the credentials and parameters used for encryption
                 logger.verbose('Successfully deleted tempd!')
                 resolve({
@@ -157,6 +164,12 @@ exports.decrypt = (origpath, mpkey) => {
       // reject on writestream
       reject(err)
     })
+
+    tarExtr.on('error', (err) => {
+      // reject on extraction error
+      reject(err)
+    })
+
     tarExtr.on('finish', () => {
       // Now read creds and use to decrypt data
       logger.verbose('Finished extracting')
@@ -220,7 +233,7 @@ exports.decrypt = (origpath, mpkey) => {
                 }
               })
           } else {
-            reject(new Error('Not a Crypter file (can not get salt, iv and authTag)'))
+            reject(new Error(ERRORS.DECRYPT))
           }
         }).catch((err) => {
         reject(err)

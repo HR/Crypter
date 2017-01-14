@@ -61,8 +61,15 @@ module.exports = {
     importSuccess: 'Successfully imported the credentials. You will need to verify the MasterPass for the credentials imported so Crypter will relaunch shortly.'
   },
   ERRORS: {
-    INVALID_MASTERPASS_CREDS_FILE: 'Not a valid Crypter credentials file!',
-    PROMISE: 'Oops, we encountered a problem...'
+    INVALID_MP_CREDS_FILE: 'Not a valid or corrupted Crypter credentials file!',
+    INVALID_FILE: 'Not a valid or corrupted Crypter file!',
+    AUTH_FAIL: 'Corrupted Crypter file or trying to decrypt on a different machine. See git.io/Crypter.info#faqs',
+    PROMISE: 'Oops, we encountered a problem...',
+    DECRYPT: 'Not a Crypter file (can not get salt, iv and authTag)',
+    MS: {
+      INVALID_FILE: 'Invalid tar header. Maybe the tar is corrupted or it needs to be gunzipped?',
+      AUTH_FAIL: 'Unsupported state or unable to authenticate data'
+    }
   },
   COLORS: {
     bad: '#9F3A38',

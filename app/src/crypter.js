@@ -1,5 +1,5 @@
 const {app, ipcMain, Menu, BrowserWindow} = require('electron')
-const {VIEWS} = require('../config')
+const {VIEWS, ERRORS} = require('../config')
 const crypto = require('../core/crypto')
 const menuTemplate = require('./menu')
 const logger = require('winston')
@@ -56,7 +56,13 @@ exports.window = function (global, callback) {
       .catch((err) => {
         logger.info(`decryptFile error`)
         logger.error(err)
-        webContents.send('cryptErr', err.message)
+        if (err.message == ERRORS.MS.INVALID_FILE) {
+          webContents.send('cryptErr', ERRORS.INVALID_FILE)
+        } else if (err.message == ERRORS.MS.AUTH_FAIL) {
+          webContents.send('cryptErr', ERRORS.AUTH_FAIL)
+        } else {
+          webContents.send('cryptErr', err.message)
+        }
       })
   })
 

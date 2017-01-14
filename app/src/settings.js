@@ -38,7 +38,7 @@ exports.window = function (global, callback) {
   ipcMain.on('import', (event, file) => {
     logger.verbose(`SETTINGS: import event emitted, got ${file}`)
     fs.readJson(file, global.creds, function (err, credsObj) {
-      const invalidCredsErr = new Error(ERRORS.INVALID_MASTERPASS_CREDS_FILE)
+      const invalidCredsErr = new Error(ERRORS.INVALID_MP_CREDS_FILE)
       if (err) {
         logger.error(err)
         webContents.send('importResult', err.message)

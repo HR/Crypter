@@ -133,7 +133,7 @@ Authentication is used by default since the AES-256-GCM symmetric block cipher
 is used. This ensures data integrity is verified on decryption and allowing the
 detection of tampering or data corruption.
 
-The following are the crypto defaults and can be found under ```app/config.js```
+The following are the crypto defaults and can be found under `app/config.js`
 ```js
 // Crypto defaults
 {
@@ -182,7 +182,7 @@ Crypter#iv#authTag#salt
 ### Format
 A CRYPTO file is the product of the Crypter encryption process. It stores both
 the encrypted version of the user file and the public credentials used to
-encrypt it (and needed to decrypt it). It has a ```.crypto``` file extension
+encrypt it (and needed to decrypt it). It has a `.crypto` file extension
 which is appended to the full file name (including the extension) of the file
 originally encrypted. The file itself it is a tar archive in the following
 structure:
@@ -317,7 +317,8 @@ a new screen.
 > The following instructions assume that the CRYPTO file that you wish to
 decrypt is being used with the same MasterPass that you set at setup and you
 have not reset it ever since. If this is not the case (i.e. you have reset the
-MasterPass or reset it back to the original) then refer to [portability](#portability)
+MasterPass or reset it back to the original) then refer to
+[portability](#portability)
 
 Launch Crypter and verify it. After doing so successfully, you should get the
 main Crypter window. Here you simply drop or select the file you want to decrypt
@@ -326,11 +327,19 @@ file and the original encryption such as the encryption key and path of the
 decrypted file in a new screen. By default, the decrypted file has "Decrypted"
 with a space prepended to its file name with the original extension.
 
+### Why am I getting `Corrupted Crypter file or trying to decrypt on a different machine.` error?
+Either your Crypter file (i.e. the `data` file) is corrupt/tempered or you are
+on a different machine than the one used to encrypt the file (or have previously
+reset the MasterPass). For the latter refer to [Portability](#portability) and
+[Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
+
 ### Can not decrypt a CRYPTO file on a different machine with the same MasterPass?
-Refer to [Portability](#portability) and [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
+Refer to [Portability](#portability) and
+[Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
 
 ### Can not decrypt a CRYPTO file with the same MasterPass?
-Refer to [Reusing the same MasterPass](#reusing-the-same-masterpass) and [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
+Refer to [Reusing the same MasterPass](#reusing-the-same-masterpass) and
+[Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
 
 ### Where do my files get encrypted/decrypted to?
 By default, every source file you encrypt or decrypt gets encrypted or decrypted
@@ -338,7 +347,7 @@ By default, every source file you encrypt or decrypt gets encrypted or decrypted
 
 ### How do I access the Crypter settings?
 Access the Crypter setting by either clicking on the cog icon in the main
-Crypter window or going to  ```Crypter > Preferences...``` from the menu.
+Crypter window or going to  `Crypter > Preferences...` from the menu.
 
 ### How do I reset my MasterPass?
 Reset your MasterPass by first clicking on the "Forgot it" link in the Verify
@@ -371,18 +380,19 @@ To export the MasterPass credentials, you have to first open the Crypter
 settings (see above). From the settings, click on the "Export" button. A select
 folder dialog should appear from which select the folder that you wish to export
 the credentials to. Finally, you should see the a success message to confirm
-successful export. The exported MasterPass credentials file is always named ```credentials.crypter```.
+successful export. The exported MasterPass credentials file is always named
+`credentials.crypter`.
 
 ### How do I import my MasterPass credentials?
 To export the MasterPass credentials, assuming that you have already
 successfully exported them, you have to first open the Crypter settings (see
 above). From the settings, click on the "Import" button. A select file dialog
-should appear from which locate your ```credentials.crypter``` file and select
+should appear from which locate your `credentials.crypter` file and select
 it. You should see the a success message to confirm successful import shortly
 after which you will have to verify the MasterPass for the credentials.
 
 NOTE: while Crypter does not require the MasterPass credentials file to be
-exactly named ```credentials.crypter```, it does require the file's contents to
+exactly named `credentials.crypter`, it does require the file's contents to
 be unaltered from when it was exported from Crypter. If it has been altered then
 the import may fail.
 
@@ -394,7 +404,7 @@ The "dev" branch is the development branch and may be unstable. However the
 improvements mainly on the dev branch.
 
 ### Configurations
-All major configurations that you can do are found under ```app/config.js```.
+All major configurations that you can do are found under `app/config.js`.
 This includes changing the crypto settings. But be advised that doing so may
 break functionality and certainly risks [portability](#portability).
 
@@ -422,7 +432,7 @@ $ gulp coverage
 ```
 
 ### Build
-Binaries (available under releases) have been build using Electron ```v1.1.3```.
+Binaries (available under releases) have been build using Electron ```v1.4.x```.
 Crypter uses electron-builder to build binaries so install it globally first
 prior to any build
 ```
