@@ -70,8 +70,6 @@ describe("Crypter Core Modules' tests", function () {
       expect(crypto.timingSafeEqual(BUF2HEX_TEST_HEX_EXPECTED, BUF2HEX_TEST_HEX_EXPECTED)).to.be.true
       expect(crypto.timingSafeEqual(BUF2HEX_TEST_HEX_EXPECTED, SAFEEQ_TEST_HEX)).to.be.false
       expect(crypto.timingSafeEqual(SAFEEQ_TEST_HEX, BUF2HEX_TEST_HEX_EXPECTED)).to.be.false
-      expect(crypto.timingSafeEqual(SAFEEQ_TEST_HEX, BUF2HEX_TEST_HEX_EXPECTED)).to.be.false
-      expect(crypto.timingSafeEqual('ew', 'we4')).to.throw('TypeError: Input buffers must have the same length')
     })
     describe('deriveKey (and genPassHash)', function () {
       // deriveKey uses genPassHash Promise internally. Testing the derived
