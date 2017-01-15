@@ -22,7 +22,7 @@ matrix:
 before_script:
  - chmod +x ./script/travis-build.sh
  - chmod +x ./script/build_ml.sh
- - export NODE_VERSION=6.9.1
+ - export NODE_VERSION=$(cat .node-version)
  - export TEST_RUN=true
 
 script: ./script/travis-build.sh

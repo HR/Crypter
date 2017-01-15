@@ -4,10 +4,6 @@ platform:
   - x86
   - x64
 
-environment:
-  matrix:
-  - NODE_VERSION: 6.9.1
-
 cache:
   - node_modules
   - app\node_modules
@@ -22,6 +18,7 @@ init:
 #   message: /\[build\]/
 
 install:
+  - set /p NODE_VERSION=<.node-version
   - ps: Install-Product node $env:NODE_VERSION $env:PLATFORM
   - npm install npm -g
   - npm install --no-optional
