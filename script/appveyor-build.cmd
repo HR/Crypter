@@ -2,7 +2,7 @@
 @echo off
 set keyword=build
 
-if not "x!APPVEYOR_REPO_COMMIT_MESSAGE:%keyword%=!"=="x%APPVEYOR_REPO_COMMIT_MESSAGE%" x%APPVEYOR_REPO_COMMIT_MESSAGE:build=%==x%APPVEYOR_REPO_COMMIT_MESSAGE% (
+if not x%APPVEYOR_REPO_COMMIT_MESSAGE:build=%==x%APPVEYOR_REPO_COMMIT_MESSAGE% (
   REM Commit message contains '[build]' so build
   echo Building Crypter
   build.cmd
