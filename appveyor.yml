@@ -20,6 +20,7 @@ only_commits:
 install:
   - set /p NODE_VERSION=<.node-version
   - ps: Install-Product node $env:NODE_VERSION $env:PLATFORM
+  - git reset --hard HEAD
   - npm install npm -g
 
 build_script:
