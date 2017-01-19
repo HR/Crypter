@@ -1,8 +1,9 @@
 @setlocal enableextensions enabledelayedexpansion
 @echo off
+get-host
 set keyword=build
 
-if not x%APPVEYOR_REPO_COMMIT_MESSAGE:build=%==x%APPVEYOR_REPO_COMMIT_MESSAGE% (
+If NOT %APPVEYOR_REPO_COMMIT_MESSAGE:build=%==x%APPVEYOR_REPO_COMMIT_MESSAGE% (
   REM Commit message contains '[build]' so build
   echo Building Crypter
   build.cmd
