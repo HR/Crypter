@@ -18,18 +18,18 @@
 
 <p align="center">
     <a href="https://travis-ci.org/HR/Crypter">
-        <img src="https://travis-ci.org/HR/Crypter.svg?branch=dev"
+        <img src="https://travis-ci.org/HR/Crypter.svg?branch=master"
              alt="Travis Build">
     </a>
     <a href="https://ci.appveyor.com/project/HR/crypter">
-        <img src="https://ci.appveyor.com/api/projects/status/4pa8cnlb1qnyj1xd/branch/dev?svg=true"
+        <img src="https://ci.appveyor.com/api/projects/status/4pa8cnlb1qnyj1xd/branch/master?svg=true"
              alt="AppVeyor Build">
     </a>
-    <a href="https://coveralls.io/github/HR/Crypter?branch=dev">
-        <img src="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=dev"
+    <a href="https://coveralls.io/github/HR/Crypter?branch=master">
+        <img src="https://coveralls.io/repos/github/HR/Crypter/badge.svg?branch=master"
              alt="Test Coverage">
     </a>
-    <a href="https://codeclimate.com/github/HR/Crypter?branch=dev">
+    <a href="https://codeclimate.com/github/HR/Crypter?branch=master">
         <img src="https://codeclimate.com/github/HR/Crypter/badges/gpa.svg"
              alt="CodeClimate GPA">
     </a>
