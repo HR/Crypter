@@ -73,10 +73,10 @@ has been released and fully tested for macOS (OSX), Linux (for all distros via
 Some end-to-end tests have been written but end-to-end testing is still mostly a
 WIP.
 
-The next major release is [v3.1](https://github.com/HR/Crypter/milestones/v3.1)
+The next major release is [v4.0](https://github.com/HR/Crypter/milestones/v3.1)
 and any work for it is done on the "dev" branch. All features to be implemented
 for the next major version can be found at
-https://github.com/HR/Crypter/milestones/v3.1. Feel free to send PRs to speed
+https://github.com/HR/Crypter/milestones/v4.0. Feel free to send PRs to speed
 this up!
 
 If you have any suggestions then please open an issue!
