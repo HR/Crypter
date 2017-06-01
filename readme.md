@@ -11,7 +11,7 @@
 <h4 align="center">An innovative, convenient and secure crypto app.</h4>
 <p align="center">
     <a href="https://github.com/HR/Crypter/releases/latest">
-        <img src="https://img.shields.io/badge/Download-3.0-red.svg"
+        <img src="https://img.shields.io/badge/Download-3.0-orange.svg"
             alt="Download latest release" style= "margin-bottom: 0.5rem" height="25px">
     </a>
 </p>
