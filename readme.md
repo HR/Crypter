@@ -17,6 +17,10 @@
 </p>
 
 <p align="center">
+    <a href="http://standardjs.com/">
+        <img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg"
+             alt="Standard JS Code Style">
+    </a>
     <a href="https://travis-ci.org/HR/Crypter">
         <img src="https://travis-ci.org/HR/Crypter.svg?branch=master"
              alt="Travis Build">
@@ -33,9 +37,9 @@
         <img src="https://codeclimate.com/github/HR/Crypter/badges/gpa.svg"
              alt="CodeClimate GPA">
     </a>
-    <a href="http://standardjs.com/">
-        <img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg"
-             alt="Standard JS Code Style">
+    <a href="https://github.com/HR/Crypter/releases/latest">
+        <img src="https://badged.co/HR/Crypter/total"
+             alt="Downloads">
     </a>
 </p>
 <br>
