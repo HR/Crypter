@@ -63,10 +63,8 @@
       "publish": "github"
     },
     "win": {
-      "iconUrl": "https://dl.dropboxusercontent.com/s/oh66258p4pgwwpq/Crypter.ico",
-      "target": [
-        "nsis"
-      ],
+      "icon": "build/crypto.ico",
+      "target": "nsis",
       "publish": "github"
     },
     "nsis": {}
@@ -77,7 +75,7 @@
     "linbuild": "build -l",
     "winbuild": "build -w --x64 --ia32",
     "start": "electron .",
-    "postinstall": "install-app-deps",
+    "postinstall": "electron-builder install-app-deps",
     "nodeGypReBuild": "./node_modules/.bin/electron-rebuild .",
     "electronVersion": "node_modules/.bin/electron -v | sed s/\\v//g",
     "test": "TEST_RUN=true mocha --compilers js:babel-core/register test/test.js",
