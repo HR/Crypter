@@ -2,10 +2,6 @@
 
 echo "Building for: $TRAVIS_OS_NAME"
 echo "CWD: $PWD"
-# Change dir to app to build
-cd ../app
-echo "cd ../app"
-echo "New CWD: $PWD"
 
 # remove any existing distribution
 rm -rf ../dist

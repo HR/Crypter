@@ -67,7 +67,10 @@
       "target": "nsis",
       "publish": "github"
     },
-    "nsis": {}
+    "nsis": {
+      "oneClick": true,
+      "perMachine": true
+    }
   },
   "scripts": {
     "pack": "build --dir",
