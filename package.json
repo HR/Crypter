@@ -41,8 +41,7 @@
       "icon": "build/vicon.icns",
       "iconSize": 116,
       "iconTextSize": 13,
-      "contents": [
-        {
+      "contents": [{
           "x": 240,
           "y": 135
         },
