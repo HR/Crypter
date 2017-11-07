@@ -61,10 +61,10 @@ Link to this README: https://git.io/Crypter.info
 All prebuilt binaries for all major platforms are available under
 [releases](https://github.com/HR/Crypter/releases/latest).
 
-Crypter is also available to install via [Homebrew Cask](http://caskroom.io) for
-macOS. Simply run the following command in the Terminal:
+Crypter is also on [Homebrew Cask](http://caskroom.io) for
+macOS. So to install it, simply run the following command in the Terminal:
 ```bash
-$ brew update && brew cask install crypter
+$ brew cask install crypter
 ```
 <br/>
 
