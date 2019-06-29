@@ -97,7 +97,7 @@ function handler () {
   dialog.showOpenDialog({
     title: 'Choose a file to Encrypt',
     defaultPath: paths.documents, // open dialog at home directory
-    properties: ['openFile']
+    properties: ['openFile', 'openDirectory']
   }, function (filePath) {
     // callback for selected file returns undefined if file not selected by user
     if (filePath && filePath.length === 1) {

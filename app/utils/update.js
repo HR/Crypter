@@ -10,18 +10,6 @@ function parseV(str) {
 }
 
 module.exports = {
-  isRenderer: function () {
-    // running in a web browser
-    if (typeof process === 'undefined') return true
-
-    // node-integration is disabled
-    if (!process) return true
-
-    // We're in node.js somehow
-    if (!process.type) return false
-
-    return process.type === 'renderer'
-  },
   checkUpdate: function () {
     return new Promise((resolve, reject) => {
       https.get(REPO.RELEASES_API_URL, {

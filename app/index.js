@@ -19,8 +19,8 @@ global.paths = {
   documents: app.getPath('documents')
 }
 
-const logger = require('./script/logger')
-const { checkUpdate } = require('./script/utils')
+const logger = require('./utils/logger')
+const { checkUpdate } = require('./utils/update')
 // Core
 const Db = require('./core/Db')
 // Windows

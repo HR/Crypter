@@ -2,7 +2,7 @@ const {app, ipcMain, Menu, BrowserWindow} = require('electron')
 const {VIEWS, ERRORS, WINDOW_OPTS} = require('../config')
 const crypto = require('../core/crypto')
 const menuTemplate = require('./menu')
-const logger = require('../script/logger')
+const logger = require('../utils/logger')
 
 exports.window = function (global, callback) {
   // creates a new BrowserWindow

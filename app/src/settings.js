@@ -1,6 +1,6 @@
 const {app, ipcMain, BrowserWindow} = require('electron')
 const {CRYPTO, VIEWS, SETTINGS, ERRORS, WINDOW_OPTS} = require('../config')
-const logger = require('../script/logger')
+const logger = require('../utils/logger')
 const fs = require('fs-extra')
 const _ = require('lodash')
 

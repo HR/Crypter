@@ -147,7 +147,7 @@ describe("Crypter Core Modules' tests", function () {
           return crypto.encrypt('', `${global.paths.tmp}`, global.MasterPassKey.get())
             .catch((err) => {
               expect(err).to.be.an('error')
-              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
+              expect(err.message).to.equal("ENOENT: no such file or directory, lstat")
             })
         })
       })
