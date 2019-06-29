@@ -77,12 +77,12 @@ module.exports = {
     DECRYPT: 'Not a Crypter file (can not get salt, iv and authTag)',
     MS: {
       INVALID_FILE: 'Invalid tar header. Maybe the tar is corrupted or it needs to be gunzipped?',
-      AUTH_FAIL: 'Unsupported state or unable to authenticate data'
+      AUTH_FAIL: 'Unsupported state or unable to authenticate data',
     }
   },
   COLORS: {
-    bad: '#9F3A38',
-    good: '#2ECC71',
+    bad: '#dc3545',
+    good: '#28a745',
     highlight: '#333333'
   },
   SETTINGS: {

@@ -4,8 +4,10 @@
  * Custom logger for debugging
  ******************************/
 const { createLogger, format, transports } = require('winston')
+const { isRenderer } = require('./utils')
+
 // const { app } = require('electron')
-if (process.env.TEST_RUN) {
+if (process.env.TEST_RUN || isRenderer()) {
   module.exports = createLogger({
     silent: true,
     exitOnError: false

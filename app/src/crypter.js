@@ -51,12 +51,15 @@ exports.window = function (global, callback) {
       .catch((err) => {
         logger.info(`decryptFile error`)
         logger.error(err)
-        if (err.message == ERRORS.MS.INVALID_FILE) {
-          webContents.send('cryptErr', ERRORS.INVALID_FILE)
-        } else if (err.message == ERRORS.MS.AUTH_FAIL) {
-          webContents.send('cryptErr', ERRORS.AUTH_FAIL)
-        } else {
-          webContents.send('cryptErr', err.message)
+        switch (err.message.trim()) {
+          case ERRORS.MS.INVALID_FILE:
+            webContents.send('cryptErr', ERRORS.INVALID_FILE)
+            break;
+          case ERRORS.MS.AUTH_FAIL:
+            webContents.send('cryptErr', ERRORS.AUTH_FAIL)
+            break;
+          default:
+            webContents.send('cryptErr', err.message)
         }
       })
   })
