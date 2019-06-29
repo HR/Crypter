@@ -1,8 +1,8 @@
 const {app, ipcMain, BrowserWindow} = require('electron')
-const {VIEWS} = require('../config')
+const {VIEWS, WINDOW_OPTS} = require('../config')
 const MasterPass = require('../core/MasterPass')
 const MasterPassKey = require('../core/MasterPassKey')
-const logger = require('winston')
+const logger = require('../script/logger')
 
 exports.window = function (global, callback) {
   // setup view controller
@@ -11,12 +11,7 @@ exports.window = function (global, callback) {
   let win = new BrowserWindow({
     width: 600,
     height: 400,
-    center: true,
-    show: true,
-    titleBarStyle: 'hidden-inset',
-    resizable: false,
-    maximizable: false,
-    movable: true
+    ...WINDOW_OPTS
   })
 
   let webContents = win.webContents

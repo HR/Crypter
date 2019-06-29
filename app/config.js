@@ -15,6 +15,17 @@ module.exports = {
     DOCS: 'https://github.com/HR/Crypter/blob/master/readme.md',
     REPORT_ISSUE: 'https://github.com/HR/Crypter/issues/new'
   },
+  WINDOW_OPTS: {
+    center: true,
+    show: true,
+    titleBarStyle: 'hidden',
+    resizable: false,
+    maximizable: false,
+    movable: true,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  },
   VIEWS: {
     BASE_URI: VIEWS_BASE_URI,
     MASTERPASSPROMPT: `${VIEWS_BASE_URI}/masterpassprompt.html`,

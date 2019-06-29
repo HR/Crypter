@@ -4,18 +4,8 @@
  * Entry point for app execution
  ******************************/
 // Electron
-const {app, dialog} = require('electron')
-// Core
-const Db = require('./core/Db')
-// Windows
-const crypter = require('./src/crypter')
-const masterPassPrompt = require('./src/masterPassPrompt')
-const setup = require('./src/setup')
-const settings = require('./src/settings')
-const {ERRORS} = require('./config')
-// adds debug features like hotkeys for triggering dev tools and reload
-require('electron-debug')()
 
+const {app, dialog} = require('electron')
 // declare global constants
 // MasterPass credentials global
 global.creds = {}
@@ -28,7 +18,19 @@ global.paths = {
   home: app.getPath('home'),
   documents: app.getPath('documents')
 }
+
 const logger = require('./script/logger')
+
+// Core
+const Db = require('./core/Db')
+// Windows
+const crypter = require('./src/crypter')
+const masterPassPrompt = require('./src/masterPassPrompt')
+const setup = require('./src/setup')
+const settings = require('./src/settings')
+const {ERRORS} = require('./config')
+// adds debug features like hotkeys for triggering dev tools and reload
+require('electron-debug')()
 
 // change exec path
 logger.info(`AppPath: ${app.getAppPath()}`)

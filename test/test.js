@@ -48,6 +48,8 @@ describe("Crypter Core Modules' tests", function () {
   before(() => {
     // create temporary dir
     fs.ensureDirSync(global.paths.tmp)
+    process.chdir(global.paths.tmp)
+    console.log(`    > Changed cwd to: ${process.cwd()}`)
     global.mdb = new Db(global.paths.mdb, function () {})
   })
 

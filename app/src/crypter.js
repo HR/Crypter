@@ -1,20 +1,15 @@
 const {app, ipcMain, Menu, BrowserWindow} = require('electron')
-const {VIEWS, ERRORS} = require('../config')
+const {VIEWS, ERRORS, WINDOW_OPTS} = require('../config')
 const crypto = require('../core/crypto')
 const menuTemplate = require('./menu')
-const logger = require('winston')
+const logger = require('../script/logger')
 
 exports.window = function (global, callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 350,
     height: 440,
-    center: true,
-    show: true,
-    titleBarStyle: 'hidden-inset',
-    resizable: false,
-    maximizable: false,
-    movable: true
+    ...WINDOW_OPTS
   })
   // create menu from menuTemplate
   const menu = Menu.buildFromTemplate(menuTemplate)

@@ -22,7 +22,7 @@ function navigate (panel) {
   sel.addClass('current') // apply show styling
 }
 
-function validateMasterPass (field, errLabel) {
+function validateMasterPass(field, errLabel) {
   const MPel = $(`input#${field}Input`)
   const masterpass = MPel.val()
   if (!masterpass) {

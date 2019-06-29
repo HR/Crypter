@@ -1,6 +1,6 @@
 const {app, ipcMain, BrowserWindow} = require('electron')
-const {CRYPTO, VIEWS, SETTINGS, ERRORS} = require('../config')
-const logger = require('winston')
+const {CRYPTO, VIEWS, SETTINGS, ERRORS, WINDOW_OPTS} = require('../config')
+const logger = require('../script/logger')
 const fs = require('fs-extra')
 const _ = require('lodash')
 
@@ -9,12 +9,7 @@ exports.window = function (global, callback) {
   let win = new BrowserWindow({
     width: 600,
     height: 450,
-    center: true,
-    show: true,
-    titleBarStyle: 'hidden-inset',
-    resizable: false,
-    maximizable: false,
-    movable: true
+    ...WINDOW_OPTS
   })
 
   let webContents = win.webContents

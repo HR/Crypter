@@ -7,7 +7,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const scrypto = require('crypto')
-const logger = require('winston')
+const logger = require('../script/logger')
 const Readable = require('stream').Readable
 const tar = require('tar-fs')
 const {CRYPTO, REGEX, ERRORS} = require('../config')
@@ -182,9 +182,9 @@ exports.decrypt = (origpath, mpkey) => {
             let creds = credsLine[0].split('#')
             logger.verbose(`creds: ${creds}, credsLine: ${credsLine}`)
 
-            const iv = new Buffer(creds[1], 'hex')
-            const authTag = new Buffer(creds[2], 'hex')
-            const salt = new Buffer(creds[3], 'hex')
+            const iv = Buffer.from(creds[1], 'hex')
+            const authTag = Buffer.from(creds[2], 'hex')
+            const salt = Buffer.from(creds[3], 'hex')
             logger.verbose(`Extracted data, iv: ${iv}, authTag: ${authTag}, salt: ${salt}`)
             // Read encrypted data stream
             const dataOrig = fs.createReadStream(dataOrigPath)
@@ -254,7 +254,7 @@ exports.deriveKey = (pass, psalt) => {
     const salt = (psalt)
       ? ((Buffer.isBuffer(psalt))
         ? psalt
-        : new Buffer(psalt))
+        : Buffer.from(psalt))
       : scrypto.randomBytes(CRYPTO.DEFAULTS.KEYLENGTH)
 
     // derive the key using the salt, password and default crypto setup
@@ -293,15 +293,15 @@ exports.genPassHash = (masterpass, salt) => {
 
 // Converts a buffer array to a hex string
 exports.buf2hex = (arr) => {
-  const buf = new Buffer(arr)
+  const buf = Buffer.from(arr)
   return buf.toString('hex')
 }
 
 // Compares vars in a constant time (protects against timing attacks)
 exports.timingSafeEqual = (a, b) => {
   // convert args to buffers if not already
-  a = (Buffer.isBuffer(a)) ? a : new Buffer(a)
-  b = (Buffer.isBuffer(b)) ? b : new Buffer(b)
+  a = (Buffer.isBuffer(a)) ? a : Buffer.from(a)
+  b = (Buffer.isBuffer(b)) ? b : Buffer.from(b)
   var result = 0
   var l = a.length
   while (l--) {
