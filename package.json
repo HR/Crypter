@@ -30,11 +30,13 @@
     "compression": "normal",
     "fileAssociations": {
       "ext": "crypto",
-      "name": "CRYPTO"
+      "name": "CRYPTO",
+      "description": "The Crypter encryption format. More info at git.io/Crypter.info#crypto-file"
     },
     "mac": {
       "category": "public.app-category.utilities",
-      "publish": "github"
+      "publish": "github",
+      "identity": null
     },
     "dmg": {
       "background": "build/background.tif",
@@ -73,9 +75,9 @@
     }
   },
   "scripts": {
-    "pack": "build --dir",
-    "osxbuild": "build -m",
-    "linbuild": "build -l",
+    "pack": "build --dir ",
+    "macbuild": "build -m",
+    "linbuild": "build -l --x64 --ia32",
     "winbuild": "build -w --x64 --ia32",
     "start": "node_modules/.bin/electron .",
     "postinstall": "./node_modules/.bin/electron-builder install-app-deps",

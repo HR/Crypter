@@ -11,6 +11,7 @@ const VIEWS_BASE_URI = `file://${__dirname}/static`
 module.exports = {
   REPO: {
     URL: 'https://github.com/HR/Crypter/',
+    RELEASES_API_URL: 'https://api.github.com/repos/HR/Crypter/releases/latest',
     FORK: 'https://github.com/HR/Crypter/fork',
     DOCS: 'https://github.com/HR/Crypter/blob/master/readme.md',
     REPORT_ISSUE: 'https://github.com/HR/Crypter/issues/new'

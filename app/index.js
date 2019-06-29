@@ -5,7 +5,7 @@
  ******************************/
 // Electron
 
-const {app, dialog} = require('electron')
+const { app, dialog } = require('electron')
 // declare global constants
 // MasterPass credentials global
 global.creds = {}
@@ -20,7 +20,7 @@ global.paths = {
 }
 
 const logger = require('./script/logger')
-
+const { checkUpdate } = require('./script/utils')
 // Core
 const Db = require('./core/Db')
 // Windows
@@ -28,11 +28,12 @@ const crypter = require('./src/crypter')
 const masterPassPrompt = require('./src/masterPassPrompt')
 const setup = require('./src/setup')
 const settings = require('./src/settings')
-const {ERRORS} = require('./config')
+const { ERRORS } = require('./config')
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')()
 
 // change exec path
+logger.info(`Crypter v${app.getVersion()}`)
 logger.info(`AppPath: ${app.getAppPath()}`)
 logger.info(`UseData Path: ${app.getPath('userData')}`)
 process.chdir(app.getAppPath())
@@ -68,6 +69,9 @@ const initMain = function () {
 
 // Main event handler
 app.on('ready', function () {
+  // Check for updates
+  checkUpdate()
+    .catch((err) => { logger.warn(err) })
   // Check synchronously whether paths exist
   init()
     .then((mainRun) => {
@@ -179,9 +183,23 @@ app.on('app:open-settings', () => {
   }
 })
 
-app.on('app:check-updates', () => {
+app.on('app:check-update', () => {
   logger.verbose('APP: app:check-updates event emitted')
   // Check for updates
+  checkUpdate()
+    .then((updateAvailable) => {
+      if (!updateAvailable) {
+        dialog.showMessageBox({
+          type: 'info',
+          message: 'No update available.',
+          detail: `You have the latest version Crypter ${app.getVersion()} :)`
+        })
+      }
+    })
+    .catch((err) => {
+      dialog.showErrorBox('Failed to check for update',
+        `An error occured while checking for update:\n ${err.message}`)
+    })
 })
 
 app.on('app:relaunch', () => {
