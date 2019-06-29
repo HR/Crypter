@@ -197,6 +197,7 @@ app.on('app:check-update', () => {
       }
     })
     .catch((err) => {
+      logger.warn(err)
       dialog.showErrorBox('Failed to check for update',
         `An error occured while checking for update:\n ${err.message}`)
     })
