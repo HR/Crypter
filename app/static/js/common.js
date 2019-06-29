@@ -10,6 +10,7 @@
 window.$ = window.jQuery = require('jquery')
 // Cross-view dependencies
 const {ipcRenderer, remote, shell} = require('electron')
+const { app } = remote
 const {CRYPTO, REGEX, RESPONSES, COLORS} = require('../config')
 const logger = require('winston')
 const Handlebars = require('handlebars')
@@ -57,11 +58,10 @@ $(window).on('load', function() {
 
       if (action) {
         // Is an action to perform
-        // TODO: Action (i.e. check for updates/open updater)
         if (REGEX.APP_EVENT.test(action)) {
           console.log(`Got main app event ${action}`)
-          // Emit event in main proc
-          ipcRenderer.send(action)
+          // Emit event on app
+          app.emit(action)
         } else {
           console.log(`Got render event ${action}`)
           // Emit event in render proc
