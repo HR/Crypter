@@ -27,6 +27,9 @@ before_script:
 script: ./script/travis-build.sh
 
 after_success:
+  # Cleanup
+  - rm -rf node_modules coverage .nyc_output
+  # Check if build triggered ([build] in commit message)
   - lgcm=$(git log -1 --pretty=%B | xargs echo);
     if [[ $lgcm == *"[build]"* ]]; then
       ./script/build_ml.sh;

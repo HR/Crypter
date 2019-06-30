@@ -3,9 +3,6 @@
 echo "Building for: $TRAVIS_OS_NAME"
 echo "CWD: $PWD"
 
-# remove any existing distribution
-rm -rf ../dist
-
 # make for production
 unset TEST_RUN
 export NODE_ENV=production

@@ -15,6 +15,7 @@
   },
   "build": {
     "appId": "com.github.hr.crypter",
+    "electronVersion": "5.0.6",
     "asar": false,
     "files": [
       "**/*",
@@ -80,7 +81,7 @@
     "start": "electron .",
     "postinstall": "electron-builder install-app-deps",
     "nodeGypReBuild": "electron-rebuild .",
-    "electronVersion": "electron -v | sed s/\\v//g",
+    "electronV": "electron -v | sed s/\\v//g",
     "test": "TEST_RUN=true mocha --require babel-core/register test/test.js",
     "coverage": "TEST_RUN=true nyc --reporter=lcov mocha -- test/test.js",
     "coveralls": "coveralls < coverage/lcov.info",

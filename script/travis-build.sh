@@ -15,7 +15,6 @@ nvm use "$NODE_VERSION"
 
 echo "Node $(node --version)"
 echo "NPM $(npm --version)"
-echo "Electron v$(npm run electronVersion --silent)"
 
 npm install --no-optional
 npm prune
