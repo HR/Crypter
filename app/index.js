@@ -23,6 +23,7 @@ let fileToCrypt
 let settingsWindowNotOpen = true
 
 const logger = require('electron-log')
+const { existsSync } = require('fs-extra')
 const { checkUpdate } = require('./utils/update')
 // Core
 const Db = require('./core/Db')
@@ -139,7 +140,7 @@ app.on('ready', function () {
  * Electron events
  **/
 app.on('will-finish-launching', () => {
-  // Event fired When someone drags files onto the icon while your app is running
+  // Check if launched with a file (opened with app in macOS)
   app.on('open-file', (event, file) => {
     if (app.isReady() === false) {
       // Opening when not launched yet
@@ -148,6 +149,11 @@ app.on('will-finish-launching', () => {
     }
     event.preventDefault()
   })
+
+  // Check if launched with a file (opened with app in Windows)
+  if (process.argv[1] && process.argv[1].length > 1 && existsSync(process.argv[1])) {
+    fileToCrypt = process.argv[1]
+  }
 })
 
 app.on('window-all-closed', () => {

@@ -8,7 +8,7 @@ exports.window = function (global, callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 600,
-    height: 450,
+    height: 460,
     ...WINDOW_OPTS
   })
 

@@ -10,7 +10,7 @@ exports.window = function (global, callback) {
   // creates the setup window
   let win = new BrowserWindow({
     width: 600,
-    height: 400,
+    height: 420,
     ...WINDOW_OPTS
   })
 

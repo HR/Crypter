@@ -6,6 +6,7 @@
 const dialog = remote.dialog
 const paths = remote.getGlobal('paths')
 const { basename } = require('path')
+const os = require('os')
 let errLabel, fileInput, fileInputD, cryptedContainer, fileInputText, ifileInputText, crypted_template
 
 $(window)
@@ -99,21 +100,52 @@ function disableUI() {
   errLabel.hide()
 }
 
-function handler() {
-  // Prevent multiple input dialog
-  fileInput.off('click', handler)
+function showOpenDialog(properties) {
   // Create file input dialog
   dialog.showOpenDialog({
     title: 'Choose a file to Encrypt',
     defaultPath: paths.documents, // open dialog at home directory
-    properties: ['openFile', 'openDirectory']
+    properties: properties
   }, function (filePath) {
     // callback for selected file returns undefined if file not selected by user
-    if (filePath && filePath.length === 1) {
+    if (filePath && filePath.length) {
+      // Prevent multiple input dialog
+      fileInput.off('click', handler)
+      // Select the first one
       ipcRenderer.send('cryptFile', filePath[0])
     } else {
       fileInput.on('click', handler)
     }
   })
+}
+
+function handler() {
+  if (os.platform() === 'darwin') {
+    // macOS allows selecting files and folders so just show dialog
+    showOpenDialog(['openFile', 'openDirectory'])
+  } else {
+    // Windows/Linux only allow selecting either only files or folders so ask the user to choose
+    dialog.showMessageBox({
+      type: 'question',
+      message: 'What would you like to crypt?',
+      buttons: ['File', 'Folder', 'Cancel'],
+      defaultId: 1
+    }, function(response) {
+
+      switch (response) {
+        case 0:
+          // File
+          showOpenDialog(['openFile'])
+          break;
+        case 1:
+          // Folder
+          showOpenDialog(['openDirectory'])
+          break;
+
+        default:
+      }
+    })
+  }
+
   return false
 }

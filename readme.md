@@ -46,9 +46,11 @@
 
 > Encrypt unlimited bits. Remember only a bit.
 
-**Crypter** is an innovative, convenient and secure cross-platform crypto app
-that simplifies secure password generation and management by requiring you to
-only remember one bit, the MasterPass.
+**Crypter** is a cross-platform crypto app that makes encryption and decryption
+convenient while still upholding strong security. It tackles one of the weakest
+links in most security systems today - weak passwords. It simplifies secure
+password generation and management and requires you to only remember one bit -
+your MasterPass.
 
 This is based on [Crypto.Sync](https://github.com/HR/CryptoSync) (an end-to-end
 cloud encryption client), which is a more elaborate implementation of the idea.
@@ -69,21 +71,14 @@ $ brew update && brew cask install crypter
 <br/>
 
 ## Status
-[Crypter v3.1](https://github.com/HR/Crypter/releases/tag/v3.1.0) is a crypto app
-that can decrypt and encrypt any arbitrary data. This version has been released
-and fully tested for macOS (OSX), Linux (for all distros via
-[AppImage](http://appimage.org/)) and Windows (32 & 64 bit). All core modules
-(modules that provide the core functionality) are fully tested (90%+ coverage).
-Some end-to-end tests have been written, but end-to-end testing is still mostly a
-work-in-progress.
+[Crypter v4.0](https://github.com/HR/Crypter/releases/tag/v4.0.0) is a crypto
+app that can decrypt and encrypt any arbitrary data this includes files and
+folders. This version has been released and fully tested for macOS (OSX), Linux
+(for all distros via [AppImage](http://appimage.org/)) and Windows (32 & 64
+bit). All core modules (modules that provide the core functionality) are fully
+tested (90%+ coverage).
 
-The next major release is [v4.0](https://github.com/HR/Crypter/milestone/3)
-and any work for it is done in the "dev" branch. All features to be implemented
-for the next major version can be found at
-https://github.com/HR/Crypter/milestones/v4.0. Feel free to send PRs to speed
-this up!
-
-Please open an issue if you have any suggestions!
+Please open an issue if you have any suggestions and add improvements via PRs!
 
 <br/>
 
@@ -141,18 +136,18 @@ The following are the crypto defaults and can be found under `app/config.js`:
 When encrypting a file, Crypter first creates a temporary hidden directory,
 namely '.crypting'. It then encrypts the user-selected file with the crypto
 defaults and flushes the encrypted data to a file in the directory, namely
-'data'. It also writes the public credentials to a file within the same
-directory, namely 'creds'. Finally, Crypter compresses the directory to a tar
-archive with the name of the user-selected file and the '.crypto' extension
-appended to it.
+'data'. If it is a directory then it is compressed first (tar). It also writes
+the public credentials to a file within the same directory, namely 'creds'.
+Finally, Crypter compresses the directory to a tar archive with the name of the
+user-selected file and the '.crypto' extension appended to it.
 
 ### Decryption process
 The decryption process is essentially the inverse of the encryption process.
 During decryption, Crypter creates a temporary hidden directory named
 '.decrypting'. It then reads the credentials from the creds file and decrypts
-the data file into the original file with its original file name and extension,
-as deduced from the CRYPTO file name (e.g. the extension for "file.txt.crypto"
-would be ".txt").
+the data file into the original file or directory (after decompressing it) with
+its original name and extension, as deduced from the CRYPTO file name (e.g. the
+extension for "file.txt.crypto" would be ".txt").
 
 ### Public credentials
 Certain credentials are required to decrypt the encrypted data. These are
@@ -163,9 +158,9 @@ MasterPass and its credentials. These credentials are stored in the creds file o
 the [CRYPRO file](#crypto-file) archive (as delineated above) in the following
 format:
 ```
-Crypter#iv#authTag#salt
+Crypter#iv#authTag#salt#dir
 ```
-
+The `dir` part is only included for directories
 <br/>
 
 ## CRYPTO file

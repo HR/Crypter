@@ -138,7 +138,7 @@ exports.decrypt = (origpath, mpkey) => {
     let dataOrigPath = `${tempd}/${CRYPTO.FILE_DATA}`
     let credsOrigPath = `${tempd}/${CRYPTO.FILE_CREDS}`
     let dataDestPath = origpath.replace(CRYPTO.EXT, '')
-    dataDestPath = dataDestPath.replace(path.basename(dataDestPath), CRYPTO.DECRYPT_TITLE_PREPEND + path.basename(dataDestPath))
+    dataDestPath = dataDestPath.replace(path.basename(dataDestPath), path.basename(dataDestPath))
     let tarOrig = fs.createReadStream(origpath)
     let tarExtr = tar.extract(tempd)
     // Extract tar to CRYPTO.DECRYPTION_TMP_DIR directory

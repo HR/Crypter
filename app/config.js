@@ -72,7 +72,7 @@ module.exports = {
   },
   ERRORS: {
     INVALID_MP_CREDS_FILE: 'Not a valid or corrupted Crypter credentials file!',
-    INVALID_FILE: 'Not a valid or corrupted Crypter file!',
+    INVALID_FILE: 'Not a valid or corrupted CRYPTO file!',
     AUTH_FAIL: 'Corrupted Crypter file or trying to decrypt on a different machine. See git.io/Crypter.info#faqs',
     PROMISE: 'Oops, we encountered a problem...',
     DECRYPT: 'Not a Crypter file (can not get salt, iv and authTag)',

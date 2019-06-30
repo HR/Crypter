@@ -1,7 +1,7 @@
 {
   "name": "Crypter",
   "productName": "Crypter",
-  "version": "3.2.0",
+  "version": "4.0.0",
   "description": "An innovative, convenient and secure cross-platform crypto app",
   "license": "MIT",
   "repository": "https://github.com/HR/Crypter",
@@ -31,6 +31,7 @@
     "fileAssociations": {
       "ext": "crypto",
       "name": "CRYPTO",
+      "icon": "crypto",
       "description": "The Crypter encryption format. More info at git.io/Crypter.info#crypto-file"
     },
     "mac": {
@@ -43,8 +44,7 @@
       "icon": "build/vicon.icns",
       "iconSize": 116,
       "iconTextSize": 13,
-      "contents": [
-        {
+      "contents": [{
           "x": 240,
           "y": 135
         },
@@ -65,7 +65,7 @@
       "publish": "github"
     },
     "win": {
-      "icon": "build/crypto.ico",
+      "icon": "build/icon.ico",
       "target": "nsis",
       "publish": "github"
     },
@@ -75,7 +75,7 @@
     }
   },
   "scripts": {
-    "pack": "build --dir ",
+    "pack": "build --dir",
     "macbuild": "build -m",
     "linbuild": "build -l --x64 --ia32",
     "winbuild": "build -w --x64 --ia32",
