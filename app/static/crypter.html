@@ -30,10 +30,11 @@
         </div>
         <div id="panel-crypted">
           <div id="crypted-container">
-            <!-- Dynamically load file info here -->
+            <!-- Crypted panel dynamically loaded here -->
           </div>
           <p class="intrfo">
-            Note these details down!<br/>They may be erased when you navigate back
+            Note these details down<br/>
+            (for use with third-party apps)
           </p>
           <footer>
             <a class="back navigationLink" data-panel="crypt">
@@ -48,16 +49,16 @@
         <img src="images/icons/{{op}}.svg" class="header"/>
       </header>
       <div id="finfo">
-        <h3><div title="{{name}}">{{op}} {{name}}</div></h3>
+        <h3><div title="{{cryptPath}}">{{op}} {{name}}</div></h3>
         <table>
           <tr>
-            <td>Path</td>
+            <td>Original file</td>
             <td>
               <input type="text" readonly="readonly" value="{{path}}" title="{{path}}"/>
             </td>
           </tr>
           <tr>
-            <td>Crypted to</td>
+            <td>{{op}} file</td>
             <td>
               <input type="text" readonly="readonly" value="{{cryptPath}}" title="{{cryptPath}}"/>
             </td>

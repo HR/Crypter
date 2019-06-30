@@ -3,9 +3,8 @@
  * config.js
  * Provides all essential config constants
  ******************************/
- // const {app} = require('electron')
+
  // Fixed constants
-const ICONS_BASE_PATH = `${__dirname}/static/images/icons`
 const VIEWS_BASE_URI = `file://${__dirname}/static`
 
 module.exports = {
@@ -65,10 +64,10 @@ module.exports = {
     correct: 'CORRECT MASTERPASS',
     incorrect: 'INCORRECT MASTERPASS',
     setSuccess: 'MASTERPASS SUCCESSFULLY SET',
-    empty: 'PLEASE ENTER A MASTERPASS',
+    empty: 'PLEASE ENTER THE MASTERPASS',
     resetSuccess: 'You have successfully reset your MasterPass. You\'ll be redirected to verify it shortly.',
     exportSuccess: 'Successfully exported the credentials',
-    importSuccess: 'Successfully imported the credentials. You will need to verify the MasterPass for the credentials imported so Crypter will relaunch shortly.'
+    importSuccess: 'Successfully imported the credentials. You will need to verify the MasterPass for the credentials imported after Crypter relaunches.'
   },
   ERRORS: {
     INVALID_MP_CREDS_FILE: 'Not a valid or corrupted Crypter credentials file!',

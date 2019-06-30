@@ -18,20 +18,17 @@
     "asar": false,
     "files": [
       "**/*",
-      "!**/node_modules/*/{README.md,README,readme.md,readme,test}",
       "!**/node_modules/.bin",
       "!**/._*",
-      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,__pycache__,thumbs.db,.gitignore,.gitattributes,.editorconfig,.idea,appveyor.yml,.travis.yml,circle.yml,*.yml}",
-      "!script/*.sh",
-      "!script/debug",
-      "!static/styles/*.less",
+      "!**/{.*,.git,*.yml,*.md,README,readme,test*,*.less,gulpfile.js}",
+      "!script${/*}",
       "!test${/*}"
     ],
     "compression": "normal",
     "fileAssociations": {
       "ext": "crypto",
       "name": "CRYPTO",
-      "icon": "crypto",
+      "role": "Editor",
       "description": "The Crypter encryption format. More info at git.io/Crypter.info#crypto-file"
     },
     "mac": {
@@ -41,7 +38,7 @@
     },
     "dmg": {
       "background": "build/background.tif",
-      "icon": "build/vicon.icns",
+      "icon": "vicon.icns",
       "iconSize": 116,
       "iconTextSize": 13,
       "contents": [{
@@ -65,7 +62,7 @@
       "publish": "github"
     },
     "win": {
-      "icon": "build/icon.ico",
+      "icon": "icon.ico",
       "target": "nsis",
       "publish": "github"
     },

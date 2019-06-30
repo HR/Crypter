@@ -1,7 +1,7 @@
 const { app, ipcMain, Menu, BrowserWindow } = require('electron')
 const { VIEWS, ERRORS, WINDOW_OPTS } = require('../config')
 const crypto = require('../core/crypto')
-const menuTemplate = require('./menu')
+const menuTemplate = require('./mainMenu')
 const { isCryptoFile } = require('../utils/utils')
 const logger = require('electron-log')
 
@@ -12,10 +12,8 @@ exports.window = function (global, fileToCrypt, callback) {
     height: 460,
     ...WINDOW_OPTS
   })
-  // create menu from menuTemplate
-  const menu = Menu.buildFromTemplate(menuTemplate)
-  // set menu
-  Menu.setApplicationMenu(menu)
+  // create menu from menuTemplate and set
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate))
   // loads crypt.html view into the BrowserWindow
   win.loadURL(VIEWS.CRYPTER)
 

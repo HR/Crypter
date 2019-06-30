@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) Habib Rehman <Habib(dot)R@outlook(dot)com> (https://git.io/HR)
+Copyright (c) Habib Rehman <H@Rehman.email> (https://git.io/HR)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

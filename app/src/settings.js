@@ -1,4 +1,5 @@
-const {app, ipcMain, BrowserWindow} = require('electron')
+const {app, ipcMain, Menu, BrowserWindow} = require('electron')
+const menuTemplate = require('./menu')
 const {CRYPTO, VIEWS, SETTINGS, ERRORS, WINDOW_OPTS} = require('../config')
 const logger = require('electron-log')
 const fs = require('fs-extra')
@@ -11,6 +12,8 @@ exports.window = function (global, callback) {
     height: 460,
     ...WINDOW_OPTS
   })
+  // create menu from menuTemplate and set
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate))
 
   let webContents = win.webContents
   // loads settings.html view into the BrowserWindow

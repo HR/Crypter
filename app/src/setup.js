@@ -1,8 +1,9 @@
-const {app, ipcMain, BrowserWindow} = require('electron')
+const {app, ipcMain, Menu, BrowserWindow} = require('electron')
 const {VIEWS, WINDOW_OPTS} = require('../config')
 const MasterPass = require('../core/MasterPass')
 const MasterPassKey = require('../core/MasterPassKey')
 const logger = require('electron-log')
+const menuTemplate = require('./menu')
 
 exports.window = function (global, callback) {
   // setup view controller
@@ -13,6 +14,9 @@ exports.window = function (global, callback) {
     height: 420,
     ...WINDOW_OPTS
   })
+
+  // create menu from menuTemplate and set
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate))
 
   let webContents = win.webContents
   let error
