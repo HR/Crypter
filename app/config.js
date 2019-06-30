@@ -3,17 +3,28 @@
  * config.js
  * Provides all essential config constants
  ******************************/
- // const {app} = require('electron')
+
  // Fixed constants
-const ICONS_BASE_PATH = `${__dirname}/static/images/icons`
 const VIEWS_BASE_URI = `file://${__dirname}/static`
 
 module.exports = {
   REPO: {
     URL: 'https://github.com/HR/Crypter/',
+    RELEASES_API_URL: 'https://api.github.com/repos/HR/Crypter/releases/latest',
     FORK: 'https://github.com/HR/Crypter/fork',
     DOCS: 'https://github.com/HR/Crypter/blob/master/readme.md',
     REPORT_ISSUE: 'https://github.com/HR/Crypter/issues/new'
+  },
+  WINDOW_OPTS: {
+    center: true,
+    show: true,
+    titleBarStyle: 'hidden',
+    resizable: false,
+    maximizable: false,
+    movable: true,
+    webPreferences: {
+      nodeIntegration: true
+    }
   },
   VIEWS: {
     BASE_URI: VIEWS_BASE_URI,
@@ -53,25 +64,25 @@ module.exports = {
     correct: 'CORRECT MASTERPASS',
     incorrect: 'INCORRECT MASTERPASS',
     setSuccess: 'MASTERPASS SUCCESSFULLY SET',
-    empty: 'PLEASE ENTER A MASTERPASS',
+    empty: 'PLEASE ENTER THE MASTERPASS',
     resetSuccess: 'You have successfully reset your MasterPass. You\'ll be redirected to verify it shortly.',
     exportSuccess: 'Successfully exported the credentials',
-    importSuccess: 'Successfully imported the credentials. You will need to verify the MasterPass for the credentials imported so Crypter will relaunch shortly.'
+    importSuccess: 'Successfully imported the credentials. You will need to verify the MasterPass for the credentials imported after Crypter relaunches.'
   },
   ERRORS: {
     INVALID_MP_CREDS_FILE: 'Not a valid or corrupted Crypter credentials file!',
-    INVALID_FILE: 'Not a valid or corrupted Crypter file!',
+    INVALID_FILE: 'Not a valid or corrupted CRYPTO file!',
     AUTH_FAIL: 'Corrupted Crypter file or trying to decrypt on a different machine. See git.io/Crypter.info#faqs',
     PROMISE: 'Oops, we encountered a problem...',
     DECRYPT: 'Not a Crypter file (can not get salt, iv and authTag)',
     MS: {
       INVALID_FILE: 'Invalid tar header. Maybe the tar is corrupted or it needs to be gunzipped?',
-      AUTH_FAIL: 'Unsupported state or unable to authenticate data'
+      AUTH_FAIL: 'Unsupported state or unable to authenticate data',
     }
   },
   COLORS: {
-    bad: '#9F3A38',
-    good: '#2ECC71',
+    bad: '#dc3545',
+    good: '#28a745',
     highlight: '#333333'
   },
   SETTINGS: {

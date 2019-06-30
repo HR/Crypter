@@ -1,7 +1,8 @@
 'use strict'
 const assert = require('assert')
 const path = require('path')
-const expect = require('chai').expect
+const expect = require('chai')
+  .expect
 const crypto = require('../app/core/crypto.js')
 const Db = require('../app/core/Db')
 const MasterPassKey = require('../app/core/MasterPassKey')
@@ -9,6 +10,9 @@ const MasterPass = require('../app/core/MasterPass')
 const scrypto = require('crypto')
 const _ = require('lodash')
 const fs = require('fs-extra')
+const logger = require('../app/node_modules/electron-log/index')
+logger.transports.file.level = false;
+logger.transports.console.level = false;
 
 console.log(`cwd: ${process.cwd()}`)
 console.log(`__dirname: ${__dirname}`)
@@ -33,10 +37,15 @@ describe("Crypter Core Modules' tests", function () {
 
   // Declare constants
   const KEY_LENGTH = 32 // 32 bytes
+  const TEST_FOLDER_PATH = `${global.paths.tmp}/test`
+  const TEST_FOLDER_FILE_PATH = `${TEST_FOLDER_PATH}/test.txt`
+  const ENCRYTED_TEST_FOLDER_PATH = `${TEST_FOLDER_PATH}.crypto`
+  const DECRYTING_FOLDER_TEMP_DIR_PATH = `${path.dirname(ENCRYTED_TEST_FOLDER_PATH)}/.decrypting`
   const TEST_FILE_PATH = `${global.paths.tmp}/test.txt`
   const ENCRYTED_TEST_FILE_PATH = `${TEST_FILE_PATH}.crypto`
-  const DECRYTED_TEST_FILE_PATH = `${global.paths.tmp}/Decrypted test.txt`
+  const DECRYTED_TEST_FILE_PATH = `${global.paths.tmp}/test.txt`
   const TEST_FILE_CONTENTS = '#Crypter'
+  const TEST_CONTENTS_ENCODING = 'utf8'
   const DECRYTING_TEMP_DIR_PATH = `${path.dirname(ENCRYTED_TEST_FILE_PATH)}/.decrypting`
   const ENCRYTING_TEMP_DIR_PATH = `${path.dirname(ENCRYTED_TEST_FILE_PATH)}/.crypting`
   const DB_TEST_FILE_PATH = `${global.paths.tmp}/db`
@@ -48,6 +57,8 @@ describe("Crypter Core Modules' tests", function () {
   before(() => {
     // create temporary dir
     fs.ensureDirSync(global.paths.tmp)
+    process.chdir(global.paths.tmp)
+    console.log(`    > Changed cwd to: ${process.cwd()}`)
     global.mdb = new Db(global.paths.mdb, function () {})
   })
 
@@ -64,12 +75,16 @@ describe("Crypter Core Modules' tests", function () {
   describe('Crypto module', function () {
     it('should convert string buffer to hex string', function () {
       const b2hr = crypto.buf2hex(BUF2HEX_TEST_ARR)
-      expect(b2hr).to.equal(BUF2HEX_TEST_HEX_EXPECTED)
+      expect(b2hr)
+        .to.equal(BUF2HEX_TEST_HEX_EXPECTED)
     })
     it('should check if two strings are equal time safely', function () {
-      expect(crypto.timingSafeEqual(BUF2HEX_TEST_HEX_EXPECTED, BUF2HEX_TEST_HEX_EXPECTED)).to.be.true
-      expect(crypto.timingSafeEqual(BUF2HEX_TEST_HEX_EXPECTED, SAFEEQ_TEST_HEX)).to.be.false
-      expect(crypto.timingSafeEqual(SAFEEQ_TEST_HEX, BUF2HEX_TEST_HEX_EXPECTED)).to.be.false
+      expect(crypto.timingSafeEqual(BUF2HEX_TEST_HEX_EXPECTED, BUF2HEX_TEST_HEX_EXPECTED))
+        .to.be.true
+      expect(crypto.timingSafeEqual(BUF2HEX_TEST_HEX_EXPECTED, SAFEEQ_TEST_HEX))
+        .to.be.false
+      expect(crypto.timingSafeEqual(SAFEEQ_TEST_HEX, BUF2HEX_TEST_HEX_EXPECTED))
+        .to.be.false
     })
     describe('deriveKey (and genPassHash)', function () {
       // deriveKey uses genPassHash Promise internally. Testing the derived
@@ -82,13 +97,15 @@ describe("Crypter Core Modules' tests", function () {
         return crypto.deriveKey(masterpass, null)
           .then((dmp) => {
             // derived salt should be a Buffer
-            expect(dmp.salt instanceof Buffer).to.be.true
+            expect(dmp.salt instanceof Buffer)
+              .to.be.true
             mpkey = dmp.key
             return crypto.deriveKey(masterpass, dmp.salt)
           })
           .then((dmp) => {
             // The newly derive MPK should equal to the originally derived MPK
-            expect(dmp.key.toString('hex')).to.equal(mpkey.toString('hex'))
+            expect(dmp.key.toString('hex'))
+              .to.equal(mpkey.toString('hex'))
           })
       })
 
@@ -104,12 +121,14 @@ describe("Crypter Core Modules' tests", function () {
           })
           .then((dmp) => {
             // The deserialized salt should successfully create a Buffer
-            expect(Buffer.isBuffer(dmp.salt)).to.be.true
+            expect(Buffer.isBuffer(dmp.salt))
+              .to.be.true
             // The deserialized salt should have been used to recreate the
             // Buffer orginally used to derive the key correctly which should
             // result in the newly derive MPK equalling to the originally
             // derived MPK
-            expect(dmp.key.toString('hex')).to.equal(mpkey.toString('hex'))
+            expect(dmp.key.toString('hex'))
+              .to.equal(mpkey.toString('hex'))
           })
       })
     })
@@ -118,7 +137,7 @@ describe("Crypter Core Modules' tests", function () {
       // Before any tests are run in this suite
       before(function () {
         // create a test file (for encryption)
-        fs.writeFileSync(TEST_FILE_PATH, TEST_FILE_CONTENTS, 'utf8')
+        fs.writeFileSync(TEST_FILE_PATH, TEST_FILE_CONTENTS, TEST_CONTENTS_ENCODING)
       })
       after(function () {
         fs.removeSync(ENCRYTING_TEMP_DIR_PATH)
@@ -128,14 +147,21 @@ describe("Crypter Core Modules' tests", function () {
           return crypto.encrypt(TEST_FILE_PATH, global.MasterPassKey.get())
             .then((creds) => {
               // The encrypted file should exist at the ENCRYTED_TEST_FILE_PATH
-              expect(checkFileSync(ENCRYTED_TEST_FILE_PATH)).to.be.true
-              expect(checkFileSync(ENCRYTING_TEMP_DIR_PATH)).to.be.false
+              expect(checkFileSync(ENCRYTED_TEST_FILE_PATH))
+                .to.be.true
+              expect(checkFileSync(ENCRYTING_TEMP_DIR_PATH))
+                .to.be.false
               // Creds should have all the expected properties
-              expect(creds).not.be.empty
-              expect(creds.iv).not.be.empty
-              expect(creds.salt).not.be.empty
-              expect(creds.key).not.be.empty
-              expect(creds.tag).not.be.empty
+              expect(creds)
+                .not.be.empty
+              expect(creds.iv)
+                .not.be.empty
+              expect(creds.salt)
+                .not.be.empty
+              expect(creds.key)
+                .not.be.empty
+              expect(creds.tag)
+                .not.be.empty
             })
             .catch((err) => {
               throw err
@@ -144,8 +170,10 @@ describe("Crypter Core Modules' tests", function () {
         it('should throw origin error when empty filepath to encrypt is passed', function () {
           return crypto.encrypt('', `${global.paths.tmp}`, global.MasterPassKey.get())
             .catch((err) => {
-              expect(err).to.be.an('error')
-              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
+              expect(err)
+                .to.be.an('error')
+              expect(err.message)
+                .to.equal("ENOENT: no such file or directory, lstat")
             })
         })
       })
@@ -158,22 +186,30 @@ describe("Crypter Core Modules' tests", function () {
         it('should encrypt file with MPK without errors & have all expected properties', function () {
           return crypto.crypt(TEST_FILE_PATH, global.MasterPassKey.get())
             .then((file) => {
-              expect(file).not.be.empty
+              expect(file)
+                .not.be.empty
               // The file object should have all the properties
-              expect(file.path).to.equal(TEST_FILE_PATH)
-              expect(file.cryptPath).to.equal(ENCRYTED_TEST_FILE_PATH)
-              expect(file.iv).not.be.empty
-              expect(file.salt).not.be.empty
+              expect(file.path)
+                .to.equal(TEST_FILE_PATH)
+              expect(file.cryptPath)
+                .to.equal(ENCRYTED_TEST_FILE_PATH)
+              expect(file.iv)
+                .not.be.empty
+              expect(file.salt)
+                .not.be.empty
               // Expect key length to be 32 bytes (256 bits)
               // expect(file.key.length).to.equal(KEY_LENGTH);
-              expect(file.authTag).not.be.empty
+              expect(file.authTag)
+                .not.be.empty
             })
         })
         it('should throw error when MPK not supplied', function () {
           return crypto.crypt(TEST_FILE_PATH)
             .catch((err) => {
-              expect(err).to.be.an('error')
-              expect(err.message).to.equal('Pass to derive key from not provided')
+              expect(err)
+                .to.be.an('error')
+              expect(err.message)
+                .to.equal('Pass to derive key from not provided')
             })
         })
       })
@@ -183,7 +219,8 @@ describe("Crypter Core Modules' tests", function () {
       // Before any tests are run in this suite
       before(function () {
         // create a test file (for encryption)
-        expect(checkFileSync(ENCRYTED_TEST_FILE_PATH)).to.be.true
+        expect(checkFileSync(ENCRYTED_TEST_FILE_PATH))
+          .to.be.true
       })
       after(function () {
         fs.removeSync(DECRYTING_TEMP_DIR_PATH)
@@ -192,15 +229,27 @@ describe("Crypter Core Modules' tests", function () {
         it('should decrypt file with pass without errors & have all expected creds', function () {
           return crypto.decrypt(ENCRYTED_TEST_FILE_PATH, global.MasterPassKey.get())
             .then((file) => {
-              // The encrypted file should exist at the ENCRYTED_TEST_FILE_PATH
-              expect(checkFileSync(DECRYTED_TEST_FILE_PATH)).to.be.true
+              // The decrypted file should exist at the ENCRYTED_TEST_FILE_PATH
+              expect(checkFileSync(DECRYTED_TEST_FILE_PATH))
+                .to.be.true
+              // The decrypted file's contents should be the same as the orginals
+              expect(fs
+                  .readFileSync(DECRYTED_TEST_FILE_PATH)
+                  .toString(TEST_CONTENTS_ENCODING))
+                .to.equal(TEST_FILE_CONTENTS)
               // Creds should have all the expected properties
-              expect(file.op).to.equal('Decrypted')
-              expect(file.cryptPath).to.equal(DECRYTED_TEST_FILE_PATH)
-              expect(file.salt).not.be.empty
-              expect(file.key).not.be.empty
-              expect(file.authTag).not.be.empty
-              expect(checkFileSync(DECRYTING_TEMP_DIR_PATH)).to.be.false
+              expect(file.op)
+                .to.equal('Decrypted')
+              expect(file.cryptPath)
+                .to.equal(DECRYTED_TEST_FILE_PATH)
+              expect(file.salt)
+                .not.be.empty
+              expect(file.key)
+                .not.be.empty
+              expect(file.authTag)
+                .not.be.empty
+              expect(checkFileSync(DECRYTING_TEMP_DIR_PATH))
+                .to.be.false
             })
             .catch((err) => {
               throw err
@@ -209,8 +258,80 @@ describe("Crypter Core Modules' tests", function () {
         it('should throw origin error when empty filepath to encrypt is passed', function () {
           return crypto.decrypt('', global.MasterPassKey.get())
             .catch((err) => {
-              expect(err).to.be.an('error')
-              expect(err.message).to.equal("ENOENT: no such file or directory, open ''")
+              expect(err)
+                .to.be.an('error')
+              expect(err.message)
+                .to.equal("ENOENT: no such file or directory, open ''")
+            })
+        })
+      })
+    })
+
+    describe('Folder', function () {
+      // Before any tests are run in this suite
+      before(function () {
+        // create a test folder with file (for encryption)
+        fs.mkdirSync(TEST_FOLDER_PATH)
+        fs.writeFileSync(TEST_FOLDER_FILE_PATH, TEST_FILE_CONTENTS, TEST_CONTENTS_ENCODING)
+      })
+      after(function () {
+        fs.removeSync(TEST_FOLDER_PATH)
+      })
+      describe('encrypt promise', function () {
+        it('should encrypt folder with pass without errors & have all expected creds', function () {
+          return crypto.encrypt(TEST_FOLDER_PATH, global.MasterPassKey.get())
+            .then((creds) => {
+              // The encrypted folder should exist at the ENCRYTED_TEST_FOLDER_PATH
+              expect(checkFileSync(ENCRYTED_TEST_FOLDER_PATH))
+                .to.be.true
+              // Creds should have all the expected properties
+              expect(creds)
+                .not.be.empty
+              expect(creds.iv)
+                .not.be.empty
+              expect(creds.salt)
+                .not.be.empty
+              expect(creds.key)
+                .not.be.empty
+              expect(creds.tag)
+                .not.be.empty
+            })
+            .catch((err) => {
+              throw err
+            })
+        })
+      })
+      describe('decrypt promise', function () {
+        it('should decrypt folder with pass without errors & have all expected creds', function () {
+          return crypto.decrypt(ENCRYTED_TEST_FOLDER_PATH, global.MasterPassKey.get())
+            .then((folder) => {
+              // The decrypted folder should exist at the ENCRYTED_TEST_FOLDER_PATH
+              expect(checkFileSync(TEST_FOLDER_PATH))
+                .to.be.true
+              // The decrypted folder file should exist at the TEST_FOLDER_FILE_PATH
+              expect(checkFileSync(TEST_FOLDER_FILE_PATH))
+                .to.be.true
+              // The decrypted folder file's contents should be the same as the orginals
+              expect(fs
+                  .readFileSync(TEST_FOLDER_FILE_PATH)
+                  .toString(TEST_CONTENTS_ENCODING))
+                .to.equal(TEST_FILE_CONTENTS)
+              // Creds should have all the expected properties
+              expect(folder.op)
+                .to.equal('Decrypted')
+              expect(folder.cryptPath)
+                .to.equal(TEST_FOLDER_PATH)
+              expect(folder.salt)
+                .not.be.empty
+              expect(folder.key)
+                .not.be.empty
+              expect(folder.authTag)
+                .not.be.empty
+              expect(checkFileSync(DECRYTING_FOLDER_TEMP_DIR_PATH))
+                .to.be.false
+            })
+            .catch((err) => {
+              throw err
             })
         })
       })
@@ -235,8 +356,10 @@ describe("Crypter Core Modules' tests", function () {
         .then((result) => {
           // Should give match when the correct pass (the one originally set) is
           // checked
-          expect(result.match).to.be.true
-          expect(result.key.toString('hex')).to.equal(mpkey.toString('hex'))
+          expect(result.match)
+            .to.be.true
+          expect(result.key.toString('hex'))
+            .to.equal(mpkey.toString('hex'))
         })
     })
 
@@ -244,8 +367,10 @@ describe("Crypter Core Modules' tests", function () {
       const pass = ''
       return MasterPass.check(pass)
         .catch((err) => {
-          expect(err).to.be.an('error')
-          expect(err.message).to.equal('Pass to derive key from not provided')
+          expect(err)
+            .to.be.an('error')
+          expect(err.message)
+            .to.equal('Pass to derive key from not provided')
         })
     })
 
@@ -253,8 +378,10 @@ describe("Crypter Core Modules' tests", function () {
       const pass = ''
       return MasterPass.set(pass)
         .catch((err) => {
-          expect(err).to.be.an('error')
-          expect(err.message).to.equal('Pass to derive key from not provided')
+          expect(err)
+            .to.be.an('error')
+          expect(err.message)
+            .to.equal('Pass to derive key from not provided')
         })
     })
   })
@@ -267,27 +394,39 @@ describe("Crypter Core Modules' tests", function () {
       const mpkey = scrypto.randomBytes(KEY_LENGTH)
       const newMPK = scrypto.randomBytes(KEY_LENGTH)
       const MPK = new MasterPassKey(mpkey)
-      expect(MPK.get()).to.deep.equal(mpkey)
-      expect(MPK.get() instanceof Buffer).to.be.true
+      expect(MPK.get())
+        .to.deep.equal(mpkey)
+      expect(MPK.get() instanceof Buffer)
+        .to.be.true
       MPK.set(newMPK)
-      expect(MPK.get()).to.deep.equal(newMPK)
+      expect(MPK.get())
+        .to.deep.equal(newMPK)
     })
     it('should throw error when deleted and get called', function () {
       const mpkey = scrypto.randomBytes(KEY_LENGTH)
       const MPK = new MasterPassKey(mpkey)
       MPK.delete()
-      expect(MPK.get()).to.be.an('error')
-      expect(MPK.get().message).to.equal('MasterPassKey is not set')
+      expect(MPK.get())
+        .to.be.an('error')
+      expect(MPK.get()
+          .message)
+        .to.equal('MasterPassKey is not set')
     })
     it('should throw error when not instantiated with key', function () {
       const MPK = new MasterPassKey()
-      expect(MPK.get()).to.be.an('error')
-      expect(MPK.get().message).to.equal('MasterPassKey is not set')
+      expect(MPK.get())
+        .to.be.an('error')
+      expect(MPK.get()
+          .message)
+        .to.equal('MasterPassKey is not set')
     })
     it('should throw error when instantiated with data type other than a Buffer', function () {
       const MPK = new MasterPassKey()
-      expect(MPK.set('pass')).to.be.an('error')
-      expect(MPK.set().message).to.equal('MasterPassKey not a Buffer')
+      expect(MPK.set('pass'))
+        .to.be.an('error')
+      expect(MPK.set()
+          .message)
+        .to.equal('MasterPassKey not a Buffer')
     })
   })
 
@@ -316,7 +455,7 @@ describe("Crypter Core Modules' tests", function () {
     // Before any tests are run in this suite
     beforeEach((done) => {
       // open test db
-      db = new Db(DB_TEST_FILE_PATH, function(){
+      db = new Db(DB_TEST_FILE_PATH, function () {
         done()
       })
       // Declare global test object
@@ -342,7 +481,8 @@ describe("Crypter Core Modules' tests", function () {
         })
         .then(() => {
           // The object restored from the db should equal to the original object
-          expect(global.testObj).to.deep.equal(beforeSaveObj)
+          expect(global.testObj)
+            .to.deep.equal(beforeSaveObj)
         })
         .catch((err) => {
           throw (err)
@@ -356,12 +496,14 @@ describe("Crypter Core Modules' tests", function () {
         .then(() => {
           // unset global testObj
           global.testObj = null
-          expect(db.open).to.be.true
+          expect(db.open)
+            .to.be.true
           // close db
           return db.close()
         })
         .then(() => {
-          expect(db.open).to.be.false
+          expect(db.open)
+            .to.be.false
         })
         .catch((err) => {
           throw (err)
@@ -377,7 +519,8 @@ describe("Crypter Core Modules' tests", function () {
           })
           .then((value) => {
             // The received value should equal the original put value
-            expect(value).to.equal('value')
+            expect(value)
+              .to.equal('value')
           })
           .catch((err) => {
             throw err
@@ -386,7 +529,8 @@ describe("Crypter Core Modules' tests", function () {
       it('should resolve false if key not found', function () {
         return db.get('notExist')
           .then((value) => {
-            expect(value).to.equal(false)
+            expect(value)
+              .to.equal(false)
           })
           .catch((err) => {
             throw err
@@ -404,11 +548,14 @@ describe("Crypter Core Modules' tests", function () {
           })
           .catch((err) => {
             // Expect the object not to be found
-            expect(err.notFound).to.be.true
-            expect(err.status).to.equal(404)
+            expect(err.notFound)
+              .to.be.true
+            expect(err.status)
+              .to.equal(404)
             // Expect global.b to not have been restored
             // i.e. remained null (set after saveGlobalObj)
-            expect(global.b).to.be.null
+            expect(global.b)
+              .to.be.null
           })
       })
       it('should throw error when JSON stringify fails', function () {
@@ -420,8 +567,9 @@ describe("Crypter Core Modules' tests", function () {
         return db.saveGlobalObj('g')
           .catch((err) => {
             // Expect an error to occur
-            expect(err).to.be.an('error')
-            expect(err.message).to.equal('Converting circular structure to JSON')
+            expect(err)
+              .to.be.an('error')
+            expect(err instanceof TypeError).to.be.true
           })
       })
     })
@@ -431,8 +579,10 @@ describe("Crypter Core Modules' tests", function () {
         return db.restoreGlobalObj('fake')
           .catch((err) => {
             // Expect an error to occur
-            expect(err.notFound).to.be.true
-            expect(err.status).to.equal(404)
+            expect(err.notFound)
+              .to.be.true
+            expect(err.status)
+              .to.equal(404)
           })
       })
 
@@ -443,7 +593,8 @@ describe("Crypter Core Modules' tests", function () {
           })
           .catch((err) => {
             // Expect an error to occur
-            expect(err).to.be.an('error')
+            expect(err)
+              .to.be.an('error')
           })
       })
     })

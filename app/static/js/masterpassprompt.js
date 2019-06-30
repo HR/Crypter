@@ -4,7 +4,7 @@
  * Contains scripts for masterpassprompt.html
  ******************************/
 
-const DONE_TIMEOUT = 5000
+const DONE_TIMEOUT = 3000
 let errLabelCheckMP, errLabelSetMP, resetMasterPassInput
 
 $(window).on('load', function () {
@@ -17,14 +17,14 @@ $(window).on('load', function () {
   // hide error label and make red
   errLabelCheckMP.hide().css('color', COLORS.bad)
 
-  // attach event listener to checkMasterPass button
   $('#checkMasterPass').click(function () {
     validateMasterPass('checkMasterPass', errLabelCheckMP)
   })
-  // attach click event listener to setMasterPass button
+
   $('#setMasterPass').click(function () {
-    // Event handler function
     validateMasterPass('setMasterPass', errLabelSetMP)
+    // Reset validation when reset
+    errLabelCheckMP.hide()
   })
 })
 
@@ -42,6 +42,7 @@ ipcRenderer.on('setMasterPassResult', function (event, err) {
     // Close navigate back to chechMP after 5 seconds
     setTimeout(function () {
       navigate('default')
+      errLabelSetMP.hide()
     }, DONE_TIMEOUT)
   }
 })

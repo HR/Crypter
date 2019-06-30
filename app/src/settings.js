@@ -1,6 +1,7 @@
-const {app, ipcMain, BrowserWindow} = require('electron')
-const {CRYPTO, VIEWS, SETTINGS, ERRORS} = require('../config')
-const logger = require('winston')
+const {app, ipcMain, Menu, BrowserWindow} = require('electron')
+const menuTemplate = require('./menu')
+const {CRYPTO, VIEWS, SETTINGS, ERRORS, WINDOW_OPTS} = require('../config')
+const logger = require('electron-log')
 const fs = require('fs-extra')
 const _ = require('lodash')
 
@@ -8,14 +9,11 @@ exports.window = function (global, callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 600,
-    height: 450,
-    center: true,
-    show: true,
-    titleBarStyle: 'hidden-inset',
-    resizable: false,
-    maximizable: false,
-    movable: true
+    height: 460,
+    ...WINDOW_OPTS
   })
+  // create menu from menuTemplate and set
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate))
 
   let webContents = win.webContents
   // loads settings.html view into the BrowserWindow

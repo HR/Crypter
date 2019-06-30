@@ -11,7 +11,7 @@
 <h4 align="center">An innovative, convenient and secure crypto app.</h4>
 <p align="center">
     <a href="https://github.com/HR/Crypter/releases/latest">
-        <img src="https://img.shields.io/badge/Download-3.1-orange.svg"
+        <img src="https://img.shields.io/badge/Download-4.0-orange.svg"
             alt="Download latest release" style= "margin-bottom: 0.5rem" height="25px">
     </a>
 </p>
@@ -38,7 +38,7 @@
              alt="CodeClimate GPA">
     </a>
     <a href="https://github.com/HR/Crypter/releases/latest">
-        <img src="https://badged.co/HR/Crypter/total"
+        <img src="https://get-badge.herokuapp.com/HR/Crypter/total"
              alt="Downloads">
     </a>
 </p>
@@ -46,13 +46,25 @@
 
 > Encrypt unlimited bits. Remember only a bit.
 
-**Crypter** is an innovative, convenient and secure cross-platform crypto app
-that simplifies secure password generation and management by requiring you to
-only remember one bit, the MasterPass.
+**Crypter** is a cross-platform crypto app that makes encryption and decryption
+convenient while still upholding strong security. It tackles one of the weakest
+links in most security systems today - weak passwords. It simplifies secure
+password generation and management and requires you to only remember one bit -
+your MasterPass.
+
+[Crypter v4.0](https://github.com/HR/Crypter/releases/tag/v4.0.0) is a crypto
+app that can decrypt and encrypt any arbitrary data this includes files and
+folders. This version has been released and fully tested for macOS (OSX), Linux
+(for all distros via [AppImage](http://appimage.org/)) and Windows (32 & 64
+bit). All core modules (modules that provide the core functionality) are fully
+tested (90%+ coverage).
+
+Please open an issue if you have any suggestions and add improvements via PRs!
 
 This is based on [Crypto.Sync](https://github.com/HR/CryptoSync) (an end-to-end
 cloud encryption client), which is a more elaborate implementation of the idea.
 So please check it out as well!
+
 
 Link to this README: https://git.io/Crypter.info
 
@@ -68,26 +80,7 @@ $ brew cask install crypter
 ```
 <br/>
 
-## Status
-[Crypter v3.1](https://github.com/HR/Crypter/releases/tag/v3.1.0) is a crypto app
-that can decrypt and encrypt any arbitrary data. This version has been released
-and fully tested for macOS (OSX), Linux (for all distros via
-[AppImage](http://appimage.org/)) and Windows (32 & 64 bit). All core modules
-(modules that provide the core functionality) are fully tested (90%+ coverage).
-Some end-to-end tests have been written, but end-to-end testing is still mostly a
-work-in-progress.
-
-The next major release is [v4.0](https://github.com/HR/Crypter/milestone/3)
-and any work for it is done in the "dev" branch. All features to be implemented
-for the next major version can be found at
-https://github.com/HR/Crypter/milestones/v4.0. Feel free to send PRs to speed
-this up!
-
-Please open an issue if you have any suggestions!
-
-<br/>
-
-## Screens (some of them)
+## Screens
 <p align="center">
   <img src="/.github/Welcome_screen.png?raw=true" alt="Welcome screen" width="100%">
   <img src="/.github/Crypter_main_screen.png?raw=true" alt="Crypter screen" width="40%">
@@ -141,18 +134,18 @@ The following are the crypto defaults and can be found under `app/config.js`:
 When encrypting a file, Crypter first creates a temporary hidden directory,
 namely '.crypting'. It then encrypts the user-selected file with the crypto
 defaults and flushes the encrypted data to a file in the directory, namely
-'data'. It also writes the public credentials to a file within the same
-directory, namely 'creds'. Finally, Crypter compresses the directory to a tar
-archive with the name of the user-selected file and the '.crypto' extension
-appended to it.
+'data'. If it is a directory then it is compressed first (tar). It also writes
+the public credentials to a file within the same directory, namely 'creds'.
+Finally, Crypter compresses the directory to a tar archive with the name of the
+user-selected file and the '.crypto' extension appended to it.
 
 ### Decryption process
 The decryption process is essentially the inverse of the encryption process.
 During decryption, Crypter creates a temporary hidden directory named
 '.decrypting'. It then reads the credentials from the creds file and decrypts
-the data file into the original file with its original file name and extension,
-as deduced from the CRYPTO file name (e.g. the extension for "file.txt.crypto"
-would be ".txt").
+the data file into the original file or directory (after decompressing it) with
+its original name and extension, as deduced from the CRYPTO file name (e.g. the
+extension for "file.txt.crypto" would be ".txt").
 
 ### Public credentials
 Certain credentials are required to decrypt the encrypted data. These are
@@ -163,9 +156,9 @@ MasterPass and its credentials. These credentials are stored in the creds file o
 the [CRYPRO file](#crypto-file) archive (as delineated above) in the following
 format:
 ```
-Crypter#iv#authTag#salt
+Crypter#iv#authTag#salt#dir
 ```
-
+The `dir` part is only included for directories
 <br/>
 
 ## CRYPTO file
@@ -270,13 +263,15 @@ to mitigate brute-force attacks and thus drastically improve security.
 
 ## FAQs
 
-### How do I encrypt a file?
-After walking through the setup, you will have established a MasterPass. You can
-then launch Crypter and verify it. After doing so successfully, you will see
-the main Crypter window. Here, you can simply drop or select the file you wish to
-encrypt and then wait for the process to complete. You will then see the file and
-encryption information (i.e. the encryption key and the path of the encrypted file)
-in a new window.
+### How do I encrypt a file or folder?
+If you haven't already, walk through the setup and set your MasterPass.
+To encrypt a file or folder, first launch Crypter and verify your MasterPass.
+After doing so successfully, you will see the main Crypter window with an orange
+area. Here, you can simply drag-and-drop or click to select the file/folder you
+wish to encrypt. Once Crypter is done encrypting your file/folder, it will show
+you the encryption information (i.e. the encryption key and the path of the
+encrypted file) in a new window. To encrypt another file/folder simply click the
+back arrow at the bottom left and start-over ;)
 
 ### How do I decrypt a CRYPTO file?
 > The following instructions assume that the CRYPTO file that you wish to
@@ -284,12 +279,13 @@ decrypt is being used with the same MasterPass that you set at setup and also
 that you have not reset it since that time. If this is not the case, please refer
 to [Reusing the same MasterPass](#reusing-the-same-masterpass).
 
-To decrypt a CRYPTO file, you will need to launch Crypter and verify the
-MasterPass. After doing so successfully, you will see the main Crypter window.
-Here, you can simply drop or select the file that you wish to decrypt. After a
-few seconds, the process will complete and you will see some information about
-the file and its original encryption in a new window. By default, the decrypted
-file has "Decrypted " prepended to its file name.
+To decrypt a CRYPTO file, first launch Crypter and verify your MasterPass. After
+doing so successfully, you will see the main Crypter window with an orange area.
+Here, you can simply drag-and-drop or click to select the CRYPTO file that you
+wish to decrypt. After a few seconds, the process will complete and you will see
+some information about the file and its original encryption in a new window. By
+default, the decrypted file has the same name as the name of the original file
+(i.e. the encrypted file name without the `.crypto` at the end).
 
 ### Why am I getting the `Corrupted Crypter file or trying to decrypt on a different
 ### machine.` error?
@@ -308,7 +304,7 @@ Please refer to [Reusing the same MasterPass](#reusing-the-same-masterpass) and
 Please refer to [Reusing the same MasterPass](#reusing-the-same-masterpass) and
 [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
 
-### Where are my encrypted/decrypted files placed?
+### Where are my encrypted/decrypted files/folders placed?
 By default, every source file that you encrypt/decrypt gets encrypted/decrypted
 to the same directory where the source file is located.
 

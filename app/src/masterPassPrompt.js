@@ -1,8 +1,9 @@
-const {app, ipcMain, BrowserWindow} = require('electron')
-const {VIEWS} = require('../config')
+const {app, ipcMain, Menu, BrowserWindow} = require('electron')
+const {VIEWS, WINDOW_OPTS} = require('../config')
 const MasterPass = require('../core/MasterPass')
 const MasterPassKey = require('../core/MasterPassKey')
-const logger = require('winston')
+const logger = require('electron-log')
+const menuTemplate = require('./menu')
 
 
 exports.window = function (global, callback) {
@@ -12,18 +13,15 @@ exports.window = function (global, callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 300,
-    height: 420,
-    center: true,
-    show: true,
-    titleBarStyle: 'hidden-inset',
-    resizable: false,
-    maximizable: false,
-    movable: true
+    height: 460,
+    ...WINDOW_OPTS
   })
-  let webContents = win.webContents
-
+  // create menu from menuTemplate and set
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate))
   // loads masterpassprompt.html view into the BrowserWindow
   win.loadURL(VIEWS.MASTERPASSPROMPT)
+
+  let webContents = win.webContents
 
   ipcMain.on('checkMasterPass', function (event, masterpass) {
     logger.verbose('IPCMAIN: checkMasterPass emitted. Checking MasterPass...')

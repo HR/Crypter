@@ -10,8 +10,9 @@
 window.$ = window.jQuery = require('jquery')
 // Cross-view dependencies
 const {ipcRenderer, remote, shell} = require('electron')
-const {CRYPTO, REGEX, RESPONSES, COLORS} = require('../config')
-const logger = require('winston')
+const { app } = remote
+const logger = require('electron-log')
+const {REGEX, RESPONSES, COLORS} = require('../config')
 const Handlebars = require('handlebars')
 
 /* Shared functions */
@@ -22,7 +23,7 @@ function navigate (panel) {
   sel.addClass('current') // apply show styling
 }
 
-function validateMasterPass (field, errLabel) {
+function validateMasterPass(field, errLabel) {
   const MPel = $(`input#${field}Input`)
   const masterpass = MPel.val()
   if (!masterpass) {
@@ -57,11 +58,10 @@ $(window).on('load', function() {
 
       if (action) {
         // Is an action to perform
-        // TODO: Action (i.e. check for updates/open updater)
         if (REGEX.APP_EVENT.test(action)) {
           console.log(`Got main app event ${action}`)
-          // Emit event in main proc
-          ipcRenderer.send(action)
+          // Emit event on app
+          app.emit(action)
         } else {
           console.log(`Got render event ${action}`)
           // Emit event in render proc

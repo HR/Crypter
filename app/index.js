@@ -4,19 +4,9 @@
  * Entry point for app execution
  ******************************/
 // Electron
-const {app, dialog} = require('electron')
-// Core
-const Db = require('./core/Db')
-// Windows
-const crypter = require('./src/crypter')
-const masterPassPrompt = require('./src/masterPassPrompt')
-const setup = require('./src/setup')
-const settings = require('./src/settings')
-const {ERRORS} = require('./config')
-// adds debug features like hotkeys for triggering dev tools and reload
-require('electron-debug')()
 
-// declare global constants
+const { app, dialog } = require('electron')
+
 // MasterPass credentials global
 global.creds = {}
 // User settings global
@@ -28,11 +18,30 @@ global.paths = {
   home: app.getPath('home'),
   documents: app.getPath('documents')
 }
-const logger = require('./script/logger')
 
-// change exec path
+let fileToCrypt
+let settingsWindowNotOpen = true
+
+const logger = require('electron-log')
+const { existsSync } = require('fs-extra')
+const { checkUpdate } = require('./utils/update')
+// Core
+const Db = require('./core/Db')
+// Windows
+const crypter = require('./src/crypter')
+const masterPassPrompt = require('./src/masterPassPrompt')
+const setup = require('./src/setup')
+const settings = require('./src/settings')
+const { ERRORS } = require('./config')
+// adds debug features like hotkeys for triggering dev tools and reload
+require('electron-debug')()
+
+// Debug info
+logger.info(`Crypter v${app.getVersion()}`)
+logger.info(`Process args: ${process.argv}`)
 logger.info(`AppPath: ${app.getAppPath()}`)
 logger.info(`UseData Path: ${app.getPath('userData')}`)
+// Change exec path
 process.chdir(app.getAppPath())
 logger.info(`Changed cwd to: ${process.cwd()}`)
 logger.info(`Electron v${process.versions.electron}`)
@@ -66,6 +75,9 @@ const initMain = function () {
 
 // Main event handler
 app.on('ready', function () {
+  // Check for updates, silently
+  checkUpdate()
+    .catch((err) => { logger.warn(err) })
   // Check synchronously whether paths exist
   init()
     .then((mainRun) => {
@@ -84,7 +96,7 @@ app.on('ready', function () {
           })
           .then(() => {
             // Create the Crypter window and open it
-            return crypterWindow()
+            return crypterWindow(fileToCrypt)
           })
           .then(() => {
             // Quit app after crypterWindow is closed
@@ -127,7 +139,22 @@ app.on('ready', function () {
 /**
  * Electron events
  **/
-let settingsWindowNotOpen = true
+app.on('will-finish-launching', () => {
+  // Check if launched with a file (opened with app in macOS)
+  app.on('open-file', (event, file) => {
+    if (app.isReady() === false) {
+      // Opening when not launched yet
+      logger.info('Launching with open-file ' + file)
+      fileToCrypt = file
+    }
+    event.preventDefault()
+  })
+
+  // Check if launched with a file (opened with app in Windows)
+  if (process.argv[1] && process.argv[1].length > 1 && existsSync(process.argv[1])) {
+    fileToCrypt = process.argv[1]
+  }
+})
 
 app.on('window-all-closed', () => {
   logger.verbose('APP: window-all-closed event emitted')
@@ -177,9 +204,24 @@ app.on('app:open-settings', () => {
   }
 })
 
-app.on('app:check-updates', () => {
+app.on('app:check-update', () => {
   logger.verbose('APP: app:check-updates event emitted')
   // Check for updates
+  checkUpdate()
+    .then((updateAvailable) => {
+      if (!updateAvailable) {
+        dialog.showMessageBox({
+          type: 'info',
+          message: 'No update available.',
+          detail: `You have the latest version Crypter ${app.getVersion()} :)`
+        })
+      }
+    })
+    .catch((err) => {
+      logger.warn(err)
+      dialog.showErrorBox('Failed to check for update',
+        `An error occured while checking for update:\n ${err.message}`)
+    })
 })
 
 app.on('app:relaunch', () => {
@@ -196,9 +238,9 @@ app.on('app:relaunch', () => {
  **/
 
 // Creates the crypter window
-let crypterWindow = function () {
+let crypterWindow = function (fileToCrypt) {
   return new Promise(function (resolve, reject) {
-    crypter.window(global, function () {
+    crypter.window(global, fileToCrypt, function () {
       resolve()
     })
   })

@@ -7,7 +7,6 @@
     <script src="js/common.js" type="text/javascript"></script>
     <script src="js/crypter.js" type="text/javascript"></script>
   </head>
-
   <body>
     <section id="crypt">
       <div class="panel-container">
@@ -18,24 +17,24 @@
           <header>
             <img src="images/icons/Crypter.svg" alt="Crypter" class="header"/>
             <h1 class="title">Crypter</h1>
-            <p class="subtitle">Encrypt &amp; decrypt any file.</p>
+            <p class="subtitle">Encrypt &amp; decrypt anything.</p>
             <p class="leadinfo">Encrypt unlimited bits. Remember only a bit.<br/>
               All you need is your MasterPass and a CRYTPO file.</p>
             <p id="errLabel" style="display: none"></p>
           </header>
-          <!-- TODO: Consider using <input class="fancy" type="file" name="name" value="selectfile"> -->
           <div id="fileInput" class="fancy">
             <p id="fileInputText">
-              Select or drop file
+              Select or Drop
             </p>
           </div>
         </div>
         <div id="panel-crypted">
           <div id="crypted-container">
-            <!-- Dynamically load file info here -->
+            <!-- Crypted panel dynamically loaded here -->
           </div>
           <p class="intrfo">
-            Note these details down! They may be erased when you navigate back
+            Note these details down<br/>
+            (for use with third-party apps)
           </p>
           <footer>
             <a class="back navigationLink" data-panel="crypt">
@@ -45,50 +44,51 @@
         </div>
       </div>
     </section>
-
     <script id="crypted-template" type="text/x-handlebars-template">
       <header>
         <img src="images/icons/{{op}}.svg" class="header"/>
       </header>
       <div id="finfo">
-        <h3>{{op}}
-          {{name}}</h3>
+        <h3><div title="{{cryptPath}}">{{op}} {{name}}</div></h3>
         <table>
           <tr>
-            <td>Path</td>
-            <td>{{path}}</td>
+            <td>Original file</td>
+            <td>
+              <input type="text" readonly="readonly" value="{{path}}" title="{{path}}"/>
+            </td>
           </tr>
           <tr>
-            <td>Crypted to</td>
-            <td>{{cryptPath}}</td>
+            <td>{{op}} file</td>
+            <td>
+              <input type="text" readonly="readonly" value="{{cryptPath}}" title="{{cryptPath}}"/>
+            </td>
           </tr>
           <tr>
             <td>Initialisation Vector</td>
             <td>
-              <input type="text" value="{{iv}}"/>
+              <input type="text" readonly="readonly" value="{{iv}}" title="{{iv}}"/>
             </td>
           </tr>
           <tr>
-            <td>Authentication Tag</td>
+            <td>Auth Tag</td>
             <td>
-              <input type="text" value="{{authTag}}"/>
+              <input type="text" readonly="readonly" value="{{authTag}}" title="{{authTag}}"/>
             </td>
           </tr>
           <tr>
-            <td>Salt (for key derivation)</td>
+            <td>Salt</td>
             <td>
-              <input type="text" value="{{salt}}"/>
+              <input type="text" readonly="readonly" value="{{salt}}" title="{{salt}}"/>
             </td>
           </tr>
           <tr>
             <td>Encryption Key</td>
             <td>
-              <input type="text" value="{{key}}"/>
+              <input type="text" readonly="readonly" value="{{key}}" title="{{key}}"/>
             </td>
           </tr>
         </table>
       </div>
     </script>
   </body>
-
 </html>

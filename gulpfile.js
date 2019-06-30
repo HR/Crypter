@@ -1,5 +1,8 @@
 const gulp = require('gulp')
-const shell = require('child_process').exec
+const shell = require('child_process')
+  .exec
+const spawn = require('child_process')
+  .spawn
 const babel = require('gulp-babel')
 const env = require('gulp-env')
 const less = require('gulp-less')
@@ -12,29 +15,21 @@ const LessPluginCleanCSS = require('less-plugin-clean-css')
 const cleancss = new LessPluginCleanCSS({ advanced: true })
 const LESS_FILES = './app/static/styles/*.less'
 
-gulp.task('default', ['less'], () => {
-  shell(
-    // Run electron
-    // 'ELECTRON_RUN_AS_NODE=true node_modules/.bin/electron node_modules/node-inspector/bin/inspector.js'
-    'unset TEST_RUN && npm run start',
-    // 'node_modules/.bin/electron --debug-brk=5858 .'
-    function (err, stdout, stderr) {
-      console.log(stdout)
-      console.log(stderr)
-    }
-  )
-})
+function exec(command, args) {
+  return (cb) => {
+    var cmd = spawn(command, args, { stdio: 'inherit' })
+    cmd.on('close', function (code) {
+      console.log('Exited with code ' + code)
+      cb(code)
+    })
+  }
+}
 
-gulp.task('run', function () {
-  shell(
-    // start electron main and render process
-    'node_modules/.bin/electron .'
-  )
-})
+gulp.task('run', exec('node_modules/.bin/electron', ['.']))
 
 gulp.task('watch', function () {
-  gulp.watch(LESS_FILES, ['less'])
-// gulp.watch(['./app/static/**/*', './*.js'], ['run'])
+  gulp.watch(LESS_FILES, gulp.series('less'))
+  // gulp.watch(['./app/static/**/*', './*.js'], ['run'])
 })
 
 gulp.task('nodev', function () {
@@ -51,7 +46,7 @@ gulp.task('nodev', function () {
 gulp.task('less', function () {
   return gulp.src('./app/static/styles/*.less')
     .pipe(less({
-      paths: [ path.join(__dirname, 'less', 'includes') ],
+      paths: [path.join(__dirname, 'less', 'includes')],
       plugins: [cleancss]
     }))
     .pipe(gulp.dest('./app/static/styles/'))
@@ -62,7 +57,7 @@ gulp.task('less', function () {
 gulp.task('test', () => {
   shell(
     // Run test stuff
-    'mocha --compilers js:babel-core/register test/'
+    'mocha --require babel-core/register test/'
   )
 })
 
@@ -113,3 +108,6 @@ gulp.task('driver', () => {
     './node_modules/chromedriver/bin/chromedriver'
   )
 })
+
+
+gulp.task('default', gulp.series('less', 'run'))
