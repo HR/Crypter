@@ -569,8 +569,7 @@ describe("Crypter Core Modules' tests", function () {
             // Expect an error to occur
             expect(err)
               .to.be.an('error')
-            expect(err.message)
-              .to.equal('Converting circular structure to JSON')
+            expect(err instanceof TypeError).to.be.true
           })
       })
     })
