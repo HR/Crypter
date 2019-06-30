@@ -16,8 +16,10 @@ nvm use "$NODE_VERSION"
 echo "Node $(node --version)"
 echo "NPM $(npm --version)"
 
+# Install deps
 npm install --no-optional
 npm prune
+
 # Test and get coverage
 npm run coverage
 npm run coveralls
