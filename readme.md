@@ -80,7 +80,7 @@ $ brew update && brew cask install crypter
 ```
 <br/>
 
-## Screens (some of them)
+## Screens
 <p align="center">
   <img src="/.github/Welcome_screen.png?raw=true" alt="Welcome screen" width="100%">
   <img src="/.github/Crypter_main_screen.png?raw=true" alt="Crypter screen" width="40%">
