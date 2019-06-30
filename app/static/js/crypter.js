@@ -33,7 +33,7 @@ $(window)
 
 /* Event listeners */
 ipcRenderer.on('cryptedFile', function (event, file) {
-  console.log(`IPCRENDER cryptedFile emitted`)
+  logger.verbose(`IPCRENDER cryptedFile emitted`)
   let fileHTML = crypted_template(file)
   cryptedContainer.html(fileHTML)
   enableUI()
@@ -41,7 +41,7 @@ ipcRenderer.on('cryptedFile', function (event, file) {
 })
 
 ipcRenderer.on('decryptedFile', function (event, file) {
-  console.log(`IPCRENDER decryptedFile emitted`)
+  logger.verbose(`IPCRENDER decryptedFile emitted`)
   let fileHTML = crypted_template(file)
   cryptedContainer.html(fileHTML)
   enableUI()
@@ -49,20 +49,20 @@ ipcRenderer.on('decryptedFile', function (event, file) {
 })
 
 ipcRenderer.on('cryptErr', function (event, err) {
-  console.log(`IPCRENDER cryptErr emitted`)
+  logger.verbose(`IPCRENDER cryptErr emitted`)
   errLabel.text(`ERROR: ${err}`)
     .show()
   enableUI()
 })
 
 ipcRenderer.on('encryptingFile', function (event, file) {
-  console.log(`IPCRENDER encryptingFile emitted`)
+  logger.verbose(`IPCRENDER encryptingFile emitted`)
   fileInputText.text(`Encrypting ${basename(file)}...`)
   disableUI()
 })
 
 ipcRenderer.on('decryptingFile', function (event, file) {
-  console.log(`IPCRENDER decryptingFile emitted`)
+  logger.verbose(`IPCRENDER decryptingFile emitted`)
   fileInputText.text(`Decrypting ${basename(file)}...`)
   disableUI()
 })
@@ -80,9 +80,9 @@ function enableFileInput() {
   fileInput.on('click', handler)
   fileInputD.ondrop = function (e) {
     e.preventDefault()
-    console.info(`ONDROP fired!`)
+    logger.info(`ONDROP fired!`)
     if (e.dataTransfer.files[0].path) {
-      console.info(`Got file: ${e.dataTransfer.files[0].path}`)
+      logger.info(`Got file: ${e.dataTransfer.files[0].path}`)
       ipcRenderer.send('cryptFile', e.dataTransfer.files[0].path)
     }
     return false

@@ -11,6 +11,7 @@ window.$ = window.jQuery = require('jquery')
 // Cross-view dependencies
 const {ipcRenderer, remote, shell} = require('electron')
 const { app } = remote
+const logger = require('electron-log')
 const {REGEX, RESPONSES, COLORS} = require('../config')
 const Handlebars = require('handlebars')
 

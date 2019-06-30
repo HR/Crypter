@@ -25,7 +25,6 @@
     "lodash": "4.17.11",
     "moment": "2.24.0",
     "normalize.css": "8.0.1",
-    "tar-fs": "2.0.0",
-    "winston": "3.2.1"
+    "tar-fs": "2.0.0"
   }
 }

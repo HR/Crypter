@@ -7,7 +7,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const scrypto = require('crypto')
-const logger = require('../utils/logger')
+const logger = require('electron-log')
 const Readable = require('stream')
   .Readable
 const tar = require('tar-fs')

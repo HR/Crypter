@@ -22,7 +22,7 @@ global.paths = {
 let fileToCrypt
 let settingsWindowNotOpen = true
 
-const logger = require('./utils/logger')
+const logger = require('electron-log')
 const { checkUpdate } = require('./utils/update')
 // Core
 const Db = require('./core/Db')
@@ -140,15 +140,11 @@ app.on('ready', function () {
  **/
 app.on('will-finish-launching', () => {
   // Event fired When someone drags files onto the icon while your app is running
-  app.on("open-file", (event, file) => {
-    fileToCrypt = file
+  app.on('open-file', (event, file) => {
     if (app.isReady() === false) {
       // Opening when not launched yet
       logger.info('Launching with open-file ' + file)
-    } else {
-      // Opening when already launched
-      logger.info('Opening file ' + file)
-      app.emit('cryptFile', file)
+      fileToCrypt = file
     }
     event.preventDefault()
   })

@@ -6,7 +6,7 @@ const fs = require('fs-extra')
 const expect = chai.expect
 const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
-const logger = require('../../app/utils/logger')
+const logger = require('electron-log')
 
 chai.should()
 chai.use(chaiAsPromised)

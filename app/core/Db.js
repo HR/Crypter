@@ -5,7 +5,7 @@
  ******************************/
 
 const _ = require('lodash')
-const logger = require('../utils/logger')
+const logger = require('electron-log')
 const fs = require('fs-extra')
 
 /**

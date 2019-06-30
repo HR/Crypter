@@ -2,7 +2,7 @@ const {app, ipcMain, BrowserWindow} = require('electron')
 const {VIEWS, WINDOW_OPTS} = require('../config')
 const MasterPass = require('../core/MasterPass')
 const MasterPassKey = require('../core/MasterPassKey')
-const logger = require('../utils/logger')
+const logger = require('electron-log')
 
 
 exports.window = function (global, callback) {

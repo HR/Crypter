@@ -3,7 +3,7 @@ const { VIEWS, ERRORS, WINDOW_OPTS } = require('../config')
 const crypto = require('../core/crypto')
 const menuTemplate = require('./menu')
 const { isCryptoFile } = require('../utils/utils')
-const logger = require('../utils/logger')
+const logger = require('electron-log')
 
 exports.window = function (global, fileToCrypt, callback) {
   // creates a new BrowserWindow
@@ -21,7 +21,7 @@ exports.window = function (global, fileToCrypt, callback) {
 
   let webContents = win.webContents
 
-  webContents.once('dom-ready', () => {
+  webContents.once('did-finish-load', () => {
     // Process any file opened with app before this window
     if (fileToCrypt) {
       logger.info('Got a file to crypt', fileToCrypt)
@@ -83,7 +83,15 @@ exports.window = function (global, fileToCrypt, callback) {
 
   // Process any file opened with app while this window is active
   ipcMain.on('cryptFile', (event, file) => cryptFile(file))
-  // app.on('cryptFile', (event, file) => logger.info(file))
+
+  app.on('open-file', (event, file) => {
+    if (app.isReady()) {
+      // Opening when already launched
+      logger.info('Opening file ' + file)
+      cryptFile(file)
+    }
+    event.preventDefault()
+  })
 
   win.on('closed', function () {
     logger.info('win.closed event emitted for PromptWindow')
