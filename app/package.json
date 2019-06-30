@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "electron-debug": "3.0.0",
+    "electron-log": "^3.0.6",
     "estraverse": "4.2.0",
     "fs-extra": "8.1.0",
     "handlebars": "4.1.2",

@@ -6,7 +6,7 @@
 @import (less) "mixins.less";
 /* Variable declarations*/
 @invalid-color: #9F3A38;
-@fileInput-height: 45vh;
+@fileInput-height: 42vh;
 /* Section styles */
 header {
   margin: 0;
@@ -28,8 +28,6 @@ h3 {
   text-align: center;
   overflow: hidden;
 }
-
-
 
 #crypted-container {
   height: 84vh;
@@ -69,18 +67,25 @@ h3 {
 }
 
 #panel-crypt {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   h1 {
     margin: 0.4rem 0;
     font-size: 1.4rem;
   }
+
   p.subtitle {
     margin-top: 0.4rem;
   }
+
   p.leadinfo {
     color: @dark;
     font-size: 0.8rem;
     margin: 0.2rem 1rem;
   }
+
   #fileInput {
     margin-top: 6vh;
     width: 100%;
@@ -88,21 +93,31 @@ h3 {
     text-align: center;
     display: flex;
     flex-flow: column;
+    cursor: pointer;
+    align-items: center;
+    justify-items: center;
 
     p {
       line-height: @fileInput-height;
       color: @white;
+      width: 70%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }
 
 #panel-crypted {
-  // height: 90vh;
-  // flex: 1.8;
-  // display: flex;
-  // flex-direction: column;
   #finfo {
     margin: 1rem;
+
+    h3 > div {
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 
     table {
       width: 100%;
@@ -119,7 +134,8 @@ h3 {
           vertical-align: top;
 
           input[type="text"] {
-            width: 95%;
+            display: table-cell;
+            width: 100%;
           }
 
           a > img {

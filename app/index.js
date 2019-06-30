@@ -6,7 +6,7 @@
 // Electron
 
 const { app, dialog } = require('electron')
-// declare global constants
+
 // MasterPass credentials global
 global.creds = {}
 // User settings global
@@ -18,6 +18,9 @@ global.paths = {
   home: app.getPath('home'),
   documents: app.getPath('documents')
 }
+
+let fileToCrypt
+let settingsWindowNotOpen = true
 
 const logger = require('./utils/logger')
 const { checkUpdate } = require('./utils/update')
@@ -32,10 +35,12 @@ const { ERRORS } = require('./config')
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')()
 
-// change exec path
+// Debug info
 logger.info(`Crypter v${app.getVersion()}`)
+logger.info(`Process args: ${process.argv}`)
 logger.info(`AppPath: ${app.getAppPath()}`)
 logger.info(`UseData Path: ${app.getPath('userData')}`)
+// Change exec path
 process.chdir(app.getAppPath())
 logger.info(`Changed cwd to: ${process.cwd()}`)
 logger.info(`Electron v${process.versions.electron}`)
@@ -69,7 +74,7 @@ const initMain = function () {
 
 // Main event handler
 app.on('ready', function () {
-  // Check for updates
+  // Check for updates, silently
   checkUpdate()
     .catch((err) => { logger.warn(err) })
   // Check synchronously whether paths exist
@@ -90,7 +95,7 @@ app.on('ready', function () {
           })
           .then(() => {
             // Create the Crypter window and open it
-            return crypterWindow()
+            return crypterWindow(fileToCrypt)
           })
           .then(() => {
             // Quit app after crypterWindow is closed
@@ -133,7 +138,21 @@ app.on('ready', function () {
 /**
  * Electron events
  **/
-let settingsWindowNotOpen = true
+app.on('will-finish-launching', () => {
+  // Event fired When someone drags files onto the icon while your app is running
+  app.on("open-file", (event, file) => {
+    fileToCrypt = file
+    if (app.isReady() === false) {
+      // Opening when not launched yet
+      logger.info('Launching with open-file ' + file)
+    } else {
+      // Opening when already launched
+      logger.info('Opening file ' + file)
+      app.emit('cryptFile', file)
+    }
+    event.preventDefault()
+  })
+})
 
 app.on('window-all-closed', () => {
   logger.verbose('APP: window-all-closed event emitted')
@@ -217,9 +236,9 @@ app.on('app:relaunch', () => {
  **/
 
 // Creates the crypter window
-let crypterWindow = function () {
+let crypterWindow = function (fileToCrypt) {
   return new Promise(function (resolve, reject) {
-    crypter.window(global, function () {
+    crypter.window(global, fileToCrypt, function () {
       resolve()
     })
   })

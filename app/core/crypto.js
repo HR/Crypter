@@ -28,6 +28,7 @@ let readFile = (path) => {
 
 exports.crypt = (origpath, masterpass) => {
   return new Promise((resolve, reject) => {
+    logger.verbose(`Encrypting ${origpath}...`)
     // Resolve the destination path for encrypted file
     exports.encrypt(origpath, masterpass)
       .then((creds) => {
@@ -131,6 +132,7 @@ exports.encrypt = (origpath, mpkey) => {
 exports.decrypt = (origpath, mpkey) => {
   // Decrypts a crypto format file passed with the pass
   return new Promise((resolve, reject) => {
+    logger.verbose(`Decrypting ${origpath}...`)
     // Extract a directory
     let tempd = `${path.dirname(origpath)}/${CRYPTO.DECRYPTION_TMP_DIR}`
     let dataOrigPath = `${tempd}/${CRYPTO.FILE_DATA}`

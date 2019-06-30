@@ -5,92 +5,101 @@
  ******************************/
 const dialog = remote.dialog
 const paths = remote.getGlobal('paths')
-const path = require('path')
+const { basename } = require('path')
 let errLabel, fileInput, fileInputD, cryptedContainer, fileInputText, ifileInputText, crypted_template
 
-$(window).on('load', function () {
-  // Get DOM elements
-  errLabel = $('#errLabel')
-  fileInput = $('#fileInput')
-  fileInputD = document.getElementById('fileInput')
-  cryptedContainer = $('#crypted-container')
-  fileInputText = fileInput.find('#fileInputText')
-  ifileInputText = fileInputText.text()
-  // compile the crypted template
-  crypted_template = Handlebars.compile($('#crypted-template').html())
-  // attach  event
-  fileInputD.ondragover = function () {
-    return false
-  }
-  fileInputD.ondragleave = fileInputD.ondragend = function () {
-    return false
-  }
+$(window)
+  .on('load', function () {
+    // Get DOM elements
+    errLabel = $('#errLabel')
+    fileInput = $('#fileInput')
+    fileInputD = document.getElementById('fileInput')
+    cryptedContainer = $('#crypted-container')
+    fileInputText = fileInput.find('#fileInputText')
+    ifileInputText = fileInputText.text()
+    // compile the crypted template
+    crypted_template = Handlebars.compile($('#crypted-template')
+      .html())
+    // attach  event
+    fileInputD.ondragover = function () {
+      return false
+    }
+    fileInputD.ondragleave = fileInputD.ondragend = function () {
+      return false
+    }
 
-  turnFileInputOn()
-})
+    enableFileInput()
+  })
 
 /* Event listeners */
 ipcRenderer.on('cryptedFile', function (event, file) {
-  logger.verbose(`IPCRENDER cryptedFile emitted`)
+  console.log(`IPCRENDER cryptedFile emitted`)
   let fileHTML = crypted_template(file)
   cryptedContainer.html(fileHTML)
-  fileInputText.text(ifileInputText)
+  enableUI()
   navigate('crypted')
-  turnFileInputOn()
-})
-ipcRenderer.on('decryptedFile', function (event, file) {
-  logger.verbose(`IPCRENDER decryptedFile emitted`)
-  let fileHTML = crypted_template(file)
-  cryptedContainer.html(fileHTML)
-  fileInputText.text(ifileInputText)
-  navigate('crypted')
-  turnFileInputOn()
-})
-ipcRenderer.on('cryptErr', function (event, err) {
-  logger.verbose(`IPCRENDER cryptErr emitted`)
-  errLabel.text(`ERROR: ${err}`).show()
-  fileInputText.text(ifileInputText)
-  turnFileInputOn()
 })
 
+ipcRenderer.on('decryptedFile', function (event, file) {
+  console.log(`IPCRENDER decryptedFile emitted`)
+  let fileHTML = crypted_template(file)
+  cryptedContainer.html(fileHTML)
+  enableUI()
+  navigate('crypted')
+})
+
+ipcRenderer.on('cryptErr', function (event, err) {
+  console.log(`IPCRENDER cryptErr emitted`)
+  errLabel.text(`ERROR: ${err}`)
+    .show()
+  enableUI()
+})
+
+ipcRenderer.on('encryptingFile', function (event, file) {
+  console.log(`IPCRENDER encryptingFile emitted`)
+  fileInputText.text(`Encrypting ${basename(file)}...`)
+  disableUI()
+})
+
+ipcRenderer.on('decryptingFile', function (event, file) {
+  console.log(`IPCRENDER decryptingFile emitted`)
+  fileInputText.text(`Decrypting ${basename(file)}...`)
+  disableUI()
+})
+
+
 /* Helper functions */
-function turnFileInputOff () {
+function disableFileInput() {
   fileInput.off('click', handler)
   fileInput.ondrop = function () {
     return false
   }
 }
-function turnFileInputOn () {
+
+function enableFileInput() {
   fileInput.on('click', handler)
   fileInputD.ondrop = function (e) {
     e.preventDefault()
-    logger.info(`ONDROP fired!`)
+    console.info(`ONDROP fired!`)
     if (e.dataTransfer.files[0].path) {
-      logger.info(`Got file: ${e.dataTransfer.files[0].path}`)
-      handleFile(e.dataTransfer.files[0].path)
+      console.info(`Got file: ${e.dataTransfer.files[0].path}`)
+      ipcRenderer.send('cryptFile', e.dataTransfer.files[0].path)
     }
     return false
   }
 }
-function handleFile (file) {
-  let fileExt = path.extname(file)
-  turnFileInputOff()
-  errLabel.hide()
 
-  if (fileExt.toLowerCase() === CRYPTO.EXT) {
-    // Decrypt file
-    fileInputText.text(`Decrypting ${path.basename(file)}...`)
-    // send file to decryptFile controller function
-    ipcRenderer.send('decryptFile', file)
-  } else {
-    // Encrypt file
-    fileInputText.text(`Encrypting ${path.basename(file)}...`)
-    // send file to crypter controller function
-    ipcRenderer.send('cryptFile', file)
-  }
+function enableUI() {
+  fileInputText.text(ifileInputText)
+  enableFileInput()
 }
 
-function handler () {
+function disableUI() {
+  disableFileInput()
+  errLabel.hide()
+}
+
+function handler() {
   // Prevent multiple input dialog
   fileInput.off('click', handler)
   // Create file input dialog
@@ -101,7 +110,7 @@ function handler () {
   }, function (filePath) {
     // callback for selected file returns undefined if file not selected by user
     if (filePath && filePath.length === 1) {
-      handleFile(filePath[0])
+      ipcRenderer.send('cryptFile', filePath[0])
     } else {
       fileInput.on('click', handler)
     }

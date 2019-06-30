@@ -1,5 +1,8 @@
+const { extname } = require('path')
+const { CRYPTO } = require('../config')
+
 module.exports = {
-  isRenderer: function () {
+  isRenderer: () => {
     // running in a web browser
     if (typeof process === 'undefined') return true
 
@@ -10,5 +13,6 @@ module.exports = {
     if (!process.type) return false
 
     return process.type === 'renderer'
-  }
+  },
+  isCryptoFile: (file) => extname(file).toLowerCase() === CRYPTO.EXT
 }
