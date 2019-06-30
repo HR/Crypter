@@ -19,7 +19,10 @@ echo "Electron v$(npm run electronVersion --silent)"
 
 npm install --no-optional
 npm prune
-npm test
+# Test and get coverage
+npm run coverage
+npm run coveralls
+# - npm run codeclimate
 
 # End-to-end OSX testing
 # if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then

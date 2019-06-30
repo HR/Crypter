@@ -28,7 +28,7 @@ install:
 build_script:
   - node --version
   - npm --version
-  - build -w --x64 --ia32
+  - npm run winbuild
 
 # Post-install test scripts.
 # test_script:

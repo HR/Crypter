@@ -92,3 +92,5 @@ debug
 backups/
 *.app
 chromedriver*
+
+.nyc_output/
