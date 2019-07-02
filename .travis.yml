@@ -3,24 +3,17 @@ branches:
     - master
     - dev
 
-
 env:
   - ELECTRON_CACHE=$HOME/.cache/electron
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
-
 matrix:
   include:
     - os: linux
-      env: CC=clang CXX=clang++ npm_config_clang=1
-      compiler: clang
-      dist: trusty
-      sudo: required
-      language: node_js
-      node_js:
+      services: docker
+      language: generic
     - os: osx
       osx_image: xcode10.2
-      sudo: required
       language: node_js
       node_js:
 
