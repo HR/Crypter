@@ -31,7 +31,9 @@ script: ./script/travis-build.sh
 
 after_success:
   # Cleanup
-  - rm -rf node_modules coverage .nyc_output
+  - git reset --hard HEAD
+  # Remove untracked and ignored files
+  - git clean -dfX
   # Check if build triggered ([build] in commit message)
   - lgcm=$(git log -1 --pretty=%B | xargs echo);
     if [[ $lgcm == *"[build]"* ]]; then
