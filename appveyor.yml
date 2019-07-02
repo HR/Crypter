@@ -8,7 +8,7 @@ image: Visual Studio 2019
 
 environment:
   GH_TOKEN:
-    secure: Dab7MsjmiwW22PO51pc6iv8AeBNqQkP6q3NADPEIyGp5gNADSftF5Wvq0rsoBnNq
+    secure: 3wmca8TBqZGYD33XwQ+hNbS1WJdqkZipCpk3/7EkTtF9F/xhTlpCgM43ofkfie0B
 
 cache:
   - node_modules
