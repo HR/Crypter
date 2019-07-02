@@ -68,7 +68,49 @@ So please check it out as well!
 
 Link to this README: https://git.io/Crypter.info
 
+---
+# Contents
+<!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
+- [Installation](#installation)
+- [Screens](#screens)
+- [Crypto](#crypto)
+	- [Encryption process](#encryption-process)
+	- [Decryption process](#decryption-process)
+	- [Public credentials](#public-credentials)
+- [CRYPTO file](#crypto-file)
+	- [Format](#format)
+	- [Reusing the same MasterPass](#reusing-the-same-masterpass)
+	- [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
+- [Security](#security)
+	- [Security-first practice](#security-first-practice)
+	- [MasterPass](#masterpass)
+	- [MasterPassKey](#masterpasskey)
+- [FAQs](#faqs)
+	- [How do I encrypt a file or folder?](#how-do-i-encrypt-a-file-or-folder)
+	- [How do I decrypt a CRYPTO file?](#how-do-i-decrypt-a-crypto-file)
+	- [How do I encrypt multiple files?](#how-do-i-encrypt-multiple-files)
+	- [Why am I getting the `Corrupted Crypter file or trying to decrypt on a different](#why-am-i-getting-the-corrupted-crypter-file-or-trying-to-decrypt-on-a-different)
+	- [machine.` error?](#machine-error)
+	- [Why can't I decrypt a CRYPTO file on a different machine with the same MasterPass?](#why-cant-i-decrypt-a-crypto-file-on-a-different-machine-with-the-same-masterpass)
+	- [Why can't I decrypt a CRYPTO file with the same MasterPass?](#why-cant-i-decrypt-a-crypto-file-with-the-same-masterpass)
+	- [Where are my encrypted/decrypted files/folders placed?](#where-are-my-encrypteddecrypted-filesfolders-placed)
+	- [How can I access Crypter's preferences?](#how-can-i-access-crypters-preferences)
+	- [How can I reset my MasterPass?](#how-can-i-reset-my-masterpass)
+	- [What is a valid MasterPass?](#what-is-a-valid-masterpass)
+	- [What are MasterPass credentials?](#what-are-masterpass-credentials)
+	- [How can I export my MasterPass credentials?](#how-can-i-export-my-masterpass-credentials)
+	- [How can I import my MasterPass credentials?](#how-can-i-import-my-masterpass-credentials)
+- [Development](#development)
+	- [Configurations](#configurations)
+	- [Install (dependencies)](#install-dependencies)
+	- [Run](#run)
+	- [Test](#test)
+	- [Build](#build)
+- [License](#license)
+
+<!-- /TOC -->
+---
 ## Installation
 All prebuilt binaries for all major platforms are available under
 [releases](https://github.com/HR/Crypter/releases/latest).
@@ -286,6 +328,11 @@ wish to decrypt. After a few seconds, the process will complete and you will see
 some information about the file and its original encryption in a new window. By
 default, the decrypted file has the same name as the name of the original file
 (i.e. the encrypted file name without the `.crypto` at the end).
+
+### How do I encrypt multiple files?
+Crypter can encrypt an entire folder so you can put them in a folder or,
+alternatively, compress them into an archive (like a `.zip`) and then just pass
+it to Crypter ;)
 
 ### Why am I getting the `Corrupted Crypter file or trying to decrypt on a different
 ### machine.` error?

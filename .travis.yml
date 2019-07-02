@@ -29,7 +29,8 @@ after_success:
   # Cleanup
   - git reset --hard HEAD
   # Remove untracked and ignored files
-  - git clean -dfX
+  - git clean -dfXn && git clean -dfX
+  - chmod +x ./script/*.sh
   # Check if build triggered ([build] in commit message)
   - lgcm=$(git log -1 --pretty=%B | xargs echo);
     if [[ $lgcm == *"[build]"* ]]; then
