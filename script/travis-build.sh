@@ -8,11 +8,6 @@ export TEST_RUN=true
 echo "CC: $CC"
 echo "CXX: $CXX"
 echo "OS Name: $TRAVIS_OS_NAME"
-git clone https://github.com/creationix/nvm.git /tmp/.nvm
-source /tmp/.nvm/nvm.sh
-nvm install "$NODE_VERSION"
-nvm use "$NODE_VERSION"
-
 echo "Node $(node --version)"
 echo "NPM $(npm --version)"
 

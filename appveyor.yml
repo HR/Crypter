@@ -18,7 +18,7 @@ only_commits:
   message: /\[build\]/
 
 install:
-  - set /p NODE_VERSION=<.node-version
+  - set /p NODE_VERSION=<.nvmrc
   - ps: Install-Product node $env:NODE_VERSION $env:PLATFORM
   - npm install npm -g
   - npm install electron-builder@next -g
