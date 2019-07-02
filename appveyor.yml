@@ -1,6 +1,7 @@
 version: "{build}"
 
 platform:
+  - x86
   - x64
 
 image: Visual Studio 2019
