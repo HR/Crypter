@@ -3,6 +3,7 @@ sudo: required
 dist: trusty
 
 language: node_js
+node_js:
 
 git:
   depth: 3
