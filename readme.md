@@ -90,8 +90,7 @@ Link to this README: https://git.io/Crypter.info
 	- [How do I encrypt a file or folder?](#how-do-i-encrypt-a-file-or-folder)
 	- [How do I decrypt a CRYPTO file?](#how-do-i-decrypt-a-crypto-file)
 	- [How do I encrypt multiple files?](#how-do-i-encrypt-multiple-files)
-	- [Why am I getting the `Corrupted Crypter file or trying to decrypt on a different](#why-am-i-getting-the-corrupted-crypter-file-or-trying-to-decrypt-on-a-different)
-	- [machine.` error?](#machine-error)
+	- [Why am I getting the "Corrupted Crypter file or trying to decrypt on a different machine." error?](#why-am-i-getting-the-corrupted-crypter-file-or-trying-to-decrypt-on-a-different-machine-error)
 	- [Why can't I decrypt a CRYPTO file on a different machine with the same MasterPass?](#why-cant-i-decrypt-a-crypto-file-on-a-different-machine-with-the-same-masterpass)
 	- [Why can't I decrypt a CRYPTO file with the same MasterPass?](#why-cant-i-decrypt-a-crypto-file-with-the-same-masterpass)
 	- [Where are my encrypted/decrypted files/folders placed?](#where-are-my-encrypteddecrypted-filesfolders-placed)
@@ -334,8 +333,7 @@ Crypter can encrypt an entire folder so you can put them in a folder or,
 alternatively, compress them into an archive (like a `.zip`) and then just pass
 it to Crypter ;)
 
-### Why am I getting the `Corrupted Crypter file or trying to decrypt on a different
-### machine.` error?
+### Why am I getting the "Corrupted Crypter file or trying to decrypt on a different machine." error?
 This error means that either your Crypter file (i.e. the `data` file) is
 corrupt/tempered, that you are on a different machine than the one originally
 used to encrypt the file or that you have previously reset your MasterPass.
@@ -440,12 +438,12 @@ $ npm test
 ```
 Crypter uses istanbul for coverage. To run test coverage, execute:
 ```
-$ gulp coverage
+$ npm run coverage
 ```
 
 ### Build
 Crypter's binaries (available under releases) have been built using
-Electron ```v1.4.x```. Since Crypter uses electron-builder to build binaries,
+Electron. Since Crypter uses electron-builder to build binaries,
 you must install it globally:
 ```
 $ npm install electron-builder@next -g
@@ -453,16 +451,16 @@ $ npm install electron-builder@next -g
 
 To build the app for **macOS**, run:
 ```
-$ build -m
+$ npm run build:mac
 ```
 To build the app for **Linux**, run:
 ```
 $ sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
-$ build -l --x64 --ia32
+$ npm run build:lin
 ```
 To build the app for **Windows** x84 and/or x64, run:
 ```
-$ build -w --x64 --ia32
+$ npm run build:win
 ```
 
 
