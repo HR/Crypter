@@ -26,6 +26,7 @@ matrix:
 
 before_script:
  - chmod +x ./script/*.sh
+ - npm install npm -g
 
 script: ./script/travis-build.sh
 
