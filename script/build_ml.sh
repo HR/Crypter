@@ -9,7 +9,6 @@ echo "NPM $(npm --version)"
 unset TEST_RUN
 export NODE_ENV=production
 npm install electron-builder@next -g
-npm install --production
 npm prune
 
 if [ "$TRAVIS_OS_NAME" == "linux" ]; then

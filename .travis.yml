@@ -1,13 +1,3 @@
-osx_image: xcode7.3
-sudo: required
-dist: trusty
-
-language: node_js
-node_js:
-
-git:
-  depth: 3
-
 branches:
   only:
     - master
@@ -18,7 +8,15 @@ matrix:
     - os: linux
       env: CC=clang CXX=clang++ npm_config_clang=1
       compiler: clang
+      dist: trusty
+      sudo: required
+      language: node_js
+      node_js:
     - os: osx
+      osx_image: xcode10.2
+      sudo: required
+      language: node_js
+      node_js:
 
 before_script:
  - chmod +x ./script/*.sh
