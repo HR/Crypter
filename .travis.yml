@@ -3,6 +3,12 @@ branches:
     - master
     - dev
 
+
+env:
+  - ELECTRON_CACHE=$HOME/.cache/electron
+  - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+
 matrix:
   include:
     - os: linux
@@ -20,8 +26,6 @@ matrix:
 
 before_script:
  - chmod +x ./script/*.sh
- - export NODE_VERSION=$(cat .nvmrc)
- - export TEST_RUN=true
 
 script: ./script/travis-build.sh
 
@@ -34,13 +38,17 @@ after_success:
       ./script/build_ml.sh;
     fi
 
+
+before_cache:
+  - rm -rf $HOME/.cache/electron-builder/wine
+
 cache:
   apt: true
   directories:
     - node_modules
-    - app/node_modules
-    - $HOME/.electron
-    - $HOME/.cache
+    - $HOME/.cache/electron
+    - $HOME/.cache/electron-builder
+
 
 notifications:
   email:

@@ -6,7 +6,6 @@ echo "Node $(node --version)"
 echo "NPM $(npm --version)"
 
 # make for production
-unset TEST_RUN
 export NODE_ENV=production
 npm install electron-builder@next -g
 npm prune
@@ -14,6 +13,7 @@ npm prune
 if [ "$TRAVIS_OS_NAME" == "linux" ]; then
   # to build for linux
   sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
+  sudo snap install snapcraft --classic
   echo "Building for linux"
   npm run linbuild
 else

@@ -28,3 +28,5 @@ npm run coveralls
 #   unset TEST_RUN
 #   npm run xtest
 # fi
+
+unset TEST_RUN
