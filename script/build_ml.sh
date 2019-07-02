@@ -15,9 +15,9 @@ if [ "$TRAVIS_OS_NAME" == "linux" ]; then
   sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
   sudo snap install snapcraft --classic
   echo "Building for linux"
-  npm run linbuild
+  npm run build:lin
 else
   echo "Building for mac"
-  npm run macbuild
+  npm run build:mac
 fi
 # zip -r dist/**/*.zip ./github/RELEASE

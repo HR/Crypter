@@ -33,7 +33,7 @@ install:
 build_script:
   - node --version
   - npm --version
-  - npm run winbuild
+  - npm run build:win
 
 # Post-install test scripts.
 # test_script:

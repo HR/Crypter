@@ -75,9 +75,9 @@
   },
   "scripts": {
     "pack": "electron-builder --dir",
-    "macbuild": "electron-builder -m",
-    "linbuild": "electron-builder -l --x64 --ia32",
-    "winbuild": "electron-builder -w --x64 --ia32",
+    "build:mac": "electron-builder -m",
+    "build:lin": "electron-builder -l --x64 --ia32",
+    "build:win": "electron-builder -w --x64 --ia32",
     "start": "electron .",
     "postinstall": "electron-builder install-app-deps",
     "nodeGypReBuild": "electron-rebuild .",
