@@ -114,7 +114,7 @@ Link to this README: https://git.io/Crypter.info
 All prebuilt binaries for all major platforms are available under
 [releases](https://github.com/HR/Crypter/releases/latest).
 
-Crypter is also on [Homebrew Cask](http://caskroom.io) for
+Crypter is also on [Homebrew Cask](https://formulae.brew.sh/cask/crypter) for
 macOS. So to install it, simply run the following command in the Terminal:
 ```bash
 $ brew cask install crypter
@@ -242,8 +242,8 @@ and imported into Crypter on the target machine<sup>[2](#target)</sup>.
 This can be achieved in two simple steps:
 
 <ol>
-  <li><a href="#how-do-i-export-my-masterpass-credentials">Export MasterPass credentials on the source machine</a><sup><a href="#source">1</a></sup></li>
-  <li><a href="#how-do-i-import-my-masterpass-credentials">Import MasterPass credentials on the target machine</a><sup><a href="#target">2</a></sup></li>
+  <li><a href="#how-can-i-export-my-masterpass-credentials">Export MasterPass credentials on the source machine</a><sup><a href="#source">1</a></sup></li>
+  <li><a href="#how-can-i-import-my-masterpass-credentials">Import MasterPass credentials on the target machine</a><sup><a href="#target">2</a></sup></li>
 </ol>
 
 Please refer to the FAQs for instructions on how to perform the above steps.
