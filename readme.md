@@ -61,9 +61,8 @@ tested (90%+ coverage).
 
 Please open an issue if you have any suggestions and add improvements via PRs!
 
-This is based on [Crypto.Sync](https://github.com/HR/CryptoSync) (an end-to-end
-cloud encryption client), which is a more elaborate implementation of the idea.
-So please check it out as well!
+Also checkout [Ciphora](https://github.com/HR/ciphora) (https://github.com/HR/ciphora)
+a decentralized end-to-end encrypted messaging app.
 
 
 Link to this README: https://git.io/Crypter.info
