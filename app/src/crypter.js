@@ -16,7 +16,6 @@ exports.window = function (global, fileToCrypt, callback) {
   Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate))
   // loads crypt.html view into the BrowserWindow
   win.loadURL(VIEWS.CRYPTER)
-
   let webContents = win.webContents
 
   webContents.once('did-finish-load', () => {

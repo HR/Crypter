@@ -5,7 +5,23 @@
  ******************************/
 // Electron
 
-const { app, dialog } = require('electron')
+const { app, dialog } = require('electron'),
+  packageJson = require('../package.json'),
+  { openNewGitHubIssue, debugInfo } = require('electron-util'),
+  debug = require('electron-debug'),
+  unhandled = require('electron-unhandled')
+
+unhandled({
+  reportButton: error => {
+    openNewGitHubIssue({
+      user: 'HR',
+      repo: 'Crypter',
+      body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`
+    })
+  }
+})
+debug()
+app.setAppUserModelId(packageJson.build.appId)
 
 // MasterPass credentials global
 global.creds = {}
@@ -76,11 +92,12 @@ const initMain = function () {
 // Main event handler
 app.on('ready', function () {
   // Check for updates, silently
-  checkUpdate()
-    .catch((err) => { logger.warn(err) })
+  checkUpdate().catch(err => {
+    logger.warn(err)
+  })
   // Check synchronously whether paths exist
   init()
-    .then((mainRun) => {
+    .then(mainRun => {
       logger.info(`Init done.`)
       // If the credentials not find in mdb, run setup
       // otherwise run main
@@ -151,7 +168,11 @@ app.on('will-finish-launching', () => {
   })
 
   // Check if launched with a file (opened with app in Windows)
-  if (process.argv[1] && process.argv[1].length > 1 && existsSync(process.argv[1])) {
+  if (
+    process.argv[1] &&
+    process.argv[1].length > 1 &&
+    existsSync(process.argv[1])
+  ) {
     fileToCrypt = process.argv[1]
   }
 })
@@ -164,21 +185,19 @@ app.on('window-all-closed', () => {
 
 app.on('quit', () => {
   logger.info('APP: quit event emitted')
-  global.mdb.close()
-    .catch((err) => {
-      console.error(err)
-      throw err
-    })
+  global.mdb.close().catch(err => {
+    console.error(err)
+    throw err
+  })
 })
 
-app.on('will-quit', (event) => {
+app.on('will-quit', event => {
   // will exit program once exit procedures have been run
   logger.info(`APP.ON('will-quit'): will-quit event emitted`)
-  global.mdb.close()
-    .catch((err) => {
-      console.error(err)
-      throw err
-    })
+  global.mdb.close().catch(err => {
+    console.error(err)
+    throw err
+  })
 })
 
 /**
@@ -195,12 +214,11 @@ app.on('app:open-settings', () => {
   // Check if not already opened
   if (settingsWindowNotOpen) {
     settingsWindowNotOpen = false
-    settingsWindow()
-      .then(() => {
-        logger.verbose('APP: closed settingsWindow')
-        // Closed so not open anymore
-        settingsWindowNotOpen = true
-      })
+    settingsWindow().then(() => {
+      logger.verbose('APP: closed settingsWindow')
+      // Closed so not open anymore
+      settingsWindowNotOpen = true
+    })
   }
 })
 
@@ -208,7 +226,7 @@ app.on('app:check-update', () => {
   logger.verbose('APP: app:check-updates event emitted')
   // Check for updates
   checkUpdate()
-    .then((updateAvailable) => {
+    .then(updateAvailable => {
       if (!updateAvailable) {
         dialog.showMessageBox({
           type: 'info',
@@ -217,10 +235,12 @@ app.on('app:check-update', () => {
         })
       }
     })
-    .catch((err) => {
+    .catch(err => {
       logger.warn(err)
-      dialog.showErrorBox('Failed to check for update',
-        `An error occured while checking for update:\n ${err.message}`)
+      dialog.showErrorBox(
+        'Failed to check for update',
+        `An error occured while checking for update:\n ${err.message}`
+      )
     })
 })
 
