@@ -36,7 +36,7 @@ gulp.task('run', electron)
 
 gulp.task('watch', function (done) {
   gulp.watch(LESS_FILES, gulp.series('less'))
-  gulp.watch(['./app/src/*.js', './app/core/*.js'], gulp.series('run'))
+  gulp.watch(['./app/*.js', './app/src/*.js', './app/core/*.js'], gulp.series('run'))
   done()
 })
 

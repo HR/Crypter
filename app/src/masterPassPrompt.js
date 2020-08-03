@@ -33,6 +33,8 @@ exports.window = function (global, callback) {
           logger.info('IPCMAIN: PASSWORD MATCHES!')
           // Save MasterPassKey (while program is running)
           global.MasterPassKey = new MasterPassKey(res.key)
+          // Save for nexg time
+          MasterPass.save(masterpass)
           // send result match result to masterpassprompt.html
           webContents.send('checkMasterPassResult', {
             err: null,

@@ -43,6 +43,7 @@ const { existsSync } = require('fs-extra')
 const { checkUpdate } = require('./utils/update')
 // Core
 const Db = require('./core/Db')
+const MasterPass = require('./core/MasterPass')
 // Windows
 const crypter = require('./src/crypter')
 const masterPassPrompt = require('./src/masterPassPrompt')
@@ -78,11 +79,8 @@ const init = function () {
 }
 
 const initMain = function () {
-  logger.verbose(`PROMISE: Main initialisation`)
-  return new Promise(function (resolve, reject) {
-    // restore the creds object globally
-    resolve(global.mdb.restoreGlobalObj('creds'))
-  })
+  logger.verbose(`initialising Main...`)
+  return global.mdb.restoreGlobalObj('creds').then(() => MasterPass.init())
 }
 
 /**
@@ -107,9 +105,10 @@ app.on('ready', function () {
 
         // Initialise (open mdb and get creds)
         initMain()
-          .then(() => {
+          .then(mpLoaded => {
+            logger.verbose('INIT: MasterPass', mpLoaded ? 'loaded' : 'not saved')
             // Obtain MasterPass, derive MasterPassKey and set globally
-            return masterPassPromptWindow()
+            return mpLoaded || masterPassPromptWindow()
           })
           .then(() => {
             // Create the Crypter window and open it
