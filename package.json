@@ -15,7 +15,6 @@
   },
   "build": {
     "appId": "com.github.hr.crypter",
-    "electronVersion": "5.0.6",
     "asar": false,
     "files": [
       "**/*",

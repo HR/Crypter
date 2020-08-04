@@ -1,18 +1,19 @@
 branches:
   only:
     - master
-    - dev
 
 matrix:
   include:
     - os: linux
       services: docker
-      language: generic
+      language: node_js
+      node_js:
+      # language: generic
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
     - os: osx
-      osx_image: xcode10.2
+      osx_image: xcode12
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder

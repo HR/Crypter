@@ -7,7 +7,7 @@ echo "NPM $(npm --version)"
 
 # make for production
 export NODE_ENV=production
-npm install electron-builder@next -g
+npm install electron-builder -g
 npm prune
 
 if [ "$TRAVIS_OS_NAME" == "linux" ]; then
@@ -19,7 +19,7 @@ if [ "$TRAVIS_OS_NAME" == "linux" ]; then
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "npm run build:lin"
+        /bin/bash -c "npm i -g electron-builder && npm run build:lin"
 else
   echo "Building for mac"
   npm run build:mac

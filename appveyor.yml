@@ -5,9 +5,6 @@ platform:
 
 image: Visual Studio 2019
 
-environment:
-  GH_TOKEN:
-    secure: 3wmca8TBqZGYD33XwQ+hNbS1WJdqkZipCpk3/7EkTtF9F/xhTlpCgM43ofkfie0B
 
 cache:
   - node_modules
