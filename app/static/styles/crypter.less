@@ -3,9 +3,9 @@
 	 MasterPassPrompt styles
 	 ==========================================================================
 */
-@import (less) "mixins.less";
+@import (less) 'mixins.less';
 /* Variable declarations*/
-@invalid-color: #9F3A38;
+@invalid-color: #9f3a38;
 @fileInput-height: 40vh;
 /* Section styles */
 header {
@@ -130,13 +130,27 @@ h3 {
           vertical-align: inherit;
         }
 
+        .file-path {
+          position: relative;
+
+          img {
+            height: 16px;
+            position: absolute;
+            right: 0;
+            background-image: linear-gradient(to right, rgba(255,255,255,0.5), rgba(255,255,255,1));
+            padding-left: 5px;
+          }
+        }
+
         td {
           vertical-align: top;
 
-          input[type="text"] {
+          input[type='text'] {
             display: table-cell;
             width: 50vw;
             float: right;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
 
           a > img {
@@ -159,7 +173,7 @@ h3 {
   }
 }
 
-a[data-action="app:open-settings"] {
+a[data-action='app:open-settings'] {
   img.info {
     height: 1.2rem;
     position: absolute;

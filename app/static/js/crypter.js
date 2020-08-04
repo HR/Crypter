@@ -102,6 +102,10 @@ function disableUI () {
   errLabel.hide()
 }
 
+function showFile (path) {
+  shell.showItemInFolder(path)
+}
+
 function showOpenDialog (properties) {
   // Create file input dialog
   dialog
