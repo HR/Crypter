@@ -19,9 +19,9 @@ if [ "$TRAVIS_OS_NAME" == "linux" ]; then
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "npm i -g electron-builder && npm run build:lin"
+        /bin/bash -c "npm i -g electron-builder && yarn run build:lin"
 else
   echo "Building for mac"
-  npm run build:mac
+  yarn run build:mac
 fi
 # zip -r dist/**/*.zip ./github/RELEASE

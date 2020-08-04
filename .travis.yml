@@ -6,9 +6,9 @@ matrix:
   include:
     - os: linux
       services: docker
-      language: node_js
-      node_js:
-      # language: generic
+      sudo: required
+      dist: xenial
+      language: generic
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
@@ -43,6 +43,7 @@ before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
 
 cache:
+  yarn: true
   apt: true
   directories:
     - node_modules

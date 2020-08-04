@@ -12,12 +12,12 @@ echo "Node $(node --version)"
 echo "NPM $(npm --version)"
 
 # Install deps
-npm install --no-optional
-npm prune
+yarn install --ignore-optional
+yarn prune
 
 # Test and get coverage
-npm run coverage
-npm run coveralls
+yarn run coverage
+yarn run coveralls
 # - npm run codeclimate
 
 # End-to-end OSX testing
