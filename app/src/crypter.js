@@ -4,12 +4,16 @@ const crypto = require('../core/crypto')
 const menuTemplate = require('./mainMenu')
 const { isCryptoFile } = require('../utils/utils')
 const logger = require('electron-log')
+const title = 'Crypter'
+
+exports.title = title
 
 exports.window = function (global, fileToCrypt, callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 350,
     height: 460,
+    title,
     ...WINDOW_OPTS
   })
   // create menu from menuTemplate and set

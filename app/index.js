@@ -3,9 +3,8 @@
  * index.js
  * Entry point for app execution
  ******************************/
-// Electron
 
-const { app, dialog } = require('electron'),
+const { app, dialog, BrowserWindow } = require('electron'),
   packageJson = require('../package.json'),
   { openNewGitHubIssue, debugInfo } = require('electron-util'),
   debug = require('electron-debug'),
@@ -44,14 +43,13 @@ const { checkUpdate } = require('./utils/update')
 // Core
 const Db = require('./core/Db')
 const MasterPass = require('./core/MasterPass')
+const MasterPassKey = require('./core/MasterPassKey')
 // Windows
 const crypter = require('./src/crypter')
 const masterPassPrompt = require('./src/masterPassPrompt')
 const setup = require('./src/setup')
 const settings = require('./src/settings')
 const { ERRORS } = require('./config')
-// adds debug features like hotkeys for triggering dev tools and reload
-require('electron-debug')()
 
 // Debug info
 logger.info(`Crypter v${app.getVersion()}`)
@@ -63,6 +61,11 @@ process.chdir(app.getAppPath())
 logger.info(`Changed cwd to: ${process.cwd()}`)
 logger.info(`Electron v${process.versions.electron}`)
 logger.info(`Electron node v${process.versions.node}`)
+// Prevent second instance
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+  app.quit()
+}
 
 /**
  * Promisification of initialisation
@@ -80,7 +83,10 @@ const init = function () {
 
 const initMain = function () {
   logger.verbose(`initialising Main...`)
-  return global.mdb.restoreGlobalObj('creds').then(() => MasterPass.init())
+  return global.mdb
+    .restoreGlobalObj('creds')
+    .then(() => MasterPass.init())
+    .then(mpk => mpk && (global.MasterPassKey = new MasterPassKey(mpk.key)))
 }
 
 /**
@@ -106,13 +112,16 @@ app.on('ready', function () {
         // Initialise (open mdb and get creds)
         initMain()
           .then(mpLoaded => {
-            logger.verbose('INIT: MasterPass', mpLoaded ? 'loaded' : 'not saved')
+            logger.verbose(
+              'INIT: MasterPass',
+              mpLoaded ? 'loaded' : 'not saved'
+            )
             // Obtain MasterPass, derive MasterPassKey and set globally
-            return mpLoaded || masterPassPromptWindow()
+            return mpLoaded || createWindow(masterPassPrompt, false)
           })
           .then(() => {
             // Create the Crypter window and open it
-            return crypterWindow(fileToCrypt)
+            return createWindow(crypter, fileToCrypt)
           })
           .then(() => {
             // Quit app after crypterWindow is closed
@@ -130,7 +139,7 @@ app.on('ready', function () {
         // Run Setup
         logger.info('Setup run. Creating Setup wizard...')
 
-        setupWindow()
+        createWindow(setup)
           .then(() => {
             logger.info('MAIN Setup successfully completed. quitting...')
             // setup successfully completed
@@ -210,15 +219,7 @@ app.on('app:quit', () => {
 
 app.on('app:open-settings', () => {
   logger.verbose('APP: app:open-settings event emitted')
-  // Check if not already opened
-  if (settingsWindowNotOpen) {
-    settingsWindowNotOpen = false
-    settingsWindow().then(() => {
-      logger.verbose('APP: closed settingsWindow')
-      // Closed so not open anymore
-      settingsWindowNotOpen = true
-    })
-  }
+  createWindow(settings)
 })
 
 app.on('app:check-update', () => {
@@ -252,47 +253,25 @@ app.on('app:relaunch', () => {
   // app.exit(0)
 })
 
+app.on('app:reset-masterpass', () => {
+  logger.verbose('APP: app:reset-masterpass event emitted')
+  createWindow(masterPassPrompt)
+})
+
 /**
  * Promisification of windows
  **/
 
-// Creates the crypter window
-let crypterWindow = function (fileToCrypt) {
-  return new Promise(function (resolve, reject) {
-    crypter.window(global, fileToCrypt, function () {
+function createWindow (window, ...args) {
+  const winInst = BrowserWindow.getAllWindows().find(
+    win => win.getTitle() === window.title
+  )
+  // Focus on existing instance
+  if (winInst) return winInst.focus()
+  return new Promise((resolve, reject) =>
+    window.window(global, ...args, err => {
+      if (err) reject(err)
       resolve()
     })
-  })
-}
-
-// Creates the setup window
-let setupWindow = function () {
-  return new Promise(function (resolve, reject) {
-    setup.window(global, function (err) {
-      if (err) {
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
-  })
-}
-
-// Creates the MasterPassPrompt window
-let masterPassPromptWindow = function () {
-  return new Promise(function (resolve, reject) {
-    masterPassPrompt.window(global, function (err, gotMP) {
-      if (err || !gotMP) reject(err)
-      resolve()
-    })
-  })
-}
-
-// Creates the settings window
-let settingsWindow = function () {
-  return new Promise(function (resolve, reject) {
-    settings.window(global, function () {
-      resolve()
-    })
-  })
+  )
 }

@@ -12,10 +12,10 @@ const crypto = require('./crypto'),
 // TODO: Make independent from global obj! use param instead
 
 exports.init = async () => {
-  const MasterPass = await keytar.getPassword(SERVICE, ACCOUNT)
-  if (!MasterPass) return false
-  exports.set(MasterPass)
-  return true
+  const masterpass = await keytar.getPassword(SERVICE, ACCOUNT)
+  if (!masterpass) return false
+  const mpk = await crypto.deriveKey(masterpass, global.creds.mpsalt)
+  return mpk
 }
 
 exports.save = masterpass => keytar.setPassword(SERVICE, ACCOUNT, masterpass)
