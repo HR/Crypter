@@ -4,7 +4,7 @@
  * Provides all essential config constants
  ******************************/
 
- // Fixed constants
+// Fixed constants
 const VIEWS_BASE_URI = `file://${__dirname}/static`
 
 module.exports = {
@@ -44,7 +44,8 @@ module.exports = {
     DECRYPT_TITLE_PREPEND: 'Decrypted ',
     ENCRYPT_OP: 'Encrypted',
     EXT: '.crypto',
-    DEFAULTS: { // Crypto default constants
+    DEFAULTS: {
+      // Crypto default constants
       ITERATIONS: 50000, // file encryption key derivation iterations
       KEYLENGTH: 32, // encryption key length
       IVLENGTH: 12, // initialisation vector length
@@ -56,28 +57,33 @@ module.exports = {
   },
   REGEX: {
     APP_EVENT: /^app:[\w-]+$/i,
-    ENCRYPTION_CREDS: /^Crypter(.*)$/igm,
+    ENCRYPTION_CREDS: /^Crypter(.*)$/gim,
     MASTERPASS: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@!%*#?&]).{8,}$/
   },
   RESPONSES: {
-    invalid: 'MUST AT LEAST CONTAIN 1 UPPER & LOWER CASE ALPHABET, 1 NUMBER, 1 SYMBOL AND BE 8 CHARACTERS',
+    invalid:
+      'MUST AT LEAST CONTAIN 1 UPPER & LOWER CASE ALPHABET, 1 NUMBER, 1 SYMBOL AND BE 8 CHARACTERS',
     correct: 'CORRECT MASTERPASS',
     incorrect: 'INCORRECT MASTERPASS',
     setSuccess: 'MASTERPASS SUCCESSFULLY SET',
     empty: 'PLEASE ENTER THE MASTERPASS',
-    resetSuccess: 'You have successfully reset your MasterPass. You\'ll be redirected to verify it shortly.',
+    resetSuccess:
+      "You have successfully reset your MasterPass. You'll be redirected to verify it shortly.",
     exportSuccess: 'Successfully exported the credentials',
-    importSuccess: 'Successfully imported the credentials. You will need to verify the MasterPass for the credentials imported after Crypter relaunches.'
+    importSuccess:
+      'Successfully imported the credentials. You will need to verify the MasterPass for the credentials imported after Crypter relaunches.'
   },
   ERRORS: {
     INVALID_MP_CREDS_FILE: 'Not a valid or corrupted Crypter credentials file!',
     INVALID_FILE: 'Not a valid or corrupted CRYPTO file!',
-    AUTH_FAIL: 'Corrupted Crypter file or trying to decrypt on a different machine. See git.io/Crypter.info#faqs',
+    AUTH_FAIL:
+      'Corrupted Crypter file or trying to decrypt on a different machine. See git.io/Crypter.info#faqs',
     PROMISE: 'Oops, we encountered a problem...',
     DECRYPT: 'Not a Crypter file (can not get salt, iv and authTag)',
     MS: {
-      INVALID_FILE: 'Invalid tar header. Maybe the tar is corrupted or it needs to be gunzipped?',
-      AUTH_FAIL: 'Unsupported state or unable to authenticate data',
+      INVALID_FILE:
+        'Invalid tar header. Maybe the tar is corrupted or it needs to be gunzipped?',
+      AUTH_FAIL: 'Unsupported state or unable to authenticate data'
     }
   },
   COLORS: {
