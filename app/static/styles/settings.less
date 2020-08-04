@@ -74,7 +74,6 @@ a:not(.navigationLink) {
   display: flex;
   margin-left: 0;
   margin-right: 0;
-  border-bottom: @border-width solid rgba(0, 0, 0, 0.15);
   align-self: flex-end;
   transition: color 0.1s ease;
 
@@ -100,7 +99,8 @@ a:not(.navigationLink) {
     flex: 0 0 auto;
     -webkit-user-select: none;
     user-select: none;
-    padding: 0.7rem 1.1rem 0.1rem;
+    padding: 0.7rem 0.8rem 0rem;
+    margin-right: 0.4rem;
     text-transform: none;
     color: rgba(0, 0, 0, 0.87);
     transition: background 0.1s ease, box-shadow 0.1s ease, color 0.1s ease;
@@ -154,6 +154,7 @@ h4 {
   font-weight: 300;
   text-align: left;
   border-bottom: 1px solid @light;
+  padding-bottom: 5px;
 }
 
 header {
