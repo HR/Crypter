@@ -5,7 +5,6 @@
  ******************************/
 
 const { app, dialog, BrowserWindow } = require('electron'),
-  packageJson = require('../package.json'),
   { openNewGitHubIssue, debugInfo } = require('electron-util'),
   debug = require('electron-debug'),
   unhandled = require('electron-unhandled')
@@ -20,7 +19,7 @@ unhandled({
   }
 })
 debug()
-app.setAppUserModelId(packageJson.build.appId)
+app.setAppUserModelId('com.github.hr.crypter')
 
 // MasterPass credentials global
 global.creds = {}
