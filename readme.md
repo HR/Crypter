@@ -447,7 +447,7 @@ that altering these may break functionality and
 To install all dependencies, run:
 
 ```
-$ npm install
+$ yarn install
 ```
 
 ### Run
@@ -466,13 +466,13 @@ lot of JS ES6 syntax, babel is also used as a transpiler. To run all the tests,
 execute:
 
 ```
-$ npm test
+$ yarn test
 ```
 
 Crypter uses istanbul for coverage. To run test coverage, execute:
 
 ```
-$ npm run coverage
+$ yarn run coverage
 ```
 
 ### Build
@@ -488,20 +488,20 @@ $ npm install electron-builder@next -g
 To build the app for **macOS**, run:
 
 ```
-$ npm run build:mac
+$ yarn run build:mac
 ```
 
 To build the app for **Linux**, run:
 
 ```
 $ sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
-$ npm run build:lin
+$ yarn run build:lin
 ```
 
 To build the app for **Windows** x84 and/or x64, run:
 
 ```
-$ npm run build:win
+$ yarn run build:win
 ```
 
 ## License

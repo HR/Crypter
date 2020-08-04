@@ -74,8 +74,8 @@
   },
   "scripts": {
     "pack": "electron-builder --dir",
-    "build:mac": "electron-builder -m",
-    "build:lin": "electron-builder -l --x64 --ia32",
+    "build:mac": "electron-builder -m -c.electronVersion $(npm info electron version)",
+    "build:lin": "electron-builder -l --x64 --ia32 -c.electronVersion $(npm info electron version)",
     "build:win": "electron-builder -w --x64 --ia32",
     "start": "electron .",
     "postinstall": "electron-builder install-app-deps",
