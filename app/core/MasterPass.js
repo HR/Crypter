@@ -48,9 +48,9 @@ exports.check = masterpass => {
 exports.set = masterpass => {
   return new Promise((resolve, reject) => {
     // Derive the MasterPassKey from the supplied masterpass
-    exports
-      .save(masterpass)
-      .then(() => crypto.deriveKey(masterpass, null))
+    crypto
+      .deriveKey(masterpass, null)
+      .then(mp => exports.save(masterpass).then(() => mp))
       .then(mp => {
         // Save the salt used to generate the MasterPassKey
         global.creds.mpsalt = mp.salt
