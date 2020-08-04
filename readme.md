@@ -10,7 +10,7 @@
 <h4 align="center">An innovative, convenient and secure crypto app.</h4>
 <p align="center">
     <a href="https://github.com/HR/Crypter/releases/latest">
-        <img src="https://img.shields.io/badge/Download-4.0-orange.svg"
+        <img src="https://img.shields.io/badge/Download-5.0-orange.svg"
             alt="Download latest release" style= "margin-bottom: 0.5rem" height="25px">
     </a>
 </p>
@@ -51,12 +51,12 @@ links in most security systems today - weak passwords. It simplifies secure
 password generation and management and requires you to only remember one bit -
 your MasterPass.
 
-[Crypter v4.0](https://github.com/HR/Crypter/releases/tag/v4.0.0) is a crypto
+[Crypter v5.0](https://github.com/HR/Crypter/releases/tag/v5.0.0) is a crypto
 app that can decrypt and encrypt any arbitrary data this includes files and
 folders. This version has been released and fully tested for macOS (OSX), Linux
 (for all distros via [AppImage](http://appimage.org/)) and Windows (32 & 64
 bit). All core modules (modules that provide the core functionality) are fully
-tested (90%+ coverage).
+tested.
 
 Please open an issue if you have any suggestions and add improvements via PRs!
 
