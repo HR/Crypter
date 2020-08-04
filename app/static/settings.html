@@ -1,10 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-
   <head>
-    <meta charset="utf-8">
-    <title>Settings</title>
-    <link rel="stylesheet" href="styles/settings.css">
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="styles/settings.css" />
     <script src="js/common.js" type="text/javascript"></script>
     <script src="js/settings.js" type="text/javascript"></script>
   </head>
@@ -14,14 +12,14 @@
       <div class="panel-container">
         <div class="menu">
           <a class="item right navigationLink active" data-tab="general">General</a>
-          <a class="item  navigationLink" data-tab="contribute">
-            <img class="icon" src="images/icons/mark-github.svg" alt=""/>
+          <a class="item navigationLink" data-tab="contribute">
+            <img class="icon" src="images/icons/mark-github.svg" alt="" />
           </a>
         </div>
         <div id="panel-general" class="current">
           <section class="general">
             <header>
-              <img class="header" src="images/icons/crypt.svg" alt=""/>
+              <img class="header" src="images/icons/crypt.svg" alt="" />
               <h3>General</h3>
             </header>
             <section class="category">
@@ -31,6 +29,9 @@
                   <button class="navigationLink" data-action="export">Export</button>
                   <button class="navigationLink" data-action="import">Import</button>
                 </div>
+                <div class="option">
+                  <button class="navigationLink" data-action="app:reset-masterpass">Reset MasterPass</button>
+                </div>
               </div>
               <p id="errLabel" class="info"></p>
             </section>
@@ -39,13 +40,13 @@
         <div id="panel-contribute">
           <section class="contribute">
             <header>
-              <img class="header" src="images/icons/mark-github.svg" alt=""/>
+              <img class="header" src="images/icons/mark-github.svg" alt="" />
               <h3>Contribute</h3>
             </header>
             <div class="list">
               <div class="item">
                 <a class="navigationLink" data-target="https://github.com/HR/Crypter/issues/new">
-                  <img src="images/icons/issue-opened.svg" class="icon" alt=""/>
+                  <img src="images/icons/issue-opened.svg" class="icon" alt="" />
                   <div class="name">
                     Report an issue / Suggest improvements
                   </div>
@@ -53,7 +54,7 @@
               </div>
               <div class="item">
                 <a class="navigationLink" data-target="https://github.com/HR/Crypter">
-                  <img src="images/icons/star.svg" alt="" class="icon"/>
+                  <img src="images/icons/star.svg" alt="" class="icon" />
                   <div class="name">
                     Star the repo
                   </div>
@@ -61,7 +62,7 @@
               </div>
               <div class="item">
                 <a class="navigationLink" data-target="https://github.com/HR/Crypter/fork">
-                  <img src="images/icons/repo-forked.svg" alt="" class="icon"/>
+                  <img src="images/icons/repo-forked.svg" alt="" class="icon" />
                   <div class="name">
                     Fork the repo
                   </div>
@@ -69,7 +70,7 @@
               </div>
               <div class="item">
                 <a class="navigationLink" data-action="app:check-update">
-                  <img src="images/icons/package.svg" alt="" class="icon"/>
+                  <img src="images/icons/package.svg" alt="" class="icon" />
                   <div class="name">
                     Check for Updates
                   </div>
@@ -79,29 +80,33 @@
           </section>
         </div>
         <footer>
-          <img src="images/icons/code.svg" alt="" class="icon"/>
+          <img src="images/icons/code.svg" alt="" class="icon" />
           with
-          <img src="images/icons/heart.svg" alt="" class="icon"/>
+          <img src="images/icons/heart.svg" alt="" class="icon" />
           by
-          <br>
-          <a class="navigationLink" data-target="https://github.com/HR">Habib Rehman</a>
+          <a class="navigationLink" style="margin-left: 3px" data-target="https://github.com/HR">Habib Rehman</a>
         </footer>
       </div>
     </section>
     <script id="creds-template" type="text/x-handlebars-template">
-      <div class="option">
-        <span>MasterPass salt</span>
-        <input class="right" type="text" value="{{mpsalt}}"/>
+      <div class='option'>
+        <span>
+          MasterPass salt
+        </span>
+        <input class='right' type='text' value="{{mpsalt}}" />
       </div>
-      <div class="option">
-        <span>MasterPassKey hash</span>
-        <input class="right" type="text" value="{{mpkhash}}"/>
+      <div class='option'>
+        <span>
+          MasterPassKey hash
+        </span>
+        <input class='right' type='text' value="{{mpkhash}}" />
       </div>
-      <div class="option">
-        <span>MasterPassKey salt</span>
-        <input class="right" type="text" value="{{mpksalt}}"/>
+      <div class='option'>
+        <span>
+          MasterPassKey salt
+        </span>
+        <input class='right' type='text' value="{{mpksalt}}" />
       </div>
     </script>
   </body>
-
 </html>

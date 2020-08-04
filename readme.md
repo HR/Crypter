@@ -7,7 +7,6 @@
   <br>
 </h1>
 
-
 <h4 align="center">An innovative, convenient and secure crypto app.</h4>
 <p align="center">
     <a href="https://github.com/HR/Crypter/releases/latest">
@@ -64,63 +63,41 @@ Please open an issue if you have any suggestions and add improvements via PRs!
 Also checkout [Ciphora](https://github.com/HR/ciphora) (https://github.com/HR/ciphora)
 a decentralized end-to-end encrypted messaging app.
 
-
 Link to this README: https://git.io/Crypter.info
 
 ---
+
 # Contents
+
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Installation](#installation)
 - [Screens](#screens)
-- [Crypto](#crypto)
-	- [Encryption process](#encryption-process)
-	- [Decryption process](#decryption-process)
-	- [Public credentials](#public-credentials)
-- [CRYPTO file](#crypto-file)
-	- [Format](#format)
-	- [Reusing the same MasterPass](#reusing-the-same-masterpass)
-	- [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
-- [Security](#security)
-	- [Security-first practice](#security-first-practice)
-	- [MasterPass](#masterpass)
-	- [MasterPassKey](#masterpasskey)
-- [FAQs](#faqs)
-	- [How do I encrypt a file or folder?](#how-do-i-encrypt-a-file-or-folder)
-	- [How do I decrypt a CRYPTO file?](#how-do-i-decrypt-a-crypto-file)
-	- [How do I encrypt multiple files?](#how-do-i-encrypt-multiple-files)
-	- [Why am I getting the "Corrupted Crypter file or trying to decrypt on a different machine." error?](#why-am-i-getting-the-corrupted-crypter-file-or-trying-to-decrypt-on-a-different-machine-error)
-	- [Why can't I decrypt a CRYPTO file on a different machine with the same MasterPass?](#why-cant-i-decrypt-a-crypto-file-on-a-different-machine-with-the-same-masterpass)
-	- [Why can't I decrypt a CRYPTO file with the same MasterPass?](#why-cant-i-decrypt-a-crypto-file-with-the-same-masterpass)
-	- [Where are my encrypted/decrypted files/folders placed?](#where-are-my-encrypteddecrypted-filesfolders-placed)
-	- [How can I access Crypter's preferences?](#how-can-i-access-crypters-preferences)
-	- [How can I reset my MasterPass?](#how-can-i-reset-my-masterpass)
-	- [What is a valid MasterPass?](#what-is-a-valid-masterpass)
-	- [What are MasterPass credentials?](#what-are-masterpass-credentials)
-	- [How can I export my MasterPass credentials?](#how-can-i-export-my-masterpass-credentials)
-	- [How can I import my MasterPass credentials?](#how-can-i-import-my-masterpass-credentials)
-- [Development](#development)
-	- [Configurations](#configurations)
-	- [Install (dependencies)](#install-dependencies)
-	- [Run](#run)
-	- [Test](#test)
-	- [Build](#build)
+- [Crypto](#crypto) - [Encryption process](#encryption-process) - [Decryption process](#decryption-process) - [Public credentials](#public-credentials)
+- [CRYPTO file](#crypto-file) - [Format](#format) - [Reusing the same MasterPass](#reusing-the-same-masterpass) - [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
+- [Security](#security) - [Security-first practice](#security-first-practice) - [MasterPass](#masterpass) - [MasterPassKey](#masterpasskey)
+- [FAQs](#faqs) - [How do I encrypt a file or folder?](#how-do-i-encrypt-a-file-or-folder) - [How do I decrypt a CRYPTO file?](#how-do-i-decrypt-a-crypto-file) - [How do I encrypt multiple files?](#how-do-i-encrypt-multiple-files) - [Why am I getting the "Corrupted Crypter file or trying to decrypt on a different machine." error?](#why-am-i-getting-the-corrupted-crypter-file-or-trying-to-decrypt-on-a-different-machine-error) - [Why can't I decrypt a CRYPTO file on a different machine with the same MasterPass?](#why-cant-i-decrypt-a-crypto-file-on-a-different-machine-with-the-same-masterpass) - [Why can't I decrypt a CRYPTO file with the same MasterPass?](#why-cant-i-decrypt-a-crypto-file-with-the-same-masterpass) - [Where are my encrypted/decrypted files/folders placed?](#where-are-my-encrypteddecrypted-filesfolders-placed) - [How can I access Crypter's preferences?](#how-can-i-access-crypters-preferences) - [How can I reset my MasterPass?](#how-can-i-reset-my-masterpass) - [What is a valid MasterPass?](#what-is-a-valid-masterpass) - [What are MasterPass credentials?](#what-are-masterpass-credentials) - [How can I export my MasterPass credentials?](#how-can-i-export-my-masterpass-credentials) - [How can I import my MasterPass credentials?](#how-can-i-import-my-masterpass-credentials)
+- [Development](#development) - [Configurations](#configurations) - [Install (dependencies)](#install-dependencies) - [Run](#run) - [Test](#test) - [Build](#build)
 - [License](#license)
 
-<!-- /TOC -->
----
+## <!-- /TOC -->
+
 ## Installation
+
 All prebuilt binaries for all major platforms are available under
 [releases](https://github.com/HR/Crypter/releases/latest).
 
 Crypter is also on [Homebrew Cask](https://formulae.brew.sh/cask/crypter) for
 macOS. So to install it, simply run the following command in the Terminal:
+
 ```bash
 $ brew cask install crypter
 ```
+
 <br/>
 
 ## Screens
+
 <p align="center">
   <img src="/.github/Welcome_screen.png?raw=true" alt="Welcome screen" width="100%">
   <img src="/.github/Crypter_main_screen.png?raw=true" alt="Crypter screen" width="40%">
@@ -131,6 +108,7 @@ $ brew cask install crypter
 <br/>
 
 ## Crypto
+
 > One key to derive them all!
 
 Crypter derives a MasterPassKey from the MasterPass obtained at setup by using
@@ -157,6 +135,7 @@ This ensures that data integrity is verified on decryption and allows the app
 to detect tampering or data corruption.
 
 The following are the crypto defaults and can be found under `app/config.js`:
+
 ```js
 // Crypto defaults
 {
@@ -171,6 +150,7 @@ The following are the crypto defaults and can be found under `app/config.js`:
 ```
 
 ### Encryption process
+
 When encrypting a file, Crypter first creates a temporary hidden directory,
 namely '.crypting'. It then encrypts the user-selected file with the crypto
 defaults and flushes the encrypted data to a file in the directory, namely
@@ -180,6 +160,7 @@ Finally, Crypter compresses the directory to a tar archive with the name of the
 user-selected file and the '.crypto' extension appended to it.
 
 ### Decryption process
+
 The decryption process is essentially the inverse of the encryption process.
 During decryption, Crypter creates a temporary hidden directory named
 '.decrypting'. It then reads the credentials from the creds file and decrypts
@@ -188,28 +169,49 @@ its original name and extension, as deduced from the CRYPTO file name (e.g. the
 extension for "file.txt.crypto" would be ".txt").
 
 ### Public credentials
+
 Certain credentials are required to decrypt the encrypted data. These are
 needed to reconstruct the particular encryption key and to verify data integrity.
 These can be stored publicly without compromising security since it is fairly
 impossible (by current standards) to reconstruct the encryption key without the
 MasterPass and its credentials. These credentials are stored in the creds file of
-the [CRYPRO file](#crypto-file) archive (as delineated above) in the following
+the [CRYPTO file](#crypto-file) archive (as delineated above) in the following
 format:
+
+#### v1
+
 ```
 Crypter#iv#authTag#salt#dir
 ```
+
+#### v2
+
+Uses JSON
+
+```json
+{
+  "type": "CRYPTO",
+  "iv": "...",
+  "authTag": "...",
+  "salt": "...",
+  "isDir": true || false
+}
+```
+
 The `dir` part is only included for directories
 <br/>
 
 ## CRYPTO file
 
 ### Format
+
 A CRYPTO file is the product of the Crypter encryption process. This file
 stores both the encrypted version of the user file and the public credentials
 needed to encrypt and decrypt it. It has a `.crypto` file extension, which
 is appended to the full file name (including the extension) of the file
 originally encrypted. The file itself is a tar archive in the following
 structure:
+
 ```c
 someFile.crypto
 ├── data // the encrypted version of the user selected file
@@ -217,12 +219,15 @@ someFile.crypto
 ```
 
 ### Reusing the same MasterPass
+
 If you attempt to decrypt a CRYPTO file by _resetting to a specific
 MasterPass_ or _setting an identical MasterPass on a different machine_,
 you will likely encounter the following error:
+
 ```
 ERROR: Unsupported state or unable to authenticate data
 ```
+
 This issue occurs because the MasterPassKey that was originally used to
 derive the encryption key on is **not the same** as the MasterPassKey
 derived with the reused MasterPass. Since Crypter uses randomness to
@@ -234,6 +239,7 @@ See [Achieving portability and same MasterPass reuse](#achieving-portability-and
 for instructions on how to successfully reuse the same MasterPass.
 
 ### Achieving portability and same MasterPass reuse
+
 To achieve portability on Crypter, the set of MasterPassKey credentials
 need to be exported from Crypter on the source machine<sup>[1](#source)</sup>
 and imported into Crypter on the target machine<sup>[2](#target)</sup>.
@@ -260,12 +266,14 @@ file.
 ## Security
 
 ### Security-first practice
+
 Crypter follows a security-first practice. This means that security is its
 highest priority and first consideration. Thus, while Crypter seeks
 to make encryption more convenient, it always defers to maintaining
 a high level of security.
 
 ### MasterPass
+
 Crypter never stores your MasterPass in memory or on the filesystem. This
 substantially improves the security of your MasterPass. You are only asked to
 enter the MasterPass when you first set, reset or verify it. Whenever you enter
@@ -276,6 +284,7 @@ these credentials are derived via a one-way function, they cannot be used in
 any way to derive the MasterPass.
 
 ### MasterPassKey
+
 Crypter uses a WeakMap to store the MasterPassKey inside the MasterPassKey class
 using a closure function. This makes the MasterPassKey data held in the object
 (externally) inaccessible, consequently increasing the protection of the
@@ -304,6 +313,7 @@ to mitigate brute-force attacks and thus drastically improve security.
 ## FAQs
 
 ### How do I encrypt a file or folder?
+
 If you haven't already, walk through the setup and set your MasterPass.
 To encrypt a file or folder, first launch Crypter and verify your MasterPass.
 After doing so successfully, you will see the main Crypter window with an orange
@@ -314,10 +324,11 @@ encrypted file) in a new window. To encrypt another file/folder simply click the
 back arrow at the bottom left and start-over ;)
 
 ### How do I decrypt a CRYPTO file?
+
 > The following instructions assume that the CRYPTO file that you wish to
-decrypt is being used with the same MasterPass that you set at setup and also
-that you have not reset it since that time. If this is not the case, please refer
-to [Reusing the same MasterPass](#reusing-the-same-masterpass).
+> decrypt is being used with the same MasterPass that you set at setup and also
+> that you have not reset it since that time. If this is not the case, please refer
+> to [Reusing the same MasterPass](#reusing-the-same-masterpass).
 
 To decrypt a CRYPTO file, first launch Crypter and verify your MasterPass. After
 doing so successfully, you will see the main Crypter window with an orange area.
@@ -328,11 +339,13 @@ default, the decrypted file has the same name as the name of the original file
 (i.e. the encrypted file name without the `.crypto` at the end).
 
 ### How do I encrypt multiple files?
+
 Crypter can encrypt an entire folder so you can put them in a folder or,
 alternatively, compress them into an archive (like a `.zip`) and then just pass
 it to Crypter ;)
 
 ### Why am I getting the "Corrupted Crypter file or trying to decrypt on a different machine." error?
+
 This error means that either your Crypter file (i.e. the `data` file) is
 corrupt/tempered, that you are on a different machine than the one originally
 used to encrypt the file or that you have previously reset your MasterPass.
@@ -341,28 +354,34 @@ For the last two cases, please refer to
 [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse).
 
 ### Why can't I decrypt a CRYPTO file on a different machine with the same MasterPass?
+
 Please refer to [Reusing the same MasterPass](#reusing-the-same-masterpass) and
 [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
 
 ### Why can't I decrypt a CRYPTO file with the same MasterPass?
+
 Please refer to [Reusing the same MasterPass](#reusing-the-same-masterpass) and
 [Achieving portability and same MasterPass reuse](#achieving-portability-and-same-masterpass-reuse)
 
 ### Where are my encrypted/decrypted files/folders placed?
+
 By default, every source file that you encrypt/decrypt gets encrypted/decrypted
 to the same directory where the source file is located.
 
 ### How can I access Crypter's preferences?
+
 You can access Crypter's preferences by either clicking on the cog icon in the
 main Crypter window or by going to `Crypter > Preferences...` from the menu.
 
 ### How can I reset my MasterPass?
+
 You can reset your MasterPass by clicking on the "Forgot it" link in the Verify
 MasterPass window. This takes you to a new screen where you can enter a new, valid
 MasterPass. Once you've entered it, click the 'Reset' button and you'll be sent
 back to the verify screen where you can verify your new MasterPass.
 
 ### What is a valid MasterPass?
+
 Crypter will not allow you to set an invalid MasterPass. A MasterPass is valid
 when it adheres to the following rules:
 
@@ -370,13 +389,16 @@ when it adheres to the following rules:
 - It has at least one uppercase alphabetic character (A-Z)
 - It has at least one lowercase alphabetic character (a-z)
 - It has at least one numeric character (0-9)
-- It has at least one special character ($@!%\*#?&)
+- It has at least one special character (\$@!%\*#?&)
 
 These rules are enforced via the following regular expression:
+
 ```javascript
-/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@!%*#?&]).{8,}$/
+/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@!%*#?&]).{8,}$/;
 ```
+
 ### What are MasterPass credentials?
+
 MasterPass credentials are a set of values that are required to derive the
 MasterPassKey from the MasterPass. These values have a pseudo-random element and
 are cryptographically linked. Every MasterPass that is set or reset with Crypter
@@ -384,6 +406,7 @@ has a unique set of MasterPass credentials. These yield a distinct MasterPassKey
 even when a MasterPass is reused.
 
 ### How can I export my MasterPass credentials?
+
 To export your MasterPass credentials, you can first open Crypter's
 preferences (see above). From this screen, click on the "Export" button. A
 dialog will appear from which you can select the folder where you wish to export
@@ -391,6 +414,7 @@ the credentials. A success message will confirm a successful export. The
 exported MasterPass credentials file is always named `credentials.crypter`.
 
 ### How can I import my MasterPass credentials?
+
 To import a set of MasterPass credentials, you can first open Crypter's
 preferences (see above). From this screen, click on the "Import" button. A
 dialog will appear from which you can locate your `credentials.crypter` file.
@@ -405,65 +429,83 @@ the import may fail.
 <br/>
 
 ## Development
+
 Crypter is developed in the "dev" branch, which may be unstable at times.
 This branch should typically be used for pull requests.
 
 The "master" branch will always be kept stable.
 
 ### Configurations
+
 All major configurations that you can apply are found under `app/config.js`.
 This includes changes to certain cryptography settings. Please be advised
 that altering these may break functionality and
 [portability](#achieving-portability-and-same-masterpass-reuse).
 
 ### Install (dependencies)
+
 To install all dependencies, run:
+
 ```
 $ npm install
 ```
 
 ### Run
+
 Since Crypter uses gulp, please install it globally if you have not already
 done so. To start Crypter, run:
+
 ```
 $ gulp
 ```
+
 ### Test
+
 Crypter primarily uses mocha and chai for testing. Since the project uses a
 lot of JS ES6 syntax, babel is also used as a transpiler. To run all the tests,
 execute:
+
 ```
 $ npm test
 ```
+
 Crypter uses istanbul for coverage. To run test coverage, execute:
+
 ```
 $ npm run coverage
 ```
 
 ### Build
+
 Crypter's binaries (available under releases) have been built using
 Electron. Since Crypter uses electron-builder to build binaries,
 you must install it globally:
+
 ```
 $ npm install electron-builder@next -g
 ```
 
 To build the app for **macOS**, run:
+
 ```
 $ npm run build:mac
 ```
+
 To build the app for **Linux**, run:
+
 ```
 $ sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils
 $ npm run build:lin
 ```
+
 To build the app for **Windows** x84 and/or x64, run:
+
 ```
 $ npm run build:win
 ```
 
-
 ## License
+
 The MIT License (MIT)
 
 Copyright (c) Habib Rehman (https://git.io/HR)

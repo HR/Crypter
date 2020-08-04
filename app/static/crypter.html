@@ -1,9 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>Crypter</title>
-    <link rel="stylesheet" href="styles/crypter.css">
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="styles/crypter.css" />
     <script src="js/common.js" type="text/javascript"></script>
     <script src="js/crypter.js" type="text/javascript"></script>
   </head>
@@ -12,15 +11,16 @@
       <div class="panel-container">
         <div id="panel-crypt" class="current">
           <a class="navigationLink" data-action="app:open-settings">
-            <img class="info" src="images/icons/settings.svg" alt="Settings">
+            <img class="info" src="images/icons/settings.svg" alt="Settings" />
           </a>
           <header>
-            <img src="images/icons/Crypter.svg" alt="Crypter" class="header"/>
+            <img src="images/icons/Crypter.svg" alt="Crypter" class="header" />
             <h1 class="title">Crypter</h1>
-            <p class="subtitle">Encrypt &amp; decrypt anything.</p>
-            <p class="leadinfo">Encrypt unlimited bits. Remember only a bit.<br/>
-              All you need is your MasterPass and a CRYTPO file.</p>
-            <p id="errLabel" style="display: none"></p>
+            <p class="subtitle">Encrypt. Decrypt. Anything.</p>
+            <p class="leadinfo">
+              Encrypt unlimited bits. Remember only a bit.
+            </p>
+            <p id="errLabel" style="display: none;"></p>
           </header>
           <div id="fileInput" class="fancy">
             <p id="fileInputText">
@@ -33,12 +33,12 @@
             <!-- Crypted panel dynamically loaded here -->
           </div>
           <p class="intrfo">
-            Note these details down<br/>
+            Note these details down<br />
             (for use with third-party apps)
           </p>
           <footer>
             <a class="back navigationLink" data-panel="crypt">
-              <img src="images/icons/back.svg" alt="back"/>
+              <img src="images/icons/back.svg" alt="back" />
             </a>
           </footer>
         </div>
@@ -46,45 +46,67 @@
     </section>
     <script id="crypted-template" type="text/x-handlebars-template">
       <header>
-        <img src="images/icons/{{op}}.svg" class="header"/>
+        <img src="images/icons/{{op}}.svg" class='header' />
       </header>
-      <div id="finfo">
-        <h3><div title="{{cryptPath}}">{{op}} {{name}}</div></h3>
+      <div id='finfo'>
+        <h3>
+          <div title="{{cryptPath}}">
+            {{op}} {{name}}
+          </div>
+        </h3>
         <table>
           <tr>
-            <td>Original file</td>
             <td>
-              <input type="text" readonly="readonly" value="{{path}}" title="{{path}}"/>
+              Original file
+            </td>
+            <td class='file-path'>
+              <input type='text' readonly='readonly' value="{{path}}" title="{{path}}" />
+              <a href='#' onclick="showFile('{{path}}')">
+                <img src='images/icons/eye.svg' />
+              </a>
             </td>
           </tr>
           <tr>
-            <td>{{op}} file</td>
             <td>
-              <input type="text" readonly="readonly" value="{{cryptPath}}" title="{{cryptPath}}"/>
+              {{op}} file
+            </td>
+            <td class='file-path'>
+              <input type='text' readonly='readonly' value="{{cryptPath}}" title="{{cryptPath}}" />
+              <a href='#' onclick="showFile('{{cryptPath}}')">
+                <img src='images/icons/eye.svg' />
+              </a>
             </td>
           </tr>
           <tr>
-            <td>Initialisation Vector</td>
             <td>
-              <input type="text" readonly="readonly" value="{{iv}}" title="{{iv}}"/>
+              Initialisation Vector
+            </td>
+            <td>
+              <input type='text' readonly='readonly' value="{{iv}}" title="{{iv}}" />
             </td>
           </tr>
           <tr>
-            <td>Auth Tag</td>
             <td>
-              <input type="text" readonly="readonly" value="{{authTag}}" title="{{authTag}}"/>
+              Auth Tag
+            </td>
+            <td>
+              <input type='text' readonly='readonly' value="{{authTag}}" title="{{authTag}}" />
             </td>
           </tr>
           <tr>
-            <td>Salt</td>
             <td>
-              <input type="text" readonly="readonly" value="{{salt}}" title="{{salt}}"/>
+              Salt
+            </td>
+            <td>
+              <input type='text' readonly='readonly' value="{{salt}}" title="{{salt}}" />
             </td>
           </tr>
           <tr>
-            <td>Encryption Key</td>
             <td>
-              <input type="text" readonly="readonly" value="{{key}}" title="{{key}}"/>
+              Encryption Key
+            </td>
+            <td>
+              <input type='text' readonly='readonly' value="{{key}}" title="{{key}}" />
             </td>
           </tr>
         </table>

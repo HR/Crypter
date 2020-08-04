@@ -18,7 +18,7 @@ module.exports = {
   WINDOW_OPTS: {
     center: true,
     show: true,
-    titleBarStyle: 'hidden',
+    titleBarStyle: 'hiddenInset',
     resizable: false,
     maximizable: false,
     movable: true,

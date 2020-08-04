@@ -1,35 +1,43 @@
 const gulp = require('gulp')
-const shell = require('child_process')
-  .exec
-const spawn = require('child_process')
-  .spawn
+const shell = require('child_process').exec
+const spawn = require('child_process').spawn
 const babel = require('gulp-babel')
 const env = require('gulp-env')
 const less = require('gulp-less')
 const path = require('path')
-const jeditor = require('gulp-json-editor')
 const istanbul = require('gulp-babel-istanbul')
 const injectModules = require('gulp-inject-modules')
 const mocha = require('gulp-mocha')
 const LessPluginCleanCSS = require('less-plugin-clean-css')
 const cleancss = new LessPluginCleanCSS({ advanced: true })
 const LESS_FILES = './app/static/styles/*.less'
-
-function exec(command, args) {
-  return (cb) => {
-    var cmd = spawn(command, args, { stdio: 'inherit' })
-    cmd.on('close', function (code) {
-      console.log('Exited with code ' + code)
-      cb(code)
-    })
+const ELECTRON = __dirname + '/node_modules/.bin/electron'
+const DEBUG = false
+let p
+let args = ['.']
+// Start the electron process.
+async function electron () {
+  // kill previous spawned process
+  if (p) {
+    p.kill()
   }
+
+  if (DEBUG) args.unshift('--inspect=5858')
+  // `spawn` a child `gulp` process linked to the parent `stdio`
+  p = await spawn(ELECTRON, args, {
+    stdio: 'inherit',
+    env: {
+      ...process.env
+    }
+  })
 }
 
-gulp.task('run', exec('node_modules/.bin/electron', ['.']))
+gulp.task('run', electron)
 
-gulp.task('watch', function () {
+gulp.task('watch', function (done) {
   gulp.watch(LESS_FILES, gulp.series('less'))
-  // gulp.watch(['./app/static/**/*', './*.js'], ['run'])
+  gulp.watch(['./app/*.js', './app/src/*.js', './app/core/*.js'], gulp.series('run'))
+  done()
 })
 
 gulp.task('nodev', function () {
@@ -44,11 +52,14 @@ gulp.task('nodev', function () {
 })
 
 gulp.task('less', function () {
-  return gulp.src('./app/static/styles/*.less')
-    .pipe(less({
-      paths: [path.join(__dirname, 'less', 'includes')],
-      plugins: [cleancss]
-    }))
+  return gulp
+    .src('./app/static/styles/*.less')
+    .pipe(
+      less({
+        paths: [path.join(__dirname, 'less', 'includes')],
+        plugins: [cleancss]
+      })
+    )
     .pipe(gulp.dest('./app/static/styles/'))
 })
 
@@ -65,12 +76,14 @@ gulp.task('coverage', function (cb) {
   const envs = env.set({
     TEST_RUN: true
   })
-  gulp.src('./app/core/**/*.js')
+  gulp
+    .src('./app/core/**/*.js')
     .pipe(envs)
     .pipe(istanbul())
     .pipe(istanbul.hookRequire())
     .on('finish', function () {
-      gulp.src('test/*.js')
+      gulp
+        .src('test/*.js')
         .pipe(babel())
         .pipe(injectModules())
         .pipe(mocha())
@@ -109,5 +122,4 @@ gulp.task('driver', () => {
   )
 })
 
-
-gulp.task('default', gulp.series('less', 'run'))
+gulp.task('default', gulp.series('less', 'watch', 'run'))

@@ -16,6 +16,13 @@ const {REGEX, RESPONSES, COLORS} = require('../config')
 const Handlebars = require('handlebars')
 
 /* Shared functions */
+function getUrlParameter(name) {
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+  var results = regex.exec(location.search);
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+};
+
 function navigate (panel) {
   let oldSel = $('.panel-container > div.current') // get current panel
   let sel = $(`#panel-${panel}`) // get panel to navigate to

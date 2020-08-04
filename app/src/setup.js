@@ -4,6 +4,9 @@ const MasterPass = require('../core/MasterPass')
 const MasterPassKey = require('../core/MasterPassKey')
 const logger = require('electron-log')
 const menuTemplate = require('./menu')
+const title = 'Setup'
+
+exports.title = title
 
 exports.window = function (global, callback) {
   // setup view controller
@@ -12,6 +15,7 @@ exports.window = function (global, callback) {
   let win = new BrowserWindow({
     width: 600,
     height: 420,
+    title,
     ...WINDOW_OPTS
   })
 

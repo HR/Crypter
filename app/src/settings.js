@@ -3,13 +3,15 @@ const menuTemplate = require('./menu')
 const {CRYPTO, VIEWS, SETTINGS, ERRORS, WINDOW_OPTS} = require('../config')
 const logger = require('electron-log')
 const fs = require('fs-extra')
-const _ = require('lodash')
+const title = 'Settings'
 
+exports.title = title
 exports.window = function (global, callback) {
   // creates a new BrowserWindow
   let win = new BrowserWindow({
     width: 600,
     height: 460,
+    title,
     ...WINDOW_OPTS
   })
   // create menu from menuTemplate and set
@@ -41,7 +43,7 @@ exports.window = function (global, callback) {
         logger.error(err)
         webContents.send('importResult', err.message)
       } else {
-        let isCredsObjProp = function (prop, index, array) {
+        let isCredsObjProp = function (prop) {
           return credsObj.hasOwnProperty(prop)
         }
         let credsFileValid = CRYPTO.MASTERPASS_CREDS_PROPS.every(isCredsObjProp)

@@ -10,7 +10,7 @@ const MasterPass = require('../app/core/MasterPass')
 const scrypto = require('crypto')
 const _ = require('lodash')
 const fs = require('fs-extra')
-const logger = require('../app/node_modules/electron-log/index')
+const logger = require('../app/node_modules/electron-log/src')
 logger.transports.file.level = false;
 logger.transports.console.level = false;
 
