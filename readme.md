@@ -58,6 +58,10 @@ folders. This version has been released and fully tested for macOS (OSX), Linux
 bit). All core modules (modules that provide the core functionality) are fully
 tested.
 
+[Crypter v5.0](https://github.com/HR/Crypter/milestone/4) will save your MasterPass
+in your OS's Keychain so you won't have to enter it every time you open the app.
+To help speed up the development please send a PR for what's left do https://github.com/HR/Crypter/milestone/4
+
 Please open an issue if you have any suggestions and add improvements via PRs!
 
 Also checkout [Ciphora](https://github.com/HR/ciphora) (https://github.com/HR/ciphora)
