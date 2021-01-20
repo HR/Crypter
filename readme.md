@@ -122,7 +122,7 @@ Crypter is also on [Homebrew Cask](https://formulae.brew.sh/cask/crypter) for
 macOS. So to install it, simply run the following command in the Terminal:
 
 ```bash
-$ brew cask install crypter@4.0.0
+$ brew install --cask crypter@4.0.0
 ```
 
 <br/>
