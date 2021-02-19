@@ -37,8 +37,8 @@
              alt="CodeClimate GPA">
     </a>
     <a href="https://github.com/HR/Crypter/releases/latest">
-        <img src="https://get-badge.herokuapp.com/HR/Crypter/total"
-             alt="Downloads">
+        <img src="https://img.shields.io/github/downloads/hr/crypter/total"
+             alt="GitHub all releases downloads" >
     </a>
 </p>
 <br>
